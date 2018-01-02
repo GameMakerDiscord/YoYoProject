@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using YoYoProject.Controllers;
 
 namespace YoYoProject
 {
-    public sealed class GMResourceManager : IReadOnlyDictionary<Guid, GMResource>
+    [DebuggerStepThrough]
+    public sealed class GMResourceManager : IReadOnlyDictionary<Guid, GMResource>, IEnumerable<GMResource>
     {
         public int Count => resources.Count;
 
@@ -42,6 +44,30 @@ namespace YoYoProject
             throw new NotImplementedException();
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TResource Get<TResource>()
+            where TResource : GMResource, new()
+        {
+            return (TResource)resources.Values.Single(x => x is TResource);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IReadOnlyList<TResource> GetAllOfType<TResource>()
+            where TResource : GMResource, new()
+        {
+            return resources.Values.OfType<TResource>().ToList();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IReadOnlyList<GMResource> GetAllOfType(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            return resources.Values.Where(x => x.GetType() == type).ToList();
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TResource Get<TResource>(Guid id)
             where TResource : GMResource, new()
@@ -71,11 +97,13 @@ namespace YoYoProject
             return resources.Values.Single(x => x.Name == name);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(Guid key)
         {
             return resources.ContainsKey(key);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(Guid key, out GMResource value)
         {
             return resources.TryGetValue(key, out value);
@@ -92,14 +120,21 @@ namespace YoYoProject
             return resourceInfos;
         }
         
-        public IEnumerator<KeyValuePair<Guid, GMResource>> GetEnumerator()
+        public IEnumerator<GMResource> GetEnumerator()
         {
-            return resources.GetEnumerator();
+            return resources.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        // NOTE Hidden GetEnumerator() for IReadOnlyDictionary because it's less useful than one for
+        //      IEnumerable<GMResource>
+        IEnumerator<KeyValuePair<Guid, GMResource>> IEnumerable<KeyValuePair<Guid, GMResource>>.GetEnumerator()
+        {
+            return resources.GetEnumerator();
         }
     }
 }

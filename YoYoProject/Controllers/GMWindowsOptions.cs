@@ -6,15 +6,15 @@ namespace YoYoProject.Controllers
     {
         public string DisplayName
         {
-            get { return GetProperty(inner.option_windows_display_name); }
-            set { SetProperty(value, out inner.option_windows_display_name); }
+            get { return GetProperty(inner.option_windows_display_name, "option_windows_display_name"); }
+            set { SetProperty(value, out inner.option_windows_display_name, "option_windows_display_name"); }
         }
 
         private readonly GMWindowsOptionsModel inner;
 
         protected internal override string ResourcePath
         {
-            get { return @"options\main\options_main.yy"; }
+            get { return @"options\windows\options_windows.yy"; }
         }
 
         public GMWindowsOptions()
@@ -26,6 +26,7 @@ namespace YoYoProject.Controllers
         {
             return new GMWindowsOptionsModel
             {
+                name = "Windows",
                 option_windows_display_name = DisplayName
             };
         }

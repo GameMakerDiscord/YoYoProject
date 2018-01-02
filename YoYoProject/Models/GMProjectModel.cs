@@ -101,7 +101,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMWindowsOptionsModel : ModelBase
+    public sealed class GMWindowsOptionsModel : GMResourceModel
     {
         [DataMember] public string option_windows_display_name;
 
