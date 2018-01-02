@@ -39,9 +39,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigDelta.cs" />
+    <Compile Include="ConfigTree.cs" />
     <Compile Include="ControllerBase.cs" />
     <Compile Include="FileSystem.cs" />
+    <Compile Include="GMFolder.cs" />
+    <Compile Include="GMMacOptions.cs" />
     <Compile Include="GMProject.cs" />
+    <Compile Include="GMProjectParent.cs" />
+    <Compile Include="GMResource.cs" />
+    <Compile Include="GMResourceManager.cs" />
+    <Compile Include="GMWindowsOptions.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="Models\GMProjectModel.cs" />
     <Compile Include="Models\ModelBase.cs" />

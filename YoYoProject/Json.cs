@@ -20,7 +20,7 @@ namespace YoYoProject
 
         private readonly static Encoding Encoding = Encoding.Default;
 
-        public static void Serialize<T>(string path, T value)
+        public static void SerializeToFile<T>(string path, T value)
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
