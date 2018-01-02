@@ -6,7 +6,7 @@ using YoYoProject.Models;
 namespace YoYoProject
 {
     [DataContract]
-    public sealed class GMProjectModel : ModelBase
+    internal sealed class GMProjectModel : ModelBase
     {
         [DataMember]
         public GMProjectParentModel parentProject { get; set; }
@@ -37,7 +37,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMProjectParentModel : ModelBase
+    internal sealed class GMProjectParentModel : ModelBase
     {
         [DataMember]
         public string projectPath { get; set; }
@@ -56,7 +56,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMResourceInfoModel : GMResourceModel
+    internal sealed class GMResourceInfoModel : GMResourceModel
     {
         [DataMember(Name = "resourcePath")]
         public string ResourcePath { get; set; }
@@ -81,7 +81,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMFolderModel : GMResourceModel
+    internal sealed class GMFolderModel : GMResourceModel
     {
         [DataMember] public string folderName;
 
@@ -101,7 +101,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMWindowsOptionsModel : GMResourceModel
+    internal sealed class GMWindowsOptionsModel : GMResourceModel
     {
         [DataMember] public string option_windows_display_name;
 
@@ -188,7 +188,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class BuildVersion
+    internal sealed class BuildVersion
     {
         [DataMember]
         public int major { get; set; }
@@ -204,7 +204,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMRViewModel : ModelBase
+    internal sealed class GMRViewModel : ModelBase
     {
         [DataMember]
         public bool inherit { get; set; }
@@ -259,7 +259,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public class GMResourceModel : ModelBase
+    internal class GMResourceModel : ModelBase
     {
         [DataMember]
         public string name { get; set; }
@@ -278,7 +278,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public class GMOptionsBaseModel : GMResourceModel
+    internal class GMOptionsBaseModel : GMResourceModel
     {
         public GMOptionsBaseModel()
             : base("GMOptionsBase", "1.0")
@@ -294,7 +294,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMMainOptionsModel : GMOptionsBaseModel
+    internal sealed class GMMainOptionsModel : GMOptionsBaseModel
     {
         [DataMember]
         public string option_gameguid { get; set; }
@@ -337,7 +337,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMGraphicsOptionsModel : GMOptionsBaseModel
+    internal sealed class GMGraphicsOptionsModel : GMOptionsBaseModel
     {
         [DataMember]
         public List<GMTextureGroupModel> textureGroups { get; set; }
@@ -350,7 +350,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public class GMBaseGroupModel : ModelBase
+    internal class GMBaseGroupModel : ModelBase
     {
         [DataMember]
         public string groupName { get; set; }
@@ -372,7 +372,7 @@ namespace YoYoProject
     }
 
     [Flags]
-    public enum TargetPlatforms : long
+    internal enum TargetPlatforms : long
     {
         MacOsX = 2,
         iOS = 4,
@@ -415,7 +415,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMTextureGroupModel : GMBaseGroupModel
+    internal sealed class GMTextureGroupModel : GMBaseGroupModel
     {
         [DataMember]
         public bool scaled { get; set; }
@@ -440,7 +440,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMAudioOptionsModel : GMOptionsBaseModel
+    internal sealed class GMAudioOptionsModel : GMOptionsBaseModel
     {
         [DataMember]
         public List<GMAudioGroupModel> audioGroups { get; set; }
@@ -452,7 +452,7 @@ namespace YoYoProject
         }
     }
 
-    public sealed class GMAudioGroupModel : GMBaseGroupModel
+    internal sealed class GMAudioGroupModel : GMBaseGroupModel
     {
         public GMAudioGroupModel()
             : base("GMAudioGroup", "1.0")
@@ -462,14 +462,14 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class Color
+    internal sealed class Color
     {
         [DataMember]
         public uint Value { get; set; }
     }
 
     [DataContract]
-    public sealed class GMLinuxOptionsModel : GMOptionsBaseModel
+    internal sealed class GMLinuxOptionsModel : GMOptionsBaseModel
     {
         [DataMember]
         public string option_linux_display_name { get; set; }
@@ -533,7 +533,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    public sealed class GMMacOptionsModel : GMOptionsBaseModel
+    internal sealed class GMMacOptionsModel : GMOptionsBaseModel
     {
         [DataMember] public string option_mac_display_name;
 

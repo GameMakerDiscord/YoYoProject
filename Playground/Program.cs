@@ -14,6 +14,7 @@ namespace Playground
             var project = GMProject.New();
 
             var config = project.Resources.Get<GMWindowsOptions>();
+            
             config.DisplayName = "Hello, World!";
 
             Console.WriteLine("DisplayName = {0}", config.DisplayName);

@@ -71,7 +71,7 @@ namespace YoYoProject.Controllers
             configStack.Pop();
         }
         
-        protected internal GMResourceInfoModel SerializeResourceInfo()
+        internal GMResourceInfoModel SerializeResourceInfo()
         {
             return new GMResourceInfoModel
             {
