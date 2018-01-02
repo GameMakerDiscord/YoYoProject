@@ -1,0 +1,381 @@
+YYP Configuration Deltas and Project Inheritance
+	@DatZach, @ImDaveead#3450
+	Revision 2017-12-31
+
+2017-12-31			Updated documentation regarding project inheritence given information provided
+					by @ImDaveead. Namely that the default parentProject is 'BaseProject' in the
+					current runtime
+2017-12-30			Initial release
+
+Overview
+--------
+
+	There's two systems for property inheritence in YYPs, Project Inheritance and Config Inheritance.
+	Both of these systems are intermingled, both track changes from a tree structure propagating changes
+	from the child applying deltas resolved along the ancestor path.
+
+Project Inheritance
+-------------------
+
+	The YYP specifies a 'parentProject' property, this property is always set.
+	The 'parentProject.projectPath' points to the YYP file of the parent project.
+		If this property is left as an empty string then there is no parent project being inherited.
+		This property may be '${base_project}' which points to ${runtimes_cache}\BaseProject\BaseProject.yyp
+	The 'alteredResources' property specifies what resources have ConfigDelta(s) associated with
+	them from the parent project. The 'hiddenResources' property specifies a list of GMResource_Model
+	IDs that are hidden and made readonly in the view of the children projects.
+
+	Parent projects are awarded special config names.
+	The terminating parent will be awarded "inherited".
+	All parents inheriting down the chain will be awarded "inherited_<parentProject.id>"
+	All configs specified in a project will only be visible in that project, the inherited config from
+		parentProject will be that project's "default" config.
+	This means that children projects may contain the same config names as any of its
+		parents without conflict.
+
+	BY DEFAULT
+		An empty YYP will reference ${base_project} as its parentProject and override the
+		options_main with its own DeltaConfig specifying a new options_gameguid
+
+	Any resources in the parent project that are modified by the child project are referenced in
+	the 'parentProject.alteredResources' property which is a list of GMResourceInfo_Models (the
+	same as 'project.resources')
+
+	Also be aware that resource name conflicts are possible between parents and child projects.
+		If this is the case, the IDE and Compiler both behave badly.
+
+Config Inheritance
+------------------
+
+	Config Inheritance relies on several concepts: ConfigTree, ConfigDeltas, ConfigStack and filesystem
+		structure.
+
+	At a high level:
+		YYPs consist of Models (GMProject, GMParentProject, GMResourceInfo, GMSprite, GMRoom, GMEvent, etc)
+		Models contain associated ConfigDeltas and a ConfigStack (Both may be empty)
+		If a Model's ConfigDeltas/ConfigStack is non-empty the top of the stack is the active config
+		When setting a property the property will be modified in the ConfigDelta on top of the Stack
+			If the Stack is empty the property will be set on the Model itself
+		When getting a property the property will be searched for from the top down of the Stack.
+			If no property is found on the Stack then it's pulled from the Model itself instead
+		The order of this stack is determined by the ancestor chain from the ACTIVE config, with the
+			active config being on top, its parent below it, etc
+
+	ConfigTree
+		= representation of Config inheritence
+		Config = entry in ConfigTree
+
+		The config "default" is always specified as root, even if not explicitly mentioned in the YYP
+		Everything will implicitly fall under "default"
+
+	ConfigDelta
+		= contained list of changes from ModelBase specific to Config & Model
+		ConfigDeltas are serialized along-side the ModelBase, further documentation FileSystem section
+
+	ConfigStack
+		= The order of this stack is determined by the ancestor chain from the ACTIVE config, with the
+			active config being on top, its parent below it, etc
+
+	FileSystem
+		= Structure of Resource Models and their associated ConfigDeltas
+		ConfigDeltas are stored alongside the specified resourceInfo.resourcePath at the following:
+			dir(resourcePath) / configName / filename(resourcePath) . configName . 'yy'
+
+		(The format of the ConfigDelta stored at this path is documented below)
+
+	ConfigDelta Format
+		Delta			::=	<Version>'←'<SrcModelId>('←'<Resource>)+
+		Resource		::= <DestModelId>'|'<Model>
+		Model			::= Model of Resource specified in *ModelId as JSON string
+
+		SrcModelId		::= <Guid>
+		DestModelId		::= <Guid>
+		Version			::= '1.0.0'
+		Guid			::= GUID
+
+		NOTES
+			Pipes '|' are allowed to appear in <Model> only two tokens are consumed in
+			the <Resource> rule: DestModelId and Model
+
+			<Resource> count will be equal to number of deltas in ModelBase.DeltaConfigs
+
+			Each target resource will be either the top-level model or a child model of
+			the parent (specified in the source)
+
+Example of Inheritance
+----------------------
+	(Irrelevant properties ommitted)
+
+	/ Project.yyp
+		Note that the GMMainOptions model is ONLY present in the alteredResources of the parentProject
+		Note the special config "inherited"
+		Note that ALL project's Configs are specified in 'configs' property (as keys)
+		Note that these child project specific configs still appear in the parentProject's
+			alteredResources property
+		This project has the following user specified configs: LinuxConfig, UbuntuConfig
+
+	{
+
+		"configs": [
+			"default",
+			"default;LinuxConfig",
+			"default;LinuxConfig;UbuntuConfig"
+		],
+		"parentProject": {
+			"alteredResources": [
+				{
+					"Key": "ed6a955d-5826-4f98-a450-10b414266c27",
+					"Value": {
+						"configDeltas": [
+							"inherited",
+							"UbuntuConfig",
+							"LinuxConfig"
+						],
+						"id": "24666656-23e7-4cbd-b24b-988095cce7d4",	/* GMResourceInfo.ID - Ignore */
+						"resourcePath": "options\\main\\options_main.yy",
+						"resourceType": "GMMainOptions"
+					}
+				}
+			],
+			"projectPath": "${base_project}"
+		},
+		"resources": [
+			{
+				"Key": "a9188620-a624-4a5a-83ae-a1b53faf038b",
+				"Value": {
+					"configDeltas": [
+						"LinuxConfig",
+						"UbuntuConfig"
+					],
+					"id": "013e481e-ad7a-47bf-b4aa-15e1edbde91d",		/* GMResourceInfo.ID - Ignore */
+					"resourcePath": "options\\linux\\options_linux.yy",
+					"resourceType": "GMLinuxOptions"
+				}
+			}
+		]
+	}
+
+	/ options / linux / options_linux.yy
+	{
+		"id": "a9188620-a624-4a5a-83ae-a1b53faf038b",
+		"modelName": "GMLinuxOptions",
+		"option_linux_display_name": "Made in GameMaker Studio 2",
+		"option_linux_version": {
+			"build": 0,
+			"major": 1,
+			"minor": 0,
+			"revision": 0
+		}
+	}
+
+	/ options / linux / LinuxConfig / options_linux.LinuxConfig.yy
+		Note the src and dest ModelId are the same
+		Note the dest ModelId = our options_linux.yy Model's ID
+			This is the model we're specifying delta properties for
+
+	1.0.0←a9188620-a624-4a5a-83ae-a1b53faf038b←a9188620-a624-4a5a-83ae-a1b53faf038b|{
+		"option_linux_version": {
+			"build": 0,
+			"major": 1,
+			"minor": 1,
+			"revision": 0
+		},
+		"option_linux_display_name": "Made in GameMaker Studio 2 LINUX"
+	}
+
+	/ options / linux / UbuntuConfig / options_linux.UbuntuConfig.yy
+		Note the src and dest ModelId are the same
+		Note the dest ModelId = our options_linux.yy Model's ID
+			This is the model we're specifying delta properties for
+
+	1.0.0←a9188620-a624-4a5a-83ae-a1b53faf038b←a9188620-a624-4a5a-83ae-a1b53faf038b|{
+		"option_linux_display_name": "Made in GameMaker Studio 2 LINUX-UBUNTU"
+	}
+
+	/ options / main / options_main.yy
+		Note this resource exists in the parentProject and is not a resource listed in the
+			resources section of the child project, the resource and be found at the specified
+			resourcePath relative to the parentProject.projectPath
+
+		*** FILE DOES NOT EXIST ON FILESYSTEM ***
+
+	/ options / main / inherited / options_main.inherited.yy
+		Note There are 3 DeltaConfigs specified here
+			ed6a955d-5826-4f98-a450-10b414266c27 -> parentProject.GMMainOptions
+			1225f6b0-ac20-43bd-a82e-be73fa0b6f4f -> parentProject.GMMainOptions.textureGroups[0]
+			7b2c4976-1e09-44e5-8256-c527145e03bb -> parentProject.GMMainOptions.audioGroups[0]
+
+	1.0.0←ed6a955d-5826-4f98-a450-10b414266c27←ed6a955d-5826-4f98-a450-10b414266c27|{
+		"option_gameguid": "685f7600-f6e9-4155-8554-4349b5aae8ad",
+		"option_lastchanged": "30 December 2017 10:58:06",
+		"option_draw_colour": {
+			"Value": 4294770508
+		}
+	}←1225f6b0-ac20-43bd-a82e-be73fa0b6f4f|{
+		"targets": 29263750006690030
+	}←7b2c4976-1e09-44e5-8256-c527145e03bb|{
+		"targets": 29263750006690030
+	}
+
+	/ options / main / LinuxConfig / options_main.LinuxConfig.yy
+		Note ed6a955d-5826-4f98-a450-10b414266c27 -> parentProject.GMMainOptions
+
+	1.0.0←ed6a955d-5826-4f98-a450-10b414266c27←ed6a955d-5826-4f98-a450-10b414266c27|{
+		"option_lastchanged": "30 December 2017 11:05:00",
+		"option_draw_colour": {
+			"Value": 4279308799
+		},
+		"option_gameguid": "26ddffd8-1ce4-41fc-904d-e1f291643aba"
+	}
+
+	/ options / main / UbuntuConfig / options_main.UbuntuConfig.yy
+		Note ed6a955d-5826-4f98-a450-10b414266c27 -> parentProject.GMMainOptions
+
+	1.0.0←ed6a955d-5826-4f98-a450-10b414266c27←ed6a955d-5826-4f98-a450-10b414266c27|{
+		"option_lastchanged": "30 December 2017 11:02:15",
+		"option_gameguid": "26ddffd8-1ce4-41fc-904d-e1f291643aba"
+	}
+
+
+	WHEN 'LinuxConfig' is active:
+		GMLinuxOptions.option_linux_display_name = 'Made in GameMaker Studio 2 LINUX'
+	WHEN 'UbuntuConfig' is active:
+		GMLinuxOptions.option_linux_display_name = 'Made in GameMaker Studio 2 LINUX-UBUNTU'
+	WHEN 'default' is active:
+		GMLinuxOptions.option_linux_display_name = 'Made in GameMaker Studio 2'
+
+
+Details Analysis of De/Serialize
+--------------------------------
+
+	Warning: Messy stream of conciousness
+
+ModelBase
+	Stack<ConfigDelta> ConfigStack
+	Dictionary<string, ConfigDelta> ConfigDeltas
+
+	[Property]
+		get GetConfigProperty(...)
+		set SetConfigProperty(...)
+
+	SetConfigProperty(name, value, backingField)
+		Sets the current DeltaConfig's property or the backingField if no current DeltaConfig
+		Dirty = true
+
+	GetConfigProperty(name, backingField)
+		Walks from the top of the ConfigStack down
+			Returns first DeltaConfig property of <name>
+
+		If none found returns backingField
+
+	SetConfigDelta(configDelta)
+		ConfigDeltas[configDelta.name] = configDelta
+		if configDelta in ConfigStack:
+			Move configDelta to top of ConfigStack
+		else:
+			ConfigStack.push(configDelta)
+
+PushInheritedConfigs()
+	for project in inheritedProjects
+		for resInfo in project.resources:
+			resInfo.PushConfig(allParentConfigs)
+
+	Pushes all parent configs into the resource infos for each child project
+		Default -> "inherited" gets pushed as a config
+
+	[ ] What does the ConfigStack look like for the models in a GMProject?
+	[ ] What does the ConfigDeltas look like for the models in a GMProject
+
+LoadProject(path)
+	project.activeConfig = "default"
+	DeserializeProject(path) ->
+		project = Json.Deserialize(path);
+
+		QueueProject(projectPath) ->
+			${project_full_filename}, ${project_dir} registered
+			if projectPath !contains ${project_full_filename} // self-inherit ignored in this case
+				${projecjt_dir_inherited_<ProjectName>}, ${project_full_inherited_<ProjectName>} registered
+
+		SetupConfigs(gmProjectModel.configs) ->
+			for config in gmProjectModel.configs:
+				parts = config.split(';')
+				for(i = i; i < parts.length; ++i):
+					configName = parts[i];
+					parentConfigName =  parts[i - 1];
+
+					if (!seen configName)
+						ConfigTree.AddConfig(configName, parentConfigName)
+
+		LoadParentProjejct(project) ->
+			for altRes in project.parent.alteredResources:
+				res = project.resources[altRes.id] // GMResource_Model
+
+				for configDelta in altRes.configDeltas: // Read deltas into resource
+					configDeltaPath = res.resourcePath . configDelta
+					ConfigDelta.Deserialize(configDelta, configDeltaPath, res)
+
+LoadYY(path)
+	?????????????????
+
+class ConfigTree
+	configs = <ConfigTreeNode>[]
+
+	ctor()
+		AddConfig("default", null)
+
+	AddConfig(configName, parentConfigName)
+		if !ValidName(configName):
+			return ERROR
+
+		parent = configs.find(parentConfigName)
+		if !parent:
+			return ERROR
+
+		child = new ConfigTreeNode(configName, parent)
+		parent.AddChildConfig(child)
+		configs.add(child)
+
+	class ConfigTreeNode
+		ConfigName = string
+		Parent = ConfigTreeNode
+		Children = <ConfigTreeNode>[]
+
+		AddChildConfig(child)
+			Children.Add(child)
+
+		RemoveCHildConfig(child)
+			Children.Remove(child)
+
+class ConfigDelta
+	static Deserialize(name, path, res)
+		data = File.GetAllText(path)
+		deltaModel = DeserializeDeltaFile(data)
+
+		for target in deltaModel.targets:
+			configDelta = new ConfigDelta(name)
+			for prop in target.model:
+				configDelta.Set(prop.Key, prop.Value)
+
+			res = GetResource(target.destId)
+			res.SetConfigDelta(configDelta)
+
+		// NOTE model.SrcModelId is used to create a clone of if DestModelId
+		//		cannot be found, but the exact mechanics of that are hard to
+		//		pin down. You can probably ignore SrcModelId safely and rely
+		//		only on target.destId/model
+
+	DeserializeDeltaFile(data)
+		return {
+			version: data.Version,
+			sourceId: data.SrcModelId,
+			targets: [
+				{
+					destId: data.targets[n].DestModelId,
+					model: data.targets[n].Model
+				},
+				...
+			]
+		);
+
+ConfigStack 			-> Stack of current config's inheritence? top = current
+ConfigDeltas			-> List of all configs (deltas can be empty?)
