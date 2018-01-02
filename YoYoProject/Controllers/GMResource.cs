@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace YoYoProject
+namespace YoYoProject.Controllers
 {
     public abstract class GMResource : ControllerBase
     {

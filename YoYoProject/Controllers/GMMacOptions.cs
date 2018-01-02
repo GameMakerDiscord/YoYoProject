@@ -1,6 +1,6 @@
 ﻿using YoYoProject.Models;
 
-namespace YoYoProject
+namespace YoYoProject.Controllers
 {
     public sealed class GMMacOptions : GMResource
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using YoYoProject.Controllers;
 using YoYoProject.Models;
+using YoYoProject.Utility;
 
 namespace YoYoProject
 {
@@ -23,7 +24,7 @@ namespace YoYoProject
             if (rootDirectory == null)
                 throw new ArgumentNullException(nameof(rootDirectory));
 
-            var projectName = rootDirectory.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).Last();
+            var projectName = rootDirectory.GetTerminalDirectoryName();
             var path = Path.Combine(rootDirectory, projectName + ".yyp");
 
             FileSystem.EnsureDirectory(rootDirectory);

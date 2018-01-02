@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using YoYoProject.Models;
 
-namespace YoYoProject
+namespace YoYoProject.Controllers
 {
     public sealed class GMProjectParent : ControllerBase
     {

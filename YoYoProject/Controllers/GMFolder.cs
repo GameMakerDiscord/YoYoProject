@@ -2,7 +2,7 @@
 using System.Linq;
 using YoYoProject.Models;
 
-namespace YoYoProject
+namespace YoYoProject.Controllers
 {
     public sealed class GMFolder : GMResource
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
-namespace YoYoProject
+namespace YoYoProject.Utility
 {
     [DebuggerStepThrough]
     internal static class FileSystem
@@ -14,6 +15,11 @@ namespace YoYoProject
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+        }
+
+        public static string GetTerminalDirectoryName(this string fullPath)
+        {
+            return fullPath?.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).Last();
         }
     }
 }

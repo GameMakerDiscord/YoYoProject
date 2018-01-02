@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace YoYoProject
+namespace YoYoProject.Utility
 {
     [DebuggerStepThrough]
     internal static class Json

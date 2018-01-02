@@ -1,7 +1,7 @@
 ﻿using System;
 using YoYoProject.Models;
 
-namespace YoYoProject
+namespace YoYoProject.Controllers
 {
     public abstract class ControllerBase
     {
