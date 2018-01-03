@@ -1,8 +1,10 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -222,6 +224,59 @@ namespace YoYoProject.Utility
                     dict.Add("resourceCreationConfigs", gmResourceInfo.ResourceCreationConfigs);
 
                 return dict;
+            }
+
+            private static string SerializeDictionary(IDictionary dictionary)
+            {
+                var builder = new StringBuilder();
+                builder.Append('{');
+
+                foreach (DictionaryEntry entry in dictionary)
+                {
+                    var value = SerializeValue(entry.Value);
+                    builder.AppendFormat("\"{0}\":{1}", entry.Key, value);
+                }
+
+                builder.Append('}');
+
+                return builder.ToString();
+            }
+
+            private static string SerializeValue(object value)
+            {
+                if (value == null)
+                    return "null";
+                
+                // TODO C# 7.0 Pattern matching would be prime here
+                var dictionary = value as IDictionary;
+                if (dictionary != null)
+                    return SerializeDictionary(dictionary);
+
+                var list = value as IList;
+                if (list != null)
+                    return SerializeList(list);
+
+                return SerializeObject(value);
+            }
+
+            private static string SerializeList(IList value)
+            {
+                if (value == null)
+                    return "null";
+
+                var builder = new StringBuilder();
+                builder.Append('[');
+
+                foreach (var item in value)
+                    builder.Append(SerializeValue(item));
+
+                builder.Append(']');
+                return builder.ToString();
+            }
+
+            private static string SerializeObject(object value)
+            {
+                throw new NotImplementedException();
             }
         }
     }
