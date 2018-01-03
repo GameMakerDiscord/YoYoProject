@@ -81,7 +81,6 @@ namespace YoYoProject.Utility
                 new DataContractJsonSerializerSettings
                 {
                     DataContractSurrogate = new GMProjectSurrogate(),
-                    UseSimpleDictionaryFormat = true,
                     DateTimeFormat = new DateTimeFormat("yyyy-mm-dd hh:MM:ss"),
                     IgnoreExtensionDataObject = true,
                     KnownTypes = new []
