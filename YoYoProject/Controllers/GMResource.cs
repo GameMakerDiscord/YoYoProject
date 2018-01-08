@@ -13,75 +13,47 @@ namespace YoYoProject.Controllers
 
         protected internal abstract string ResourcePath { get; }
         
-        internal IReadOnlyList<ConfigDelta> Configs => new List<ConfigDelta>(configDeltas.Values);
-
-        private readonly Dictionary<string, ConfigDelta> configDeltas;
-        private readonly Stack<ConfigDelta> configStack;
+        internal GMProject Project { get; set; }
 
         protected GMResource()
         {
             Dirty = false;
-
-            configDeltas = new Dictionary<string, ConfigDelta>();
-            configStack = new Stack<ConfigDelta>();
         }
 
         protected T GetProperty<T>(T value, [CallerMemberName] string propertyName = null)
         {
-            foreach (var config in configStack)
-            {
-                object deltaValue;
-                if (config.TryGetProperty(propertyName, out deltaValue))
-                    return (T)deltaValue;
-            }
+            if (Project == null)
+                return value;
 
-            return value;
+            return Project.Configs.GetProperty(Id, propertyName, value);
         }
 
-        protected void SetProperty<T>(T value, out T storage, [CallerMemberName] string propertyName = null)
+        protected void SetProperty<T>(T value, ref T storage, [CallerMemberName] string propertyName = null)
         {
-            if (configStack.Count > 0)
+            if (Project == null)
             {
-                var config = configStack.Peek();
-                config.SetProperty(propertyName, value);
+                storage = value;
+                return;
             }
 
-            storage = value;
-        }
+            if (!Project.Configs.SetProperty(Id, propertyName, value))
+                storage = value;
 
-        internal void PushConfig(ConfigTree.Node config)
-        {
-            if (config == null)
-                throw new ArgumentNullException(nameof(config));
-
-            string name = config.Name;
-
-            ConfigDelta configDelta;
-            if (!configDeltas.TryGetValue(name, out configDelta))
-            {
-                configDelta = new ConfigDelta(name, this);
-                configDeltas.Add(name, configDelta);
-            }
-
-            configStack.Push(configDelta);
-        }
-
-        internal void PopConfig()
-        {
-            configStack.Pop();
+            Dirty = true;
         }
         
         internal GMResourceInfoModel SerializeResourceInfo()
         {
+            var configDeltas = Project.Configs.GetConfigDeltasForResource(Id);
             return new GMResourceInfoModel
             {
-                id = Id,
+                id = Guid.NewGuid(), // TODO Keep this persistent!
                 resourcePath = ResourcePath,
                 resourceType = GetType().Name,
 
                 // TODO Implement
                 resourceCreationConfigs = null,
-                configDeltas = configDeltas.Count == 0 ? null : configDeltas.Values.Select(x => x.Name).ToList(),
+                configDeltas = configDeltas.Count == 0 ? null : configDeltas.Select(x => x.Name).ToList(),
                 configDeltaFiles = null
             };
         }

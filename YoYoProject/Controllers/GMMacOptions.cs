@@ -4,20 +4,14 @@ namespace YoYoProject.Controllers
 {
     public sealed class GMMacOptions : GMResource
     {
+        private string displayName;
         public string DisplayName
         {
-            get { return GetProperty(inner.option_mac_display_name, "option_mac_display_name"); }
-            set { SetProperty(value, out inner.option_mac_display_name, "option_mac_display_name"); }
+            get { return GetProperty(displayName); }
+            set { SetProperty(value, ref displayName); }
         }
 
         protected internal override string ResourcePath => @"options\mac\options_mac.yy";
-
-        private readonly GMMacOptionsModel inner;
-
-        public GMMacOptions()
-        {
-            inner = new GMMacOptionsModel();
-        }
         
         protected internal override ModelBase Serialize()
         {

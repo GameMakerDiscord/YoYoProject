@@ -104,7 +104,8 @@ namespace YoYoProject
     [DataContract]
     internal sealed class GMWindowsOptionsModel : GMResourceModel
     {
-        [DataMember] public string option_windows_display_name;
+        [DataMember]
+        public string option_windows_display_name { get; set; }
 
         [DataMember]
         public string option_windows_executable_name { get; set; }
@@ -189,7 +190,7 @@ namespace YoYoProject
     }
 
     [DataContract]
-    internal sealed class BuildVersion
+    public sealed class BuildVersion
     {
         [DataMember]
         public int major { get; set; }
@@ -202,6 +203,20 @@ namespace YoYoProject
 
         [DataMember]
         public int revision { get; set; }
+
+        public BuildVersion()
+            : this(1, 0, 0, 0)
+        {
+            
+        }
+
+        public BuildVersion(int major, int minor, int build, int revision)
+        {
+            this.major = major;
+            this.minor = minor;
+            this.build = build;
+            this.revision = revision;
+        }
     }
 
     [DataContract]

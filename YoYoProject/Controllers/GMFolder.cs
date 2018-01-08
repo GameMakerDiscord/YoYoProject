@@ -4,45 +4,44 @@ using YoYoProject.Models;
 
 namespace YoYoProject.Controllers
 {
+    // TODO Does this track deltas?
     public sealed class GMFolder : GMResource
     {
+        private string folderName;
         public string FolderName
         {
-            get { return GetProperty(inner.folderName); }
-            set { SetProperty(value, out inner.folderName); }
+            get { return GetProperty(folderName); }
+            set { SetProperty(value, ref folderName); }
         }
 
+        private string localizedName;
         public string LocalizedName
         {
-            get { return GetProperty(inner.localisedFolderName); }
-            set { SetProperty(value, out inner.localisedFolderName); }
+            get { return GetProperty(localizedName); }
+            set { SetProperty(value, ref localizedName); }
         }
 
+        private string filterType;
         public string FilterType
         {
-            get { return GetProperty(inner.filterType); }
-            set { SetProperty(value, out inner.filterType); }
+            get { return GetProperty(filterType); }
+            set { SetProperty(value, ref filterType); }
         }
 
+        private bool isDefaultView;
         public bool IsDefaultView
         {
-            get { return GetProperty(inner.isDefaultView); }
-            set { SetProperty(value, out inner.isDefaultView); }
+            get { return GetProperty(isDefaultView); }
+            set { SetProperty(value, ref isDefaultView); }
         }
 
         public List<GMResource> Children { get; set; } 
 
-        protected internal override string ResourcePath
-        {
-            get { return $@"views\{Id}.yy"; }
-        }
-
-        private readonly GMFolderModel inner;
+        protected internal override string ResourcePath => $@"views\{Id}.yy";
 
         public GMFolder()
         {
             Children = new List<GMResource>();
-            inner = new GMFolderModel();
         }
 
         protected internal override ModelBase Serialize()
@@ -51,11 +50,11 @@ namespace YoYoProject.Controllers
             {
                 id = Id,
                 name = Id.ToString(),
-                folderName = FolderName,
+                folderName = folderName,
                 children = Children.Select(x => x.Id).ToList(),
-                filterType = FilterType,
-                isDefaultView = IsDefaultView,
-                localisedFolderName = LocalizedName
+                filterType = filterType,
+                isDefaultView = isDefaultView,
+                localisedFolderName = localizedName
             };
         }
     }

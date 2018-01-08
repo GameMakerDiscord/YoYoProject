@@ -38,10 +38,12 @@ namespace YoYoProject
                 var resourceDirectory = Path.GetDirectoryName(fullPath);
                 FileSystem.EnsureDirectory(resourceDirectory);
 
+                Configs.SetConfig(Configs.Default);
                 Json.SerializeToFile(fullPath, resource.Serialize());
 
                 // Config Deltas
-                foreach (var config in resource.Configs)
+                var configDeltas = Configs.GetConfigDeltasForResource(resource.Id);
+                foreach (var config in configDeltas)
                 {
                     var configDirectory = Path.Combine(resourceDirectory, config.Name);
                     FileSystem.EnsureDirectory(configDirectory);
@@ -49,7 +51,9 @@ namespace YoYoProject
                     var configDeltaFilename = $"{Path.GetFileNameWithoutExtension(fullPath)}.{config.Name}.yy";
                     var fullConfigDeltaPath = Path.Combine(configDirectory, configDeltaFilename);
 
-                    config.SerializeToFile(fullConfigDeltaPath);
+                    Configs.SetConfig(config);
+                    var configDelta = new ConfigDelta(resource.Serialize());
+                    configDelta.SerializeToFile(fullConfigDeltaPath);
                 }
             }
             // ReSharper restore AssignNullToNotNullAttribute
@@ -75,11 +79,13 @@ namespace YoYoProject
             var project = new GMProject
             {
                 ParentProject = new GMProjectParent(),
-                Resources = new GMResourceManager(),
+                Resources = null,
                 Configs = new ConfigTree(),
                 DragAndDrop = false,
                 JavaScript = false
             };
+
+            project.Resources = new GMResourceManager(project); // TODO Ewww
 
             project.Resources.Create<GMWindowsOptions>(); // TODO Inherit from BaseProject
             project.Resources.Create<GMMacOptions>();

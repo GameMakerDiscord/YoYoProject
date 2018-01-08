@@ -20,10 +20,15 @@ namespace YoYoProject
         public GMResource this[Guid key] => Get(key);
 
         private readonly SortedDictionary<Guid, GMResource> resources;
+        private readonly GMProject project;
 
-        public GMResourceManager()
+        public GMResourceManager(GMProject project)
         {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
+            
             resources = new SortedDictionary<Guid, GMResource>();
+            this.project = project;
         }
 
         public TResource Create<TResource>()
@@ -31,6 +36,7 @@ namespace YoYoProject
         {
             var resource = new TResource
             {
+                Project = project,
                 Id = Guid.NewGuid()
             };
 
