@@ -1,12 +1,7 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Dynamic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -82,7 +77,6 @@ namespace YoYoProject.Utility
                 type,
                 new DataContractJsonSerializerSettings
                 {
-                    DataContractSurrogate = new GMProjectSurrogate(),
                     DateTimeFormat = new DateTimeFormat("yyyy-mm-dd hh:MM:ss"),
                     IgnoreExtensionDataObject = true,
                     KnownTypes = new []
@@ -145,7 +139,7 @@ namespace YoYoProject.Utility
                     case ':':
                         sb.Append(ch);
                         if (!quoted)
-                            sb.Append(" ");
+                            sb.Append(' ');
                         break;
                     default:
                         sb.Append(ch);
@@ -154,130 +148,6 @@ namespace YoYoProject.Utility
             }
 
             return sb.ToString();
-        }
-
-        private sealed class GMProjectSurrogate : IDataContractSurrogate
-        {
-            public Type GetDataContractType(Type type)
-            {
-                if (type == typeof(GMResourceInfoModel))
-                    return typeof(Dictionary<string, object>);
-
-                return type;
-            }
-
-            public object GetObjectToSerialize(object obj, Type targetType)
-            {
-                var resourceInfoModel = obj as GMResourceInfoModel;
-                if (resourceInfoModel != null)
-                    return SerializeResourceInfo(resourceInfoModel);
-
-                return obj;
-            }
-
-            public object GetDeserializedObject(object obj, Type targetType)
-            {
-                return obj;
-            }
-
-            public object GetCustomDataToExport(MemberInfo memberInfo, Type dataContractType)
-            {
-                return null;
-            }
-
-            public object GetCustomDataToExport(Type clrType, Type dataContractType)
-            {
-                return null;
-            }
-
-            public void GetKnownCustomDataTypes(Collection<Type> customDataTypes)
-            {
-                
-            }
-
-            public Type GetReferencedTypeOnImport(string typeName, string typeNamespace, object customData)
-            {
-                return null;
-            }
-
-            public CodeTypeDeclaration ProcessImportedType(CodeTypeDeclaration typeDeclaration, CodeCompileUnit compileUnit)
-            {
-                return typeDeclaration;
-            }
-
-            private static Dictionary<string, object> SerializeResourceInfo(GMResourceInfoModel gmResourceInfo)
-            {
-                var dict = new Dictionary<string, object>
-                {
-                    { "id", gmResourceInfo.id },
-                    { "resourcePath", gmResourceInfo.ResourcePath },
-                    { "resourceType", gmResourceInfo.ResourceType }
-                };
-
-                if (gmResourceInfo.ConfigDeltaFiles != null)
-                    dict.Add("configDeltaFiles", gmResourceInfo.ConfigDeltaFiles);
-
-                if (gmResourceInfo.ConfigDeltas != null)
-                    dict.Add("configDeltas", gmResourceInfo.ConfigDeltas);
-
-                if (gmResourceInfo.ResourceCreationConfigs != null)
-                    dict.Add("resourceCreationConfigs", gmResourceInfo.ResourceCreationConfigs);
-
-                return dict;
-            }
-
-            private static string SerializeDictionary(IDictionary dictionary)
-            {
-                var builder = new StringBuilder();
-                builder.Append('{');
-
-                foreach (DictionaryEntry entry in dictionary)
-                {
-                    var value = SerializeValue(entry.Value);
-                    builder.AppendFormat("\"{0}\":{1}", entry.Key, value);
-                }
-
-                builder.Append('}');
-
-                return builder.ToString();
-            }
-
-            private static string SerializeValue(object value)
-            {
-                if (value == null)
-                    return "null";
-                
-                // TODO C# 7.0 Pattern matching would be prime here
-                var dictionary = value as IDictionary;
-                if (dictionary != null)
-                    return SerializeDictionary(dictionary);
-
-                var list = value as IList;
-                if (list != null)
-                    return SerializeList(list);
-
-                return SerializeObject(value);
-            }
-
-            private static string SerializeList(IList value)
-            {
-                if (value == null)
-                    return "null";
-
-                var builder = new StringBuilder();
-                builder.Append('[');
-
-                foreach (var item in value)
-                    builder.Append(SerializeValue(item));
-
-                builder.Append(']');
-                return builder.ToString();
-            }
-
-            private static string SerializeObject(object value)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

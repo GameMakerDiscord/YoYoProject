@@ -75,13 +75,14 @@ namespace YoYoProject.Controllers
         {
             return new GMResourceInfoModel
             {
-                ResourcePath = ResourcePath,
-                ResourceType = GetType().Name,
+                id = Id,
+                resourcePath = ResourcePath,
+                resourceType = GetType().Name,
 
                 // TODO Implement
-                ResourceCreationConfigs = null,
-                ConfigDeltas = configDeltas.Count == 0 ? null : configDeltas.Values.Select(x => x.Name).ToList(),
-                ConfigDeltaFiles = null
+                resourceCreationConfigs = null,
+                configDeltas = configDeltas.Count == 0 ? null : configDeltas.Values.Select(x => x.Name).ToList(),
+                configDeltaFiles = null
             };
         }
     }
