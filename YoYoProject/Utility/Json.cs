@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Text;
 namespace YoYoProject.Utility
 {
     [DebuggerStepThrough]
-    internal static class Json
+    public static class Json
     {
         public static bool PrettyPrint = true;
         public static int IndentLength = 4;
@@ -148,6 +149,86 @@ namespace YoYoProject.Utility
             }
 
             return sb.ToString();
+        }
+    }
+
+    // NOTE Do not add IDictionary to this class, for whatever reason this will cause the
+    //      serializer to throw out our hard work to make it behave itself
+    [Serializable]
+    [DebuggerStepThrough]
+    public class JsonDictionary : ISerializable, IEnumerable
+    {
+        public ICollection<string> Keys => dictionary.Keys;
+
+        public ICollection<object> Values => dictionary.Values;
+
+        public int Count => dictionary.Count;
+
+        public object this[string key]
+        {
+            get { return dictionary[key]; }
+            set { dictionary[key] = value; }
+        }
+
+        private readonly Dictionary<string, object> dictionary;
+
+        public JsonDictionary()
+        {
+            dictionary = new Dictionary<string, object>();
+        }
+
+        protected JsonDictionary(SerializationInfo info, StreamingContext context)
+        {
+            foreach (var entry in info)
+                dictionary.Add(entry.Name, entry.Value);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            foreach (string key in dictionary.Keys)
+                info.AddValue(key, dictionary[key]);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(string key, object value)
+        {
+            dictionary.Add(key, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Remove(string key)
+        {
+            return dictionary.Remove(key);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            dictionary.Clear();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetValue(string key, out object value)
+        {
+            return dictionary.TryGetValue(key, out value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ContainsKey(string key)
+        {
+            return dictionary.ContainsKey(key);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

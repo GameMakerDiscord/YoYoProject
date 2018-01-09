@@ -190,6 +190,7 @@ namespace YoYoProject
     }
 
     [DataContract]
+    [KnownType(typeof(BuildVersion))]
     public sealed class BuildVersion
     {
         [DataMember]
