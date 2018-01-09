@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using YoYoProject.Controllers;
 using YoYoProject.Models;
 using YoYoProject.Utility;
@@ -38,12 +39,11 @@ namespace YoYoProject
                 var resourceDirectory = Path.GetDirectoryName(fullPath);
                 FileSystem.EnsureDirectory(resourceDirectory);
 
-                Configs.SetConfig(Configs.Default);
+                Configs.Active = Configs.Default;
                 Json.SerializeToFile(fullPath, resource.Serialize());
 
                 // Config Deltas
-                var configDeltas = Configs.GetConfigDeltasForResource(resource.Id);
-                foreach (var config in configDeltas)
+                foreach (var config in Configs.GetForResource(resource.Id))
                 {
                     var configDirectory = Path.Combine(resourceDirectory, config.Name);
                     FileSystem.EnsureDirectory(configDirectory);
@@ -51,7 +51,7 @@ namespace YoYoProject
                     var configDeltaFilename = $"{Path.GetFileNameWithoutExtension(fullPath)}.{config.Name}.yy";
                     var fullConfigDeltaPath = Path.Combine(configDirectory, configDeltaFilename);
 
-                    Configs.SetConfig(config);
+                    Configs.Active = config;
                     var configDelta = new ConfigDelta(resource.Serialize());
                     configDelta.SerializeToFile(fullConfigDeltaPath);
                 }

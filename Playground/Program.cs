@@ -18,12 +18,12 @@ namespace Playground
             config.DisplayName = "Hello, World!";
 
             var winConfig = project.Configs.Add("WindowsConfig", project.Configs.Default);
-            project.Configs.SetConfig(winConfig);
+            project.Configs.Active = winConfig;
 
             config.DisplayName = "Hello, World! WindowsConfig!!";
             Console.WriteLine("DisplayName = {0} [WindowsConfig]", config.DisplayName);
 
-            project.Configs.SetConfig(project.Configs.Default);
+            project.Configs.Active = project.Configs.Default;
 
             Console.WriteLine("DisplayName = {0} [default]", config.DisplayName);
 

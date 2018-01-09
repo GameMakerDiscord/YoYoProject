@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace YoYoProject
 {
-    // TODO God Object - Needs responsibilities split
     public sealed class ConfigTree
     {
         public const string DefaultName = "default";
 
-        public Node Default => nodes[DefaultName];
+        public Dictionary<string, Node> Nodes { get; }
 
-        public Dictionary<string, Node>.ValueCollection Configs => nodes.Values;
+        private Node active;
+        public Node Active
+        {
+            get { return active ?? Default; }
+            set { active = value; }
+        }
 
-        private readonly Dictionary<string, Node> nodes;
-
-        private readonly Dictionary<Node, ConfigDeltaLayer> layers;
-        private readonly Stack<ConfigDeltaLayer> stack;
+        public Node Default => Nodes[DefaultName];
 
         public ConfigTree()
         {
-            nodes = new Dictionary<string, Node>();
-            layers = new Dictionary<Node, ConfigDeltaLayer>();
-            stack = new Stack<ConfigDeltaLayer>();
-
+            Nodes = new Dictionary<string, Node>();
+            
             Add(DefaultName, null);
         }
 
@@ -34,7 +34,7 @@ namespace YoYoProject
             
             // TODO Validate name
 
-            if (nodes.ContainsKey(name))
+            if (Nodes.ContainsKey(name))
             {
                 throw new InvalidOperationException(
                     $"Cannot add a new config with the name '{name}' because one already exists."
@@ -44,7 +44,7 @@ namespace YoYoProject
             var node = new Node(name, parent);
             parent?.Children.Add(node);
 
-            nodes[name] = node;
+            Nodes[name] = node;
 
             return node;
         }
@@ -54,7 +54,12 @@ namespace YoYoProject
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            return nodes[name];
+            return Nodes[name];
+        }
+
+        public IReadOnlyList<Node> GetForResource(Guid id)
+        {
+            return Nodes.Values.Where(x => x.Deltas.ContainsKey(id)).ToList();
         }
 
         public void Remove(string name)
@@ -62,44 +67,10 @@ namespace YoYoProject
             throw new NotImplementedException();
         }
 
-        public T GetProperty<T>(Guid id, string propertyName, T value)
-        {
-            foreach (var config in stack)
-            {
-                Dictionary<string, object> deltas;
-                if (!config.Deltas.TryGetValue(id, out deltas))
-                    continue;
-
-                object deltaValue;
-                if (deltas.TryGetValue(propertyName, out deltaValue))
-                    return (T)deltaValue;
-            }
-
-            return value;
-        }
-
-        public bool SetProperty<T>(Guid id, string propertyName, T value)
-        {
-            if (stack.Count <= 0)
-                return false;
-
-            var config = stack.Peek();
-
-            Dictionary<string, object> deltas;
-            if (!config.Deltas.TryGetValue(id, out deltas))
-            {
-                deltas = new Dictionary<string, object>();
-                config.Deltas.Add(id, deltas);
-            }
-
-            deltas[propertyName] = value;
-
-            return true;
-        }
-
+        // TODO Split
         internal List<string> Serialize()
         {
-            var configs = Configs;
+            var configs = Nodes.Values;
             var list = new List<string>(configs.Count);
 
             foreach (var config in configs)
@@ -124,47 +95,6 @@ namespace YoYoProject
             return list;
         }
 
-        public void SetConfig(Node node)
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            stack.Clear();
-
-            if (node == Default)
-                return;
-        
-            // TODO Optimize
-            var configChain = new List<Node>();
-            for (var x = node; x != null; x = x.Parent)
-                configChain.Insert(0, x);
-            
-            foreach (var config in configChain)
-            {
-                ConfigDeltaLayer layer;
-                if (!layers.TryGetValue(config, out layer))
-                {
-                    layer = new ConfigDeltaLayer();
-                    layers.Add(config, layer);
-                }
-
-                stack.Push(layer);
-            }
-        }
-
-        public IReadOnlyList<Node> GetConfigDeltasForResource(Guid id)
-        {
-            var list = new List<Node>();
-
-            foreach (var kvp in layers)
-            {
-                if (kvp.Value.Deltas.ContainsKey(id))
-                    list.Add(kvp.Key);
-            }
-
-            return list;
-        }
-        
         public sealed class Node
         {
             public string Name { get; set; }
@@ -172,6 +102,10 @@ namespace YoYoProject
             public Node Parent { get; }
 
             public List<Node> Children { get; }
+
+            public Dictionary<Guid, Dictionary<string, object>> Deltas { get; }
+
+            public bool IsDefault { get; }
 
             public Node(string name, Node parent)
             {
@@ -184,16 +118,10 @@ namespace YoYoProject
                 Name = name;
                 Parent = parent;
                 Children = new List<Node>();
-            }
-        }
-
-        private class ConfigDeltaLayer
-        {
-            public readonly Dictionary<Guid, Dictionary<string, object>> Deltas;
-
-            public ConfigDeltaLayer()
-            {
                 Deltas = new Dictionary<Guid, Dictionary<string, object>>();
+
+                // NOTE Cached instead of auto-property because this sits on a hotpath
+                IsDefault = name == DefaultName;
             }
         }
     }
