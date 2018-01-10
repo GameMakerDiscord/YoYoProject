@@ -91,6 +91,7 @@ namespace YoYoProject
 
             project.Resources.Create<GMWindowsOptions>(); // TODO Inherit from BaseProject
             project.Resources.Create<GMMacOptions>();
+            project.Resources.Create<GMLinuxOptions>();
             
             var root = project.Resources.Create<GMFolder>();
             root.IsDefaultView = true;

@@ -42,6 +42,7 @@
     <Compile Include="ConfigDelta.cs" />
     <Compile Include="ConfigTree.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\GMLinuxOptions.cs" />
     <Compile Include="Utility\FileSystem.cs" />
     <Compile Include="Controllers\GMFolder.cs" />
     <Compile Include="Controllers\GMMacOptions.cs" />
