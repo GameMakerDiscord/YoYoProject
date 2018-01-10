@@ -552,7 +552,8 @@ namespace YoYoProject
     [DataContract]
     internal sealed class GMMacOptionsModel : GMOptionsBaseModel
     {
-        [DataMember] public string option_mac_display_name;
+        [DataMember]
+        public string option_mac_display_name { get; set; }
 
         [DataMember]
         public string option_mac_app_id { get; set; }

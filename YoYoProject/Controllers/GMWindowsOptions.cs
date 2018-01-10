@@ -201,7 +201,7 @@ namespace YoYoProject.Controllers
             DisplayCursor = true;
             Icon = @"${base_options_dir}\\windows\\icons\\icon.ico"; // TODO Copy in default
             SaveLocation = 0; // TODO ???
-            SplashScreen = @"${base_options_dir}\\windows\\splash\\splash.png";
+            SplashScreen = @"${base_options_dir}\\windows\\splash\\splash.png"; // TODO Copy in default
             UseSplash = false;
             StartFullscreen = false;
             AllowFullscreenSwitching = false;
@@ -212,10 +212,10 @@ namespace YoYoProject.Controllers
             Scale = 0; // TODO ???
             SleepMargin = 10;
             TexturePage = "2048x2048"; // TODO Reference object?
-            InstallerFinisher = @"${base_options_dir}\\windows\\installer\\finished.bmp";
-            InstallerHeader = @"${base_options_dir}\\windows\\installer\\header.bmp";
-            License = @"${base_options_dir}\\windows\\installer\\license.txt";
-            NsisFile = @"${base_options_dir}\\windows\\installer\\nsis_script.nsi";
+            InstallerFinisher = @"${base_options_dir}\\windows\\installer\\finished.bmp"; // TODO Copy in default
+            InstallerHeader = @"${base_options_dir}\\windows\\installer\\header.bmp"; // TODO Copy in default
+            License = @"${base_options_dir}\\windows\\installer\\license.txt"; // TODO Copy in default
+            NsisFile = @"${base_options_dir}\\windows\\installer\\nsis_script.nsi"; // TODO Copy in default
             EnableSteam = false;
         }
 
