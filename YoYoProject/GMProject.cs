@@ -32,6 +32,8 @@ namespace YoYoProject
             Json.SerializeToFile(path, Serialize());
 
             // ReSharper disable AssignNullToNotNullAttribute
+            var active = Configs.Active;
+
             foreach (var resource in Resources)
             {
                 // Base Resource
@@ -50,12 +52,12 @@ namespace YoYoProject
 
                     var configDeltaFilename = $"{Path.GetFileNameWithoutExtension(fullPath)}.{config.Name}.yy";
                     var fullConfigDeltaPath = Path.Combine(configDirectory, configDeltaFilename);
-
-                    Configs.Active = config;
-                    var configDelta = new ConfigDelta(resource.Serialize());
-                    configDelta.SerializeToFile(fullConfigDeltaPath);
+                    
+                    ConfigDelta.SerializeToFile(fullConfigDeltaPath, resource, config);
                 }
             }
+
+            Configs.Active = active;
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
