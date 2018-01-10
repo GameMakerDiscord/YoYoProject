@@ -80,6 +80,7 @@ namespace YoYoProject.Utility
                 {
                     DateTimeFormat = new DateTimeFormat("yyyy-mm-dd hh:MM:ss"),
                     IgnoreExtensionDataObject = true,
+                    EmitTypeInformation = EmitTypeInformation.Never,
                     KnownTypes = new []
                     {
                         typeof(List<string>)

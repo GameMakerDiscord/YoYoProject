@@ -66,7 +66,7 @@ namespace YoYoProject
                 // TODO Would be nice if I knew the type here explicitly
                 parentProject = (GMProjectParentModel)ParentProject.Serialize(),
                 configs = Configs.Serialize(),
-                resources = Resources.SerializeResourceInfo(),
+                resources = Resources.Serialize(),
                 IsDnDProject = DragAndDrop,
                 option_ecma = JavaScript,
                 script_order = new List<Guid>(), // TODO Order script resources appear in Scripts GMFolder

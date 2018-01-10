@@ -37,6 +37,7 @@ namespace YoYoProject
             var resource = new TResource
             {
                 Project = project,
+                ResourceInfoId = Guid.NewGuid(),
                 Id = Guid.NewGuid()
             };
 
@@ -115,12 +116,22 @@ namespace YoYoProject
             return resources.TryGetValue(key, out value);
         }
 
-        internal SortedDictionary<Guid, GMResourceInfoModel> SerializeResourceInfo()
+        internal SortedDictionary<Guid, GMResourceInfoModel> Serialize()
         {
             var resourceInfos = new SortedDictionary<Guid, GMResourceInfoModel>();
-            foreach (var kvp in resources)
+            foreach (var resource in resources.Values)
             {
-                resourceInfos.Add(kvp.Key, kvp.Value.SerializeResourceInfo());
+                var configDeltas = project.Configs.GetForResource(resource.Id);
+                resourceInfos.Add(resource.Id, new GMResourceInfoModel
+                {
+                    id = resource.ResourceInfoId,
+                    resourcePath = resource.ResourcePath,
+                    resourceType = resource.GetType().Name,
+
+                    resourceCreationConfigs = null,
+                    configDeltas = configDeltas.Count == 0 ? null : configDeltas.Select(x => x.Name).ToList(),
+                    configDeltaFiles = null
+                });
             }
 
             return resourceInfos;

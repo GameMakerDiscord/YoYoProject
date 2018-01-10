@@ -15,6 +15,8 @@ namespace YoYoProject.Controllers
         
         internal GMProject Project { get; set; }
 
+        internal Guid ResourceInfoId { get; set; }
+
         protected GMResource()
         {
             Dirty = false;
@@ -62,23 +64,5 @@ namespace YoYoProject.Controllers
             Dirty = true;
         }
         // ReSharper restore AssignNullToNotNullAttribute
-
-        internal GMResourceInfoModel SerializeResourceInfo()
-        {
-            var configDeltas = Project.Configs.GetForResource(Id);
-            return new GMResourceInfoModel
-            {
-                id = Guid.NewGuid(), // TODO Keep this persistent!
-                resourcePath = ResourcePath,
-                resourceType = GetType().Name,
-
-                // TODO Implement
-                resourceCreationConfigs = null,
-                configDeltas = configDeltas.Count == 0
-                             ? null
-                             : configDeltas.Select(x => x.Name).ToList(),
-                configDeltaFiles = null
-            };
-        }
     }
 }
