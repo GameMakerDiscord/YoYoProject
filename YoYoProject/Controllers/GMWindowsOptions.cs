@@ -223,7 +223,7 @@ namespace YoYoProject.Controllers
         {
             return new GMWindowsOptionsModel
             {
-                id = Id, // TODO Enforce this during serialization
+                id = Id,
                 name = "Windows",
                 option_windows_display_name = DisplayName,
                 option_windows_executable_name = ExecutableName,

@@ -89,7 +89,9 @@ namespace YoYoProject
 
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
-            project.Resources.Create<GMWindowsOptions>(); // TODO Inherit from BaseProject
+            // TODO Inherit from BaseProject
+            project.Resources.Create<GMMainOptions>();
+            project.Resources.Create<GMWindowsOptions>();
             project.Resources.Create<GMMacOptions>();
             project.Resources.Create<GMLinuxOptions>();
             
