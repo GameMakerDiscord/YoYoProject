@@ -46,6 +46,7 @@
     <Compile Include="Controllers\GMMainOptions.cs" />
     <Compile Include="Common\Color.cs" />
     <Compile Include="Common\BuildVersion.cs" />
+    <Compile Include="Controllers\GMSprite.cs" />
     <Compile Include="Models\GMAudioGroupModel.cs" />
     <Compile Include="Models\GMAudioOptionsModel.cs" />
     <Compile Include="Models\GMBaseGroupModel.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Models\GMResourceInfoModel.cs" />
     <Compile Include="Models\GMResourceModel.cs" />
     <Compile Include="Models\GMRViewModel.cs" />
+    <Compile Include="Models\GMSpriteModel.cs" />
     <Compile Include="Models\GMTextureGroupModel.cs" />
     <Compile Include="Models\GMWindowsOptionsModel.cs" />
     <Compile Include="Common\TargetPlatforms.cs" />

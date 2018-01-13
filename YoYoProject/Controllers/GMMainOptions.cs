@@ -124,101 +124,101 @@ namespace YoYoProject.Controllers
                 audio_options = Audio?.Serialize()
             };
         }
-        
-        public sealed class GMGraphicsOptions
+    }
+
+    public sealed class GMGraphicsOptions
+    {
+        public Guid Id { get; set; }
+
+        public List<GMTextureGroup> TextureGroups { get; set; }
+
+        public GMGraphicsOptions()
         {
-            public Guid Id { get; set; }
-
-            public List<GMTextureGroup> TextureGroups { get; set; }
-
-            public GMGraphicsOptions()
-            {
-                Id = Guid.NewGuid();
-                TextureGroups = new List<GMTextureGroup>();
-            }
-
-            internal GMGraphicsOptionsModel Serialize()
-            {
-                return new GMGraphicsOptionsModel
-                {
-                    id = Id,
-                    textureGroups = TextureGroups.Select(x => (GMTextureGroupModel)x.Serialize()).ToList()
-                };
-            }
-
-            public sealed class GMTextureGroup : GMBaseGroup
-            {
-                public GMTextureGroup Parent { get; set; }
-
-                public bool Scaled { get; set; }
-
-                public bool AutoCrop { get; set; }
-
-                public int Border { get; set; }
-
-                public int MipsToGenerate { get; set; }
-
-                internal override GMBaseGroupModel Serialize()
-                {
-                    return new GMTextureGroupModel
-                    {
-                        id = Id,
-                        groupName = Name,
-                        targets = Targets,
-                        groupParent = Parent?.Id ?? Guid.Empty,
-                        scaled = Scaled,
-                        autocrop = AutoCrop,
-                        border = Border,
-                        mipsToGenerate = MipsToGenerate
-                    };
-                }
-            }
-        }
-        
-        public sealed class GMAudioOptions
-        {
-            public Guid Id { get; set; }
-
-            public List<GMAudioGroup> AudioGroups { get; set; }
-
-            public GMAudioOptions()
-            {
-                Id = Guid.NewGuid();
-                AudioGroups = new List<GMAudioGroup>();
-            }
-
-            internal GMAudioOptionsModel Serialize()
-            {
-                return new GMAudioOptionsModel
-                {
-                    id = Id,
-                    audioGroups = AudioGroups.Select(x => (GMAudioGroupModel)x.Serialize()).ToList()
-                };
-            }
-
-            public sealed class GMAudioGroup : GMBaseGroup
-            {
-                internal override GMBaseGroupModel Serialize()
-                {
-                    return new GMAudioGroupModel
-                    {
-                        id = Id,
-                        groupName = Name,
-                        targets = Targets
-                    };
-                }
-            }
+            Id = Guid.NewGuid();
+            TextureGroups = new List<GMTextureGroup>();
         }
 
-        public abstract class GMBaseGroup
+        internal GMGraphicsOptionsModel Serialize()
         {
-            public Guid Id { get; set; }
-
-            public string Name { get; set; }
-
-            public TargetPlatforms Targets { get; set; }
-
-            internal abstract GMBaseGroupModel Serialize();
+            return new GMGraphicsOptionsModel
+            {
+                id = Id,
+                textureGroups = TextureGroups.Select(x => (GMTextureGroupModel)x.Serialize()).ToList()
+            };
         }
+    }
+
+    public sealed class GMAudioOptions
+    {
+        public Guid Id { get; set; }
+
+        public List<GMAudioGroup> AudioGroups { get; set; }
+
+        public GMAudioOptions()
+        {
+            Id = Guid.NewGuid();
+            AudioGroups = new List<GMAudioGroup>();
+        }
+
+        internal GMAudioOptionsModel Serialize()
+        {
+            return new GMAudioOptionsModel
+            {
+                id = Id,
+                audioGroups = AudioGroups.Select(x => (GMAudioGroupModel)x.Serialize()).ToList()
+            };
+        }
+    }
+
+    public sealed class GMAudioGroup : GMBaseGroup
+    {
+        internal override GMBaseGroupModel Serialize()
+        {
+            return new GMAudioGroupModel
+            {
+                id = Id,
+                groupName = Name,
+                targets = Targets
+            };
+        }
+    }
+
+    public sealed class GMTextureGroup : GMBaseGroup
+    {
+        public GMTextureGroup Parent { get; set; }
+
+        public bool Scaled { get; set; }
+
+        public bool AutoCrop { get; set; }
+
+        public int Border { get; set; }
+
+        public int MipsToGenerate { get; set; }
+
+        internal override GMBaseGroupModel Serialize()
+        {
+            return new GMTextureGroupModel
+            {
+                id = Id,
+                groupName = Name,
+                targets = Targets,
+                groupParent = Parent?.Id ?? Guid.Empty,
+                scaled = Scaled,
+                autocrop = AutoCrop,
+                border = Border,
+                mipsToGenerate = MipsToGenerate
+            };
+        }
+    }
+
+    public abstract class GMBaseGroup
+    {
+        public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+        public TargetPlatforms Targets { get; set; }
+
+        internal abstract GMBaseGroupModel Serialize();
     }
 }
