@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YoYoProject.Common;
 using YoYoProject.Models;
+using YoYoProject.Utility;
+using Color = YoYoProject.Common.Color;
 
 namespace YoYoProject.Controllers
 {
@@ -53,14 +57,14 @@ namespace YoYoProject.Controllers
         }
 
         private int xOrigin;
-        public int XOrigin
+        public int OriginX
         {
             get { return GetProperty(xOrigin); }
             set { SetProperty(value, ref xOrigin); }
         }
 
         private int yOrigin;
-        public int YOrigin
+        public int OriginY
         {
             get { return GetProperty(yOrigin); }
             set { SetProperty(value, ref yOrigin); }
@@ -171,6 +175,7 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref gridY); }
         }
 
+        // TODO Make this a manager or a IReadOnlyList
         private List<GMSpriteFrame> frames;
         public List<GMSpriteFrame> Frames
         {
@@ -178,6 +183,7 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref frames); }
         }
 
+        // TODO Make this a manager or a IReadOnlyList
         private List<GMSpriteImageLayer> layers;
         public List<GMSpriteImageLayer> Layers
         {
@@ -217,8 +223,8 @@ namespace YoYoProject.Controllers
             Type = GMSpriteType.Bitmap;
             PremultiplyAlpha = false;
             EdgeFiltering = false;
-            XOrigin = 0;
-            YOrigin = 0;
+            OriginX = 0;
+            OriginY = 0;
             CollisonTolerance = 0;
             SwfPrecision = 2.525f;
             BboxLeft = 0;
@@ -230,8 +236,8 @@ namespace YoYoProject.Controllers
             For3D = false;
             OriginLocked = false;
             TextureGroup = null; // TODO Resolve default TextureGroup
-            Width = 0;
-            Height = 0;
+            Width = 64;
+            Height = 64;
             GridX = 0;
             GridY = 0;
             Frames = new List<GMSpriteFrame>();
@@ -239,16 +245,33 @@ namespace YoYoProject.Controllers
             PlaybackSpeed = 15;
             PlaybackSpeedType = GMSpritePlaybackSpeedType.FramesPerSecond;
             SwatchColors = new List<Color>();
+
+            CreateLayer();
         }
 
         public GMSpriteImageLayer CreateLayer()
         {
-            throw new NotImplementedException();
+            var layer = new GMSpriteImageLayer(this)
+            {
+                Id = Guid.NewGuid(),
+                Name = Layers.Count == 0 ? "default" : $"Layer {Layers.Count}"
+            };
+
+            Layers.Add(layer);
+
+            return layer;
         }
 
         public GMSpriteFrame CreateFrame()
         {
-            throw new NotImplementedException();
+            var frame = new GMSpriteFrame(this)
+            {
+                Id = Guid.NewGuid()
+            };
+
+            Frames.Add(frame);
+
+            return frame;
         }
 
         protected internal override ModelBase Serialize()
@@ -263,8 +286,8 @@ namespace YoYoProject.Controllers
                 type = Type,
                 premultiplyAlpha = PremultiplyAlpha,
                 edgeFiltering = EdgeFiltering,
-                xorig = XOrigin,
-                yorig = YOrigin,
+                xorig = OriginX,
+                yorig = OriginY,
                 coltolerance = CollisonTolerance,
                 swfPrecision = SwfPrecision,
                 bbox_left = BboxLeft,
@@ -291,11 +314,51 @@ namespace YoYoProject.Controllers
 
     public sealed class GMSpriteFrame : ControllerBase
     {
-        public GMSprite Sprite { get; private set; }
+        public GMSprite Sprite { get; }
 
-        public GMSpriteImage CompositeImage { get; set; }
+        public GMSpriteImage CompositeImage { get; }
 
-        public List<GMSpriteImage> Images { get; set; }
+        public List<GMSpriteImage> Images { get; }
+
+        internal GMSpriteFrame(GMSprite sprite)
+        {
+            if (sprite == null)
+                throw new ArgumentNullException(nameof(sprite));
+
+            Sprite = sprite;
+            CompositeImage = new GMSpriteImage(this, null)
+            {
+                Id = Guid.NewGuid()
+            };
+
+            Images = new List<GMSpriteImage>();
+
+            foreach (var layer in sprite.Layers)
+            {
+                Images.Add(new GMSpriteImage(this, layer)
+                {
+                    Id = Guid.NewGuid()
+                });
+            }
+        }
+
+        public void SetImage(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            // TODO Handle resizing images correctly
+
+            var file = Image.FromFile(path);
+            Sprite.Width = file.Width;
+            Sprite.Height = file.Height;
+
+            CompositeImage.SetImage(file);
+
+            // TODO What do when multiple layers?
+            foreach (var image in Images)
+                image.SetImage(file);
+        }
 
         protected internal override ModelBase Serialize()
         {
@@ -311,18 +374,60 @@ namespace YoYoProject.Controllers
 
     public sealed class GMSpriteImage : ControllerBase
     {
-        public GMSpriteImageLayer Layer { get; private set; }
+        public GMSpriteFrame Frame { get; }
 
-        public GMSpriteFrame Frame { get; private set; }
+        public GMSpriteImageLayer Layer { get; }
 
-        // TODO Image manip here
+        private string ImagePath =>
+            Path.Combine(Frame.Sprite.Project.RootDirectory, Layer == null
+                ? $@"sprites\{Frame.Sprite.Name}\{Frame.Id}.png"
+                : $@"sprites\{Frame.Sprite.Name}\layers\{Frame.Id}\{Layer.Id}.png"
+            );
+
+        private Image image;
+
+        internal GMSpriteImage(GMSpriteFrame frame, GMSpriteImageLayer layer)
+        {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+
+            Frame = frame;
+            Layer = layer;
+            image = null;
+
+            //if (!File.Exists(ImagePath))
+                image = new Bitmap(Frame.Sprite.Width, Frame.Sprite.Height);
+        }
+
+        public void SetImage(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            image = Image.FromFile(path);
+        }
+
+        public void SetImage(Image img)
+        {
+            if (img == null)
+                throw new ArgumentNullException(nameof(img));
+
+            image = img;
+        }
+        
+        // TODO Image manip methods
 
         protected internal override ModelBase Serialize()
         {
+            string imageDirectory = Path.GetDirectoryName(ImagePath);
+            FileSystem.EnsureDirectory(imageDirectory);
+
+            image?.Save(ImagePath, ImageFormat.Png);
+
             return new GMSpriteImageModel
             {
                 id = Id,
-                LayerId = Layer.Id,
+                LayerId = Layer?.Id ?? Guid.Empty,
                 FrameId = Frame.Id
             };
         }
@@ -330,7 +435,7 @@ namespace YoYoProject.Controllers
 
     public sealed class GMSpriteImageLayer : ControllerBase
     {
-        public GMSprite Sprite { get; private set; }
+        public GMSprite Sprite { get; }
 
         private string name;
         public string Name
@@ -365,6 +470,20 @@ namespace YoYoProject.Controllers
         {
             get { return GetProperty(opacity); }
             set { SetProperty(value, ref opacity); }
+        }
+
+        internal GMSpriteImageLayer(GMSprite sprite)
+        {
+            if (sprite == null)
+                throw new ArgumentNullException(nameof(sprite));
+
+            Sprite = sprite;
+            Id = Guid.NewGuid();
+            Name = "";
+            Visible = true;
+            IsLocked = false;
+            BlendMode = GMSpriteImageLayerBlendMode.Normal;
+            Opacity = 100f;
         }
 
         protected internal override ModelBase Serialize()

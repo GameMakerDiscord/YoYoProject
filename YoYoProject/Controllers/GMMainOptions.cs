@@ -126,16 +126,44 @@ namespace YoYoProject.Controllers
         }
     }
 
+    // TODO Refactor texture group management behind a manager
     public sealed class GMGraphicsOptions
     {
+        private const string DefaultName = "Default";
+
         public Guid Id { get; set; }
 
-        public List<GMTextureGroup> TextureGroups { get; set; }
+        public List<GMTextureGroup> TextureGroups { get; }
+
+        public GMTextureGroup DefaultTextureGroup
+        {
+            get { return TextureGroups.Single(x => x.Name == DefaultName); }
+        }
 
         public GMGraphicsOptions()
         {
             Id = Guid.NewGuid();
             TextureGroups = new List<GMTextureGroup>();
+
+            CreateTextureGroup(DefaultName, null);
+        }
+
+        public GMTextureGroup CreateTextureGroup(string name, GMTextureGroup parent)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+
+            // TODO Validate name
+
+            var textureGroup = new GMTextureGroup
+            {
+                Id = Guid.NewGuid(),
+                Name = name
+            };
+
+            TextureGroups.Add(textureGroup);
+
+            return textureGroup;
         }
 
         internal GMGraphicsOptionsModel Serialize()
@@ -194,6 +222,14 @@ namespace YoYoProject.Controllers
         public int Border { get; set; }
 
         public int MipsToGenerate { get; set; }
+
+        public GMTextureGroup()
+        {
+            Scaled = true;
+            AutoCrop = true;
+            Border = 2;
+            MipsToGenerate = 0;
+        }
 
         internal override GMBaseGroupModel Serialize()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using YoYoProject;
 using YoYoProject.Controllers;
 
@@ -11,23 +12,17 @@ namespace Playground
         {
             var projectName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
-            var project = GMProject.New();
+            var project = GMProject.New(rootDirectory);
 
-            var config = project.Resources.Get<GMWindowsOptions>();
-            
-            config.DisplayName = "Hello, World!";
+            var options = project.Resources.Get<GMMainOptions>();
 
-            var winConfig = project.Configs.Add("WindowsConfig", project.Configs.Default);
-            project.Configs.Active = winConfig;
+            var sprite = project.Resources.Create<GMSprite>();
+            sprite.TextureGroup = options.Graphics.DefaultTextureGroup;
 
-            config.DisplayName = "Hello, World! WindowsConfig!!";
-            Console.WriteLine("DisplayName = {0} [WindowsConfig]", config.DisplayName);
+            var frame = sprite.CreateFrame();
+            frame.SetImage(@"C:\Users\zreedy\Pictures\Avatar.jpeg");
 
-            project.Configs.Active = project.Configs.Default;
-
-            Console.WriteLine("DisplayName = {0} [default]", config.DisplayName);
-
-            project.Save(rootDirectory);
+            project.Save();
 
             Console.WriteLine(projectName);
             Console.ReadKey();

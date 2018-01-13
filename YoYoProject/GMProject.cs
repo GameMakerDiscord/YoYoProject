@@ -10,6 +10,8 @@ namespace YoYoProject
 {
     public sealed class GMProject : ControllerBase
     {
+        public string RootDirectory { get; private set; }
+
         public GMProjectParent ParentProject { get; private set; }
 
         public GMResourceManager Resources { get; private set; } 
@@ -20,15 +22,12 @@ namespace YoYoProject
 
         public bool JavaScript { get; set; }
 
-        public void Save(string rootDirectory)
+        public void Save()
         {
-            if (rootDirectory == null)
-                throw new ArgumentNullException(nameof(rootDirectory));
+            var projectName = RootDirectory.GetTerminalDirectoryName();
+            var path = Path.Combine(RootDirectory, projectName + ".yyp");
 
-            var projectName = rootDirectory.GetTerminalDirectoryName();
-            var path = Path.Combine(rootDirectory, projectName + ".yyp");
-
-            FileSystem.EnsureDirectory(rootDirectory);
+            FileSystem.EnsureDirectory(RootDirectory);
             Json.SerializeToFile(path, Serialize());
 
             // ReSharper disable AssignNullToNotNullAttribute
@@ -37,7 +36,7 @@ namespace YoYoProject
             foreach (var resource in Resources)
             {
                 // Base Resource
-                var fullPath = Path.Combine(rootDirectory, resource.ResourcePath);
+                var fullPath = Path.Combine(RootDirectory, resource.ResourcePath);
                 var resourceDirectory = Path.GetDirectoryName(fullPath);
                 FileSystem.EnsureDirectory(resourceDirectory);
 
@@ -76,10 +75,14 @@ namespace YoYoProject
             };
         }
 
-        public static GMProject New()
+        public static GMProject New(string rootDirectory)
         {
+            if (rootDirectory == null)
+                throw new ArgumentNullException(nameof(rootDirectory));
+
             var project = new GMProject
             {
+                RootDirectory = rootDirectory,
                 ParentProject = new GMProjectParent(),
                 Resources = null,
                 Configs = new ConfigTree(),
