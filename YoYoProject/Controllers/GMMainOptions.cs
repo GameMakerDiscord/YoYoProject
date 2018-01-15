@@ -92,6 +92,12 @@ namespace YoYoProject.Controllers
 
         public GMMainOptions()
         {
+            Graphics = new GMGraphicsOptions();
+            Audio = new GMAudioOptions();
+        }
+
+        protected internal override void Create()
+        {
             GameGuid = Guid.NewGuid();
             GameSpeed = 60;
             UseMipsFor3DTextures = true;
@@ -101,8 +107,6 @@ namespace YoYoProject.Controllers
             UseSci = false;
             Author = "";
             LastChanged = DateTime.Now;
-            Graphics = new GMGraphicsOptions();
-            Audio = new GMAudioOptions();
         }
 
         protected internal override ModelBase Serialize()

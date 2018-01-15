@@ -137,8 +137,8 @@ namespace YoYoProject.Controllers
         }
         
         protected internal override string ResourcePath => @"options\linux\options_linux.yy";
-
-        public GMLinuxOptions()
+        
+        protected internal override void Create()
         {
             DisplayName = "Made in GameMaker Studio 2";
             Version = new BuildVersion(1, 0, 0, 0);

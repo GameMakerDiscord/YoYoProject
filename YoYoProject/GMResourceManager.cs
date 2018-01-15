@@ -41,6 +41,7 @@ namespace YoYoProject
                 Id = Guid.NewGuid()
             };
 
+            resource.Create();
             resources.Add(resource.Id, resource);
 
             return resource;
@@ -101,7 +102,7 @@ namespace YoYoProject
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            return resources.Values.Single(x => x.Name == name);
+            return resources.Values.SingleOrDefault(x => x.Name == name);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -114,6 +115,18 @@ namespace YoYoProject
         public bool TryGetValue(Guid key, out GMResource value)
         {
             return resources.TryGetValue(key, out value);
+        }
+
+        public string GenerateValidName(string prefix)
+        {
+            if (prefix == null)
+                prefix = "resource";
+
+            string name = prefix + '0';
+            for (int i = 1; Get(name) != null; ++i)
+                name = prefix + i.ToString("G");
+            
+            return name;
         }
 
         internal SortedDictionary<Guid, GMResourceInfoModel> Serialize()

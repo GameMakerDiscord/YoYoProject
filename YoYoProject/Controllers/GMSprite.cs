@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YoYoProject.Models;
 using YoYoProject.Utility;
 using Color = YoYoProject.Common.Color;
@@ -174,22 +173,10 @@ namespace YoYoProject.Controllers
             get { return GetProperty(gridY); }
             set { SetProperty(value, ref gridY); }
         }
+        
+        public FrameManager Frames { get; }
 
-        // TODO Make this a manager or a IReadOnlyList
-        private List<GMSpriteFrame> frames;
-        public List<GMSpriteFrame> Frames
-        {
-            get { return GetProperty(frames); }
-            set { SetProperty(value, ref frames); }
-        }
-
-        // TODO Make this a manager or a IReadOnlyList
-        private List<GMSpriteImageLayer> layers;
-        public List<GMSpriteImageLayer> Layers
-        {
-            get { return GetProperty(layers); }
-            set { SetProperty(value, ref layers); }
-        }
+        public LayerManager Layers { get; }
 
         private float playbackSpeed;
         public float PlaybackSpeed
@@ -214,9 +201,9 @@ namespace YoYoProject.Controllers
 
         protected internal override string ResourcePath => $@"sprites\{Name}\{Name}.yy";
 
-        public GMSprite()
+        protected internal override void Create()
         {
-            Name = "sprite0"; // TODO Generate non-conflicting name
+            Name = Project.Resources.GenerateValidName("sprite");
             BboxMode = GMSpriteBboxMode.Automatic;
             CollisionKind = GMSpriteColKind.Rectangle;
             SeparateMasks = false;
@@ -235,45 +222,24 @@ namespace YoYoProject.Controllers
             VerticalTile = false;
             For3D = false;
             OriginLocked = false;
-            TextureGroup = null; // TODO Resolve default TextureGroup
+            TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.DefaultTextureGroup;
             Width = 64;
             Height = 64;
             GridX = 0;
             GridY = 0;
-            Frames = new List<GMSpriteFrame>();
-            Layers = new List<GMSpriteImageLayer>();
             PlaybackSpeed = 15;
             PlaybackSpeedType = GMSpritePlaybackSpeedType.FramesPerSecond;
             SwatchColors = new List<Color>();
 
-            CreateLayer();
+            Layers.Create();
         }
 
-        public GMSpriteImageLayer CreateLayer()
+        public GMSprite()
         {
-            var layer = new GMSpriteImageLayer(this)
-            {
-                Id = Guid.NewGuid(),
-                Name = Layers.Count == 0 ? "default" : $"Layer {Layers.Count}"
-            };
-
-            Layers.Add(layer);
-
-            return layer;
+            Frames = new FrameManager(this);
+            Layers = new LayerManager(this);
         }
-
-        public GMSpriteFrame CreateFrame()
-        {
-            var frame = new GMSpriteFrame(this)
-            {
-                Id = Guid.NewGuid()
-            };
-
-            Frames.Add(frame);
-
-            return frame;
-        }
-
+        
         protected internal override ModelBase Serialize()
         {
             return new GMSpriteModel
@@ -309,6 +275,99 @@ namespace YoYoProject.Controllers
                 playbackSpeedType = PlaybackSpeedType,
                 swatchColours = SwatchColors.Select(x => x.Value).ToList()
             };
+        }
+
+        public sealed class FrameManager : IReadOnlyList<GMSpriteFrame>
+        {
+            public int Count => frames.Count;
+
+            public GMSpriteFrame this[int index] => frames[index];
+
+            private readonly List<GMSpriteFrame> frames;
+            private readonly GMSprite sprite;
+
+            internal FrameManager(GMSprite sprite)
+            {
+                if (sprite == null)
+                    throw new ArgumentNullException(nameof(sprite));
+
+                frames = new List<GMSpriteFrame>();
+                this.sprite = sprite;
+            }
+
+            public GMSpriteFrame Create()
+            {
+                var frame = new GMSpriteFrame(sprite)
+                {
+                    Id = Guid.NewGuid()
+                };
+
+                frames.Add(frame);
+
+                return frame;
+            }
+
+            public void Delete(GMSpriteFrame frame)
+            {
+                frames.Remove(frame);
+            }
+
+            public void Clear()
+            {
+                frames.Clear();
+            }
+
+            public IEnumerator<GMSpriteFrame> GetEnumerator()
+            {
+                return frames.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+
+        public sealed class LayerManager : IReadOnlyList<GMSpriteImageLayer>
+        {
+            public int Count => layers.Count;
+
+            public GMSpriteImageLayer this[int index] => layers[index];
+
+            private readonly List<GMSpriteImageLayer> layers;
+            private readonly GMSprite sprite;
+
+            public LayerManager(GMSprite sprite)
+            {
+                if (sprite == null)
+                    throw new ArgumentNullException(nameof(sprite));
+
+                layers = new List<GMSpriteImageLayer>();
+                this.sprite = sprite;
+            }
+
+            public GMSpriteImageLayer Create()
+            {
+                var layer = new GMSpriteImageLayer(sprite)
+                {
+                    Id = Guid.NewGuid(),
+                    Name = layers.Count == 0 ? "default" : $"Layer {layers.Count}"
+                };
+
+                layers.Add(layer);
+
+                return layer;
+            }
+
+            public IEnumerator<GMSpriteImageLayer> GetEnumerator()
+            {
+                return layers.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
         }
     }
 
@@ -469,7 +528,15 @@ namespace YoYoProject.Controllers
         public float Opacity
         {
             get { return GetProperty(opacity); }
-            set { SetProperty(value, ref opacity); }
+            set
+            {
+                if (value < 0)
+                    SetProperty(0, ref opacity);
+                else if (value > 100)
+                    SetProperty(100, ref opacity);
+                else
+                    SetProperty(value, ref opacity);
+            }
         }
 
         internal GMSpriteImageLayer(GMSprite sprite)

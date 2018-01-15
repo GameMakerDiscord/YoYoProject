@@ -169,7 +169,7 @@ namespace YoYoProject.Controllers
         
         protected internal override string ResourcePath => @"options\mac\options_mac.yy";
 
-        public GMMacOptions()
+        protected internal override void Create()
         {
             DisplayName = "Made in GameMaker Studio 2";
             AppId = "com.company.game";

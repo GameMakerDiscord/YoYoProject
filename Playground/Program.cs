@@ -14,13 +14,17 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            var options = project.Resources.Get<GMMainOptions>();
+            {
+                var sprite = project.Resources.Create<GMSprite>();
+                var frame = sprite.Frames.Create();
+                frame.SetImage(@"C:\Users\zreedy\Pictures\Avatar.jpeg");
+            }
 
-            var sprite = project.Resources.Create<GMSprite>();
-            sprite.TextureGroup = options.Graphics.DefaultTextureGroup;
-
-            var frame = sprite.CreateFrame();
-            frame.SetImage(@"C:\Users\zreedy\Pictures\Avatar.jpeg");
+            {
+                var sprite = project.Resources.Create<GMSprite>();
+                var frame = sprite.Frames.Create();
+                frame.SetImage(@"C:\Users\zreedy\Pictures\wallpaper\Mzc2oWU.jpg");
+            }
 
             project.Save();
 

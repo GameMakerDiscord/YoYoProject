@@ -7,7 +7,9 @@ namespace YoYoProject.Controllers
         public string Name { get; set; }
         
         protected internal abstract string ResourcePath { get; }
-
+        
         internal Guid ResourceInfoId { get; set; }
+
+        protected internal abstract void Create();
     }
 }

@@ -44,6 +44,11 @@ namespace YoYoProject.Controllers
             Children = new List<GMResource>();
         }
 
+        protected internal override void Create()
+        {
+            // NOTE Nothing to do
+        }
+
         protected internal override ModelBase Serialize()
         {
             return new GMFolderModel

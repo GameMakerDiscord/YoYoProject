@@ -190,7 +190,7 @@ namespace YoYoProject.Controllers
         
         protected internal override string ResourcePath => @"options\windows\options_windows.yy";
 
-        public GMWindowsOptions()
+        protected internal override void Create()
         {
             DisplayName = "Made in GameMaker Studio 2";
             ExecutableName = "${project_name}";
@@ -200,9 +200,9 @@ namespace YoYoProject.Controllers
             CopyrightInfo = $"(c) {DateTime.UtcNow.Year} CompanyName";
             DescriptionInfo = "A GameMaker Studio 2 Game";
             DisplayCursor = true;
-            Icon = @"${base_options_dir}\\windows\\icons\\icon.ico"; // TODO Copy in default
+            Icon = @"${base_options_dir}\windows\icons\icon.ico"; // TODO Copy in default
             SaveLocation = 0; // TODO ???
-            SplashScreen = @"${base_options_dir}\\windows\\splash\\splash.png"; // TODO Copy in default
+            SplashScreen = @"${base_options_dir}\windows\splash\splash.png"; // TODO Copy in default
             UseSplash = false;
             StartFullscreen = false;
             AllowFullscreenSwitching = false;
@@ -213,10 +213,10 @@ namespace YoYoProject.Controllers
             Scale = 0; // TODO ???
             SleepMargin = 10;
             TexturePage = "2048x2048"; // TODO Reference object?
-            InstallerFinisher = @"${base_options_dir}\\windows\\installer\\finished.bmp"; // TODO Copy in default
-            InstallerHeader = @"${base_options_dir}\\windows\\installer\\header.bmp"; // TODO Copy in default
-            License = @"${base_options_dir}\\windows\\installer\\license.txt"; // TODO Copy in default
-            NsisFile = @"${base_options_dir}\\windows\\installer\\nsis_script.nsi"; // TODO Copy in default
+            InstallerFinisher = @"${base_options_dir}\windows\installer\finished.bmp"; // TODO Copy in default
+            InstallerHeader = @"${base_options_dir}\windows\installer\header.bmp"; // TODO Copy in default
+            License = @"${base_options_dir}\windows\installer\license.txt"; // TODO Copy in default
+            NsisFile = @"${base_options_dir}\windows\installer\nsis_script.nsi"; // TODO Copy in default
             EnableSteam = false;
         }
 
