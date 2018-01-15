@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -239,6 +240,24 @@ namespace YoYoProject.Controllers
             Frames = new FrameManager(this);
             Layers = new LayerManager(this);
         }
+
+        public void Resize(int w, int h)
+        {
+            if (w < 0)
+                throw new ArgumentOutOfRangeException(nameof(w), w, "Cannot be less than 0");
+
+            if (h < 0)
+                throw new ArgumentOutOfRangeException(nameof(h), h, "Cannot be less than 0");
+
+            if (w == Width && h == Height)
+                return;
+
+            Width = w;
+            Height = h;
+
+            foreach (var frame in Frames)
+                frame.Resize(w, h);
+        }
         
         protected internal override ModelBase Serialize()
         {
@@ -310,6 +329,7 @@ namespace YoYoProject.Controllers
             public void Delete(GMSpriteFrame frame)
             {
                 frames.Remove(frame);
+                // TODO Delete files on disk
             }
 
             public void Clear()
@@ -354,9 +374,30 @@ namespace YoYoProject.Controllers
                     Name = layers.Count == 0 ? "default" : $"Layer {layers.Count}"
                 };
 
-                layers.Add(layer);
+                layers.Insert(0, layer);
+
+                foreach (var frame in sprite.Frames)
+                    frame.layers.Insert(0, GMSpriteImage.Create(frame, layer));
 
                 return layer;
+            }
+
+            public void Delete(GMSpriteImageLayer layer)
+            {
+                if (layer == null)
+                    throw new ArgumentNullException(nameof(layer));
+
+                layers.Remove(layer);
+
+                foreach (var frame in sprite.Frames)
+                    frame.layers.RemoveAll(x => x.Layer == layer);
+
+                // TODO Delete files on disk
+            }
+
+            public int DepthOf(GMSpriteImageLayer layer)
+            {
+                return layers.IndexOf(layer);
             }
 
             public IEnumerator<GMSpriteImageLayer> GetEnumerator()
@@ -377,7 +418,11 @@ namespace YoYoProject.Controllers
 
         public GMSpriteImage CompositeImage { get; }
 
-        public List<GMSpriteImage> Images { get; }
+        // NOTE It's important that the order of this list be maintained by the LayerManager
+        public IReadOnlyList<GMSpriteImage> Layers => layers;
+
+        // ReSharper disable once InconsistentNaming
+        internal readonly List<GMSpriteImage> layers;
 
         internal GMSpriteFrame(GMSprite sprite)
         {
@@ -385,113 +430,66 @@ namespace YoYoProject.Controllers
                 throw new ArgumentNullException(nameof(sprite));
 
             Sprite = sprite;
-            CompositeImage = new GMSpriteImage(this, null)
-            {
-                Id = Guid.NewGuid()
-            };
+            CompositeImage = GMSpriteImage.Create(this, null);
 
-            Images = new List<GMSpriteImage>();
-
+            layers = new List<GMSpriteImage>();
             foreach (var layer in sprite.Layers)
-            {
-                Images.Add(new GMSpriteImage(this, layer)
-                {
-                    Id = Guid.NewGuid()
-                });
-            }
+                layers.Add(GMSpriteImage.Create(this, layer));
         }
 
         public void SetImage(string path)
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
-
-            // TODO Handle resizing images correctly
-
+            
             var file = Image.FromFile(path);
-            Sprite.Width = file.Width;
-            Sprite.Height = file.Height;
 
-            CompositeImage.SetImage(file);
+            if (layers.Count > 0)
+                layers[0].SetImage(file);
 
-            // TODO What do when multiple layers?
-            foreach (var image in Images)
-                image.SetImage(file);
+            Sprite.Resize(file.Width, file.Height);
+        }
+
+        internal void Resize(int width, int height)
+        {
+            CompositeImage.Resize(width, height);
+
+            foreach (var image in layers)
+                image.Resize(width, height);
         }
 
         protected internal override ModelBase Serialize()
         {
+            // TODO Only do this if dirty
+            CompositeImage.SetImage(GenerateCompositeImage());
+
             return new GMSpriteFrameModel
             {
                 id = Id,
                 SpriteId = Sprite.Id,
                 compositeImage = (GMSpriteImageModel)CompositeImage.Serialize(),
-                images = Images.Select(x => (GMSpriteImageModel)x.Serialize()).ToList()
+                images = layers.Select(x => (GMSpriteImageModel)x.Serialize())
+                               .ToList()
             };
         }
-    }
 
-    public sealed class GMSpriteImage : ControllerBase
-    {
-        public GMSpriteFrame Frame { get; }
-
-        public GMSpriteImageLayer Layer { get; }
-
-        private string ImagePath =>
-            Path.Combine(Frame.Sprite.Project.RootDirectory, Layer == null
-                ? $@"sprites\{Frame.Sprite.Name}\{Frame.Id}.png"
-                : $@"sprites\{Frame.Sprite.Name}\layers\{Frame.Id}\{Layer.Id}.png"
-            );
-
-        private Image image;
-
-        internal GMSpriteImage(GMSpriteFrame frame, GMSpriteImageLayer layer)
+        private Image GenerateCompositeImage()
         {
-            if (frame == null)
-                throw new ArgumentNullException(nameof(frame));
+            var compositeImage = new Bitmap(Sprite.Width, Sprite.Height);
 
-            Frame = frame;
-            Layer = layer;
-            image = null;
-
-            //if (!File.Exists(ImagePath))
-                image = new Bitmap(Frame.Sprite.Width, Frame.Sprite.Height);
-        }
-
-        public void SetImage(string path)
-        {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-
-            image = Image.FromFile(path);
-        }
-
-        public void SetImage(Image img)
-        {
-            if (img == null)
-                throw new ArgumentNullException(nameof(img));
-
-            image = img;
-        }
-        
-        // TODO Image manip methods
-
-        protected internal override ModelBase Serialize()
-        {
-            string imageDirectory = Path.GetDirectoryName(ImagePath);
-            FileSystem.EnsureDirectory(imageDirectory);
-
-            image?.Save(ImagePath, ImageFormat.Png);
-
-            return new GMSpriteImageModel
+            using (var graphics = Graphics.FromImage(compositeImage))
             {
-                id = Id,
-                LayerId = Layer?.Id ?? Guid.Empty,
-                FrameId = Frame.Id
-            };
+                for (var i = layers.Count - 1; i >= 0; --i)
+                {
+                    var image = layers[i];
+                    graphics.DrawImage(image.GetImage(), Point.Empty);
+                }
+            }
+
+            return compositeImage;
         }
     }
-
+    
     public sealed class GMSpriteImageLayer : ControllerBase
     {
         public GMSprite Sprite { get; }
@@ -564,6 +562,127 @@ namespace YoYoProject.Controllers
                 isLocked = IsLocked,
                 blendMode = BlendMode,
                 opacity = Opacity
+            };
+        }
+    }
+
+    public sealed class GMSpriteImage : ControllerBase
+    {
+        public GMSpriteFrame Frame { get; }
+
+        public GMSpriteImageLayer Layer { get; }
+
+        private GMSprite Sprite => Frame.Sprite;
+
+        private string ImagePath =>
+            Path.Combine(Frame.Sprite.Project.RootDirectory, Layer == null
+                ? $@"sprites\{Frame.Sprite.Name}\{Frame.Id}.png"
+                : $@"sprites\{Frame.Sprite.Name}\layers\{Frame.Id}\{Layer.Id}.png"
+            );
+
+        // NOTE We want to try and keep access to this restricted to internal because we need to manage
+        //      the caching of image data, plus restrict what kind of operations can be taken (ex: resizing)
+        private Image image;
+
+        private GMSpriteImage(GMSpriteFrame frame, GMSpriteImageLayer layer)
+        {
+            if (frame == null)
+                throw new ArgumentNullException(nameof(frame));
+
+            Frame = frame;
+            Layer = layer;
+            image = null;
+        }
+
+        // TODO Need to be able to SetImage for specific layers
+
+        public void SetImage(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            SetImage(Image.FromFile(path));
+        }
+
+        public void SetImage(Image img)
+        {
+            if (img == null)
+                throw new ArgumentNullException(nameof(img));
+
+            image = img;
+            Sprite.Resize(image.Width, image.Height);
+        }
+
+        internal Image GetImage()
+        {
+            EnsureImageLoaded();
+            return image;
+        }
+
+        // TODO Image manip methods
+
+        // https://stackoverflow.com/a/24199315
+        internal void Resize(int width, int height)
+        {
+            EnsureImageLoaded();
+
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            image = destImage;
+        }
+
+        protected internal override ModelBase Serialize()
+        {
+            string imageDirectory = Path.GetDirectoryName(ImagePath);
+            FileSystem.EnsureDirectory(imageDirectory);
+
+            image?.Save(ImagePath, ImageFormat.Png);
+
+            return new GMSpriteImageModel
+            {
+                id = Id,
+                LayerId = Layer?.Id ?? Guid.Empty,
+                FrameId = Frame.Id
+            };
+        }
+
+        private void EnsureImageLoaded()
+        {
+            if (image != null)
+                return;
+
+            SetImage(Path.Combine(Project.RootDirectory, ImagePath));
+        }
+
+        internal void Unload()
+        {
+            image = null;
+        }
+
+        internal static GMSpriteImage Create(GMSpriteFrame frame, GMSpriteImageLayer layer)
+        {
+            return new GMSpriteImage(frame, layer)
+            {
+                Id = Guid.NewGuid(),
+                image = new Bitmap(frame.Sprite.Width, frame.Sprite.Height)
             };
         }
     }
