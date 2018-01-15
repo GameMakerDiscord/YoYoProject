@@ -180,16 +180,44 @@ namespace YoYoProject.Controllers
         }
     }
 
+    // TODO Refactor audio group management behind a manager
     public sealed class GMAudioOptions
     {
+        private const string DefaultName = "audiogroup_default";
+
         public Guid Id { get; set; }
 
-        public List<GMAudioGroup> AudioGroups { get; set; }
+        public List<GMAudioGroup> AudioGroups { get; }
+
+        public GMAudioGroup DefaultAudioGroup
+        {
+            get { return AudioGroups.Single(x => x.Name == DefaultName); }
+        }
 
         public GMAudioOptions()
         {
             Id = Guid.NewGuid();
             AudioGroups = new List<GMAudioGroup>();
+
+            CreateAudioGroup(DefaultName, null);
+        }
+
+        public GMAudioGroup CreateAudioGroup(string name, GMTextureGroup parent)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+
+            // TODO Validate name
+
+            var audioGroup = new GMAudioGroup
+            {
+                Id = Guid.NewGuid(),
+                Name = name
+            };
+
+            AudioGroups.Add(audioGroup);
+
+            return audioGroup;
         }
 
         internal GMAudioOptionsModel Serialize()
