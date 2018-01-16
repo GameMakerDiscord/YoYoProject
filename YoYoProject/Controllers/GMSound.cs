@@ -17,7 +17,15 @@ namespace YoYoProject.Controllers
         public float Volume
         {
             get { return GetProperty(volume); }
-            set { SetProperty(value, ref volume); }
+            set
+            {
+                if (value < 0)
+                    SetProperty(0, ref volume);
+                else if (value > 1)
+                    SetProperty(1, ref volume);
+                else
+                    SetProperty(value, ref volume);
+            }
         }
         
         private bool preLoad;
