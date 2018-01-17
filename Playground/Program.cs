@@ -14,12 +14,19 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Shaders ***/
+            /*** Fonts ***/
             {
-                var shader = project.Resources.Create<GMShader>();
-                shader.FragmentContents = "/* Fragment Shader */";
-                shader.VertexContents = "/* Vertex Shader */";
+                var font = project.Resources.Create<GMFont>();
+                font.FontName = "Consolas";
+                font.SampleText += "WOW!";
             }
+
+            /*** Shaders ***/
+            //{
+            //    var shader = project.Resources.Create<GMShader>();
+            //    shader.FragmentContents = "/* Fragment Shader */";
+            //    shader.VertexContents = "/* Vertex Shader */";
+            //}
 
             /*** Scripts ***/
             //{
