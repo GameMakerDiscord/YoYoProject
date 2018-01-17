@@ -47,7 +47,7 @@ namespace YoYoProject.Models
         public int tile_count { get; set; }
 
         [DataMember]
-        public List<GMAutoTileSetModel> auto_tile_set { get; set; }
+        public List<GMAutoTileSetModel> auto_tile_sets { get; set; }
 
         [DataMember]
         public List<GMTileAnimationFrameModel> tile_animation_frames { get; set; }

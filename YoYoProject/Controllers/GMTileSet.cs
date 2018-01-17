@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using YoYoProject.Models;
 
 namespace YoYoProject.Controllers
@@ -58,7 +59,7 @@ namespace YoYoProject.Controllers
         }
         
         private bool noExport;
-        public bool NoExport
+        public bool Export
         {
             get { return GetProperty(noExport); }
             set { SetProperty(value, ref noExport); }
@@ -121,22 +122,25 @@ namespace YoYoProject.Controllers
             TileOffsetY = 0;
             TileSeparationHorizontal = 0;
             TileSeparationVertical = 0;
-            NoExport = false;
+            Export = true;
             TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.DefaultTextureGroup;
             OutTileBorderHorizontal = 2;
             OutTileBorderVertical = 2;
         }
 
-        internal int GetTileIndex(int x, int y)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal uint GetTileIndex(Tile tile)
+        {
+            return GetTileIndex(tile.X, tile.Y);
+        }
+
+        internal uint GetTileIndex(int x, int y)
         {
             if (Sprite == null)
                 return 0;
 
             int stride = Sprite.Width / TileWidth;
-            x = Math.Min(Math.Max(x, 0), Sprite.Width / TileWidth);
-            y = Math.Min(Math.Max(y, 0), Sprite.Height / TileHeight);
-
-            return y * stride + x;
+            return (uint)(y * stride + x);
         }
 
         protected internal override ModelBase Serialize()
@@ -162,14 +166,13 @@ namespace YoYoProject.Controllers
                 tileyoff = TileOffsetY,
                 tilehsep = TileSeparationHorizontal,
                 tilevsep = TileSeparationVertical,
-                sprite_no_export = NoExport,
+                sprite_no_export = Export,
                 textureGroupId = TextureGroup?.Id ?? Guid.Empty,
                 out_tilehborder = OutTileBorderHorizontal,
                 out_tilevborder = OutTileBorderVertical,
                 tile_count = tileCount,
-                auto_tile_set = AutoTileSets.Select(x => (GMAutoTileSetModel)x.Serialize()).ToList(),
-                tile_animation_frames = Animations.Select(x => (GMTileAnimationFrameModel)x.Serialize())
-                                                  .ToList(),
+                auto_tile_sets = AutoTileSets.Serialize(),
+                tile_animation_frames = Animations.SerializeFrames(),
                 tile_animation_speed = Animations.Speed,
                 tile_animation = (GMTileAnimationModel)Animations.Serialize(),
                 macroPageTiles = Brushes.Serialize()
@@ -195,9 +198,9 @@ namespace YoYoProject.Controllers
                 this.tileSet = tileSet;
             }
 
-            public GMAutoTileSet Create()
+            public GMAutoTileSet Create(GMAutoTileSetType type)
             {
-                var autoTileSet = new GMAutoTileSet
+                var autoTileSet = new GMAutoTileSet(type, tileSet)
                 {
                     Id = Guid.NewGuid(),
                     Name = $"autotile_{autoTileSets.Count + 1}"
@@ -255,9 +258,9 @@ namespace YoYoProject.Controllers
                 this.tileSet = tileSet;
             }
 
-            public GMTileSetAnimation Create()
+            public GMTileSetAnimation Create(int frameCount)
             {
-                var animation = new GMTileSetAnimation
+                var animation = new GMTileSetAnimation(frameCount, tileSet)
                 {
                     Id = Guid.NewGuid(),
                     Name = $"animation_{animations.Count + 1}"
@@ -277,7 +280,7 @@ namespace YoYoProject.Controllers
             {
                 int frameCount = 0;
                 foreach (var animation in animations)
-                    frameCount = Math.Max(frameCount, animation.Frames.Count);
+                    frameCount = Math.Max(frameCount, animation.Frames.Length);
 
                 uint[] frameData = new uint[tileSet.TileCount * frameCount];
                 if (frameCount > 0)
@@ -295,11 +298,11 @@ namespace YoYoProject.Controllers
                     //      with any frames of a previous animation as well.
                     foreach (var animation in animations)
                     {
-                        uint key = animation.Frames[0];
+                        uint key = tileSet.GetTileIndex(animation.Frames[0]);
                         for (int i = 0; i < frameCount; ++i)
                         {
-                            int j = i % animation.Frames.Count;
-                            frameData[key + j] = animation.Frames[j];
+                            int j = i % animation.Frames.Length;
+                            frameData[key + j] = tileSet.GetTileIndex(animation.Frames[j]);
                         }
                     }
                 }
@@ -310,6 +313,11 @@ namespace YoYoProject.Controllers
                     FrameData = frameData,
                     SerialiseFrameCount = frameCount
                 };
+            }
+
+            public List<GMTileAnimationFrameModel> SerializeFrames()
+            {
+                return animations.Select(x => (GMTileAnimationFrameModel)x.Serialize()).ToList();
             }
 
             public IEnumerator<GMTileSetAnimation> GetEnumerator()
@@ -369,10 +377,10 @@ namespace YoYoProject.Controllers
             get { return GetProperty(name); }
             set { SetProperty(value, ref name); }
         }
-
-        // TODO Make this usable...
-        private List<uint> tiles;
-        public List<uint> Tiles
+        
+        // TODO Provide constants to reference each tile's purpose (TopLeft, Top, etc...)
+        private Tile[] tiles;
+        public Tile[] Tiles
         {
             get { return GetProperty(tiles); }
             set { SetProperty(value, ref tiles); }
@@ -385,9 +393,17 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref closedEdge); }
         }
 
-        internal GMAutoTileSet()
+        private readonly GMTileSet tileSet;
+
+        internal GMAutoTileSet(GMAutoTileSetType type, GMTileSet tileSet)
         {
-            Tiles = new List<uint>();
+            if (tileSet == null)
+                throw new ArgumentNullException(nameof(tileSet));
+
+            int length = type == GMAutoTileSetType.Full ? 47 : 16;
+            Tiles = new Tile[length];
+
+            this.tileSet = tileSet;
         }
 
         protected internal override ModelBase Serialize()
@@ -396,7 +412,8 @@ namespace YoYoProject.Controllers
             {
                 id = Id,
                 name = Name,
-                closed_edge = ClosedEdge
+                closed_edge = ClosedEdge,
+                tiles = Tiles.Select(x => tileSet.GetTileIndex(x)).ToList()
             };
         }
     }
@@ -409,13 +426,28 @@ namespace YoYoProject.Controllers
             get { return GetProperty(name); }
             set { SetProperty(value, ref name); }
         }
-
-        // TODO Make this usable...
-        private List<uint> frames;
-        public List<uint> Frames
+        
+        private Tile[] frames;
+        public Tile[] Frames
         {
             get { return GetProperty(frames); }
             set { SetProperty(value, ref frames); }
+        }
+
+        private readonly GMTileSet tileSet;
+
+        internal GMTileSetAnimation(int frameCount, GMTileSet tileSet)
+        {
+            if (tileSet == null)
+                throw new ArgumentNullException(nameof(tileSet));
+
+            // TODO Validate 2, 4, 8, 16, 32, 64, 128, 256?
+            if (frameCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(frameCount), frameCount, "frameCount cannot be less than 0");
+
+            Frames = new Tile[frameCount];
+
+            this.tileSet = tileSet;
         }
 
         protected internal override ModelBase Serialize()
@@ -424,8 +456,27 @@ namespace YoYoProject.Controllers
             {
                 id = Id,
                 name = Name,
-                frames = Frames
+                frames = Frames.Select(x => tileSet.GetTileIndex(x)).ToList()
             };
         }
+    }
+    
+    public struct Tile
+    {
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
+        public void Set(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
+    public enum GMAutoTileSetType
+    {
+        Transitional, // 16
+        Full // 47
     }
 }
