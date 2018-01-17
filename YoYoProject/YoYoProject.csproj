@@ -46,6 +46,7 @@
     <Compile Include="Controllers\GMMainOptions.cs" />
     <Compile Include="Common\Color.cs" />
     <Compile Include="Common\BuildVersion.cs" />
+    <Compile Include="Controllers\GMPath.cs" />
     <Compile Include="Controllers\GMSound.cs" />
     <Compile Include="Controllers\GMSprite.cs" />
     <Compile Include="Controllers\GMTileSet.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Models\GMMacOptionsModel.cs" />
     <Compile Include="Models\GMMainOptionsModel.cs" />
     <Compile Include="Models\GMOptionsBaseModel.cs" />
+    <Compile Include="Models\GMPathModel.cs" />
     <Compile Include="Models\GMProjectParentModel.cs" />
     <Compile Include="Models\GMResourceInfoModel.cs" />
     <Compile Include="Models\GMResourceModel.cs" />

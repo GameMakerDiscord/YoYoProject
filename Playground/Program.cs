@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using YoYoProject;
 using YoYoProject.Controllers;
+using YoYoProject.Models;
 
 namespace Playground
 {
@@ -13,6 +14,17 @@ namespace Playground
             var projectName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
+
+            /*** Pathes ***/
+            {
+                var path = project.Resources.Create<GMPath>();
+                path.Closed = true;
+                path.Kind = GMPathKind.SmoothCurves;
+                path.Points.Create(188, 153);
+                path.Points.Create(204, 231);
+                path.Points.Create(365, 180);
+                path.Points.Create(312, 92);
+            }
 
             /*** Tilesets ***/
             //{
