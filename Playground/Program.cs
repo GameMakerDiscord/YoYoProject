@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using YoYoProject;
 using YoYoProject.Controllers;
-using YoYoProject.Models;
 
 namespace Playground
 {
@@ -15,11 +14,18 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Scripts ***/
+            /*** Shaders ***/
             {
-                var script = project.Resources.Create<GMScript>();
-                script.Contents = $@"show_debug_message(""{script.Name}"");";
+                var shader = project.Resources.Create<GMShader>();
+                shader.FragmentContents = "/* Fragment Shader */";
+                shader.VertexContents = "/* Vertex Shader */";
             }
+
+            /*** Scripts ***/
+            //{
+            //    var script = project.Resources.Create<GMScript>();
+            //    script.Contents = $@"show_debug_message(""{script.Name}"");";
+            //}
 
             /*** Pathes ***/
             //{

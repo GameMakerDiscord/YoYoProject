@@ -35,7 +35,14 @@ namespace YoYoProject.Controllers
                 return contents;
             }
 
-            set { contents = value ?? ""; }
+            set
+            {
+                if (value == contents)
+                    return;
+
+                contents = value ?? "";
+                Dirty = true;
+            }
         }
 
         protected internal override string ResourcePath => $@"scripts\{Name}\{Name}.yy";
@@ -52,6 +59,7 @@ namespace YoYoProject.Controllers
 
         protected internal override ModelBase Serialize()
         {
+            // TODO Unload OnSaveComplete
             if (contents != null)
                 File.WriteAllText(ScriptFullPath, contents);
             

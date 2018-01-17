@@ -654,6 +654,7 @@ namespace YoYoProject.Controllers
             string imageDirectory = Path.GetDirectoryName(ImagePath);
             FileSystem.EnsureDirectory(imageDirectory);
 
+            // TODO Unload OnSaveComplete
             image?.Save(ImagePath, ImageFormat.Png);
 
             return new GMSpriteImageModel

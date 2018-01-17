@@ -9,7 +9,7 @@ namespace YoYoProject.Controllers
     {
         public Guid Id { get; set; }
 
-        public bool Dirty { get; private set; }
+        public bool Dirty { get; protected set; }
 
         internal GMProject Project { get; set; }
 

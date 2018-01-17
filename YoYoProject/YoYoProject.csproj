@@ -48,6 +48,7 @@
     <Compile Include="Common\BuildVersion.cs" />
     <Compile Include="Controllers\GMPath.cs" />
     <Compile Include="Controllers\GMScript.cs" />
+    <Compile Include="Controllers\GMShader.cs" />
     <Compile Include="Controllers\GMSound.cs" />
     <Compile Include="Controllers\GMSprite.cs" />
     <Compile Include="Controllers\GMTileSet.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Models\GMResourceModel.cs" />
     <Compile Include="Models\GMRViewModel.cs" />
     <Compile Include="Models\GMScriptModel.cs" />
+    <Compile Include="Models\GMShaderModel.cs" />
     <Compile Include="Models\GMSoundModel.cs" />
     <Compile Include="Models\GMSpriteModel.cs" />
     <Compile Include="Models\GMTextureGroupModel.cs" />
