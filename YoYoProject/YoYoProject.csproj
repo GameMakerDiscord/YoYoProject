@@ -47,7 +47,9 @@
     <Compile Include="Controllers\GMMainOptions.cs" />
     <Compile Include="Common\Color.cs" />
     <Compile Include="Common\BuildVersion.cs" />
+    <Compile Include="Controllers\GMObject.cs" />
     <Compile Include="Controllers\GMPath.cs" />
+    <Compile Include="Controllers\GMPoint.cs" />
     <Compile Include="Controllers\GMScript.cs" />
     <Compile Include="Controllers\GMShader.cs" />
     <Compile Include="Controllers\GMSound.cs" />
@@ -62,8 +64,10 @@
     <Compile Include="Models\GMLinuxOptionsModel.cs" />
     <Compile Include="Models\GMMacOptionsModel.cs" />
     <Compile Include="Models\GMMainOptionsModel.cs" />
+    <Compile Include="Models\GMObjectModel.cs" />
     <Compile Include="Models\GMOptionsBaseModel.cs" />
     <Compile Include="Models\GMPathModel.cs" />
+    <Compile Include="Models\GMPointModel.cs" />
     <Compile Include="Models\GMProjectParentModel.cs" />
     <Compile Include="Models\GMResourceInfoModel.cs" />
     <Compile Include="Models\GMResourceModel.cs" />
