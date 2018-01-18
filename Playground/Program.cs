@@ -14,12 +14,35 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Fonts ***/
+            /*** Objects ***/
             {
-                var font = project.Resources.Create<GMFont>();
-                font.FontName = "Consolas";
-                font.SampleText += "WOW!";
+                var sprite = project.Resources.Create<GMSprite>();
+                var frame = sprite.Frames.Create();
+                frame.Layers[0].SetImage(@"C:\Temp\GMProjects\_Resources\01.png");
+
+                var oParent = project.Resources.Create<GMObject>();
+                oParent.Name = "oParent";
+                oParent.Sprite = sprite;
+
+                var createEvent = oParent.Events.Create(GMEventType.Create);
+                createEvent.Contents = "/// Create Event";
+
+                var stepEndEvent = oParent.Events.Create(GMEventType.Step, GMEventNumber.StepEnd);
+                stepEndEvent.Contents = "/// Step End Event";
+
+                var oChild = project.Resources.Create<GMObject>();
+                oChild.Name = "oChild";
+
+                var collisionEvent = oChild.Events.Create(GMEventType.Collision, oParent);
+                collisionEvent.Contents = "/// oParent collision";
             }
+
+            /*** Fonts ***/
+            //{
+            //    var font = project.Resources.Create<GMFont>();
+            //    font.FontName = "Consolas";
+            //    font.SampleText += "WOW!";
+            //}
 
             /*** Shaders ***/
             //{

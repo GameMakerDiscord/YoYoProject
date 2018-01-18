@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using YoYoProject.Models;
 
 namespace YoYoProject.Controllers
@@ -230,6 +232,7 @@ namespace YoYoProject.Controllers
                 // HACK List<> does not inherit from ModelBase
                 internal List<GMPointModel> SerializePoints()
                 {
+                    // TODO Serialize Box and Circle correctly
                     return points.Select(x => (GMPointModel)x.Serialize()).ToList();
                 }
 
@@ -245,8 +248,13 @@ namespace YoYoProject.Controllers
             }
         }
 
-        public sealed class EventManager
+        public sealed class EventManager : IReadOnlyList<GMEvent>
         {
+            public int Count => events.Count;
+
+            public GMEvent this[int index] => events[index];
+
+            private readonly List<GMEvent> events;
             private readonly GMObject gmObject;
 
             public EventManager(GMObject gmObject)
@@ -254,13 +262,101 @@ namespace YoYoProject.Controllers
                 if (gmObject == null)
                     throw new ArgumentNullException(nameof(gmObject));
 
+                events = new List<GMEvent>();
+
                 this.gmObject = gmObject;
+            }
+
+            public GMEvent Get(GMEventType eventType, GMEventNumber eventNumber, GMObject collision)
+            {
+                return events.FirstOrDefault(
+                    x => x.EventType == eventType
+                      && x.EventNumber == eventNumber
+                      && (x.EventType != GMEventType.Collision || x.Collision == collision)
+                );
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Get(GMEventType eventType, GMEventNumber eventNumber)
+            {
+                return Get(eventType, eventNumber, null);
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Get(GMEventType eventType, GMObject collision)
+            {
+                return Get(eventType, GMEventNumber.Default, collision);
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Get(GMEventType eventType)
+            {
+                return Get(eventType, GMEventNumber.Default, null);
+            }
+
+            public GMEvent Create(GMEventType eventType, GMEventNumber eventNumber, GMObject collision)
+            {
+                GMEvent @event = Get(eventType, eventNumber, collision);
+                if (@event != null)
+                    return @event;
+
+                @event = new GMEvent(gmObject)
+                {
+                    Project = gmObject.Project,
+                    Id = Guid.NewGuid(),
+                    EventType = eventType,
+                    EventNumber = eventNumber,
+                    Collision = collision,
+                    IsDnD = gmObject.Project.DragAndDrop
+                };
+
+                events.Add(@event);
+
+                return @event;
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Create(GMEventType eventType, GMObject collision)
+            {
+                return Create(eventType, GMEventNumber.Default, collision);
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Create(GMEventType eventType, GMEventNumber eventNumber)
+            {
+                return Create(eventType, eventNumber, null);
+            }
+
+            [DebuggerStepThrough]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public GMEvent Create(GMEventType eventType)
+            {
+                return Create(eventType, GMEventNumber.Default, null);
+            }
+
+            public void Delete(GMEvent @event)
+            {
+                events.Remove(@event);
             }
 
             internal List<GMEventModel> Serialize()
             {
-                // TODO Implement
-                return new List<GMEventModel>();
+                return events.Select(x => (GMEventModel)x.Serialize()).ToList();
+            }
+
+            public IEnumerator<GMEvent> GetEnumerator()
+            {
+                return events.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
             }
         }
 
