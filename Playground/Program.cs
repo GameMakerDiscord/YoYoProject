@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using YoYoProject;
 using YoYoProject.Controllers;
+using YoYoProject.Models;
 
 namespace Playground
 {
@@ -30,11 +31,18 @@ namespace Playground
                 var stepEndEvent = oParent.Events.Create(GMEventType.Step, GMEventNumber.StepEnd);
                 stepEndEvent.Contents = "/// Step End Event";
 
+                oParent.Properties.Create(GMObjectPropertyType.Real, "a", "1234");
+                oParent.Properties.Create(GMObjectPropertyType.String, "b", "\"Hello\"");
+
                 var oChild = project.Resources.Create<GMObject>();
                 oChild.Name = "oChild";
+                oChild.Parent = oParent;
 
                 var collisionEvent = oChild.Events.Create(GMEventType.Collision, oParent);
                 collisionEvent.Contents = "/// oParent collision";
+
+                oChild.Properties.Create(GMObjectPropertyType.Real, "a", "4321");
+                oChild.Properties.Create(GMObjectPropertyType.String, "c", "\"World\"");
             }
 
             /*** Fonts ***/

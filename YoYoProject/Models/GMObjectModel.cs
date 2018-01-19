@@ -198,6 +198,8 @@ namespace YoYoProject.Models
         Notes = 8192,
         Config = 16384,
         Options = 32768,
-        Folder = 65536
+        Folder = 65536,
+
+        AllResources = TileSet | Sprite | Sound | Path | Script | Shader | Font | TimeLine | Object | Room
     }
 }

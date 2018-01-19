@@ -62,7 +62,7 @@ namespace YoYoProject.Controllers
 
         public GMObject()
         {
-            Physics = new GMObjectPhysics();
+            Physics = new GMObjectPhysics(this);
             Events = new EventManager(this);
             Properties = new PropertyManager(this);
         }
@@ -182,9 +182,12 @@ namespace YoYoProject.Controllers
 
             public ShapeManager Shape { get; }
 
-            internal GMObjectPhysics()
+            internal GMObjectPhysics(GMObject gmObject)
             {
-                Shape = new ShapeManager();
+                if (gmObject == null)
+                    throw new ArgumentNullException(nameof(gmObject));
+
+                Shape = new ShapeManager(gmObject);
             }
 
             protected internal override ModelBase Serialize()
@@ -198,7 +201,14 @@ namespace YoYoProject.Controllers
                 public GMObjectPhysicsShapeType Type
                 {
                     get { return GetProperty(type); }
-                    set { SetProperty(value, ref type); }
+                    set
+                    {
+                        if (type == value)
+                            return;
+
+                        SetProperty(value, ref type);
+                        UpdatePointsForShapeType(value);
+                    }
                 }
 
                 public int Count => points.Count;
@@ -206,10 +216,16 @@ namespace YoYoProject.Controllers
                 public GMPoint this[int index] => points[index];
 
                 private readonly List<GMPoint> points;
+                private readonly GMObject gmObject;
 
-                internal ShapeManager()
+                internal ShapeManager(GMObject gmObject)
                 {
+                    if (gmObject == null)
+                        throw new ArgumentNullException(nameof(gmObject));
+
                     points = new List<GMPoint>();
+
+                    this.gmObject = gmObject;
                 }
 
                 public GMPoint Create(int x, int y)
@@ -224,6 +240,11 @@ namespace YoYoProject.Controllers
                     return point;
                 }
 
+                public void Delete(GMPoint point)
+                {
+                    points.Remove(point);
+                }
+
                 protected internal override ModelBase Serialize()
                 {
                     throw new InvalidOperationException();
@@ -232,8 +253,29 @@ namespace YoYoProject.Controllers
                 // HACK List<> does not inherit from ModelBase
                 internal List<GMPointModel> SerializePoints()
                 {
-                    // TODO Serialize Box and Circle correctly
                     return points.Select(x => (GMPointModel)x.Serialize()).ToList();
+                }
+
+                private void UpdatePointsForShapeType(GMObjectPhysicsShapeType shapeType)
+                {
+                    int w = gmObject.Sprite?.Width ?? 32;
+                    int h = gmObject.Sprite?.Height ?? 32;
+
+                    points.Clear();
+                    switch (shapeType)
+                    {
+                        case GMObjectPhysicsShapeType.Box:
+                            Create(0, 0);
+                            Create(w, 0);
+                            Create(w, h);
+                            Create(0, h);
+                            break;
+
+                        case GMObjectPhysicsShapeType.Circle:
+                            Create(w / 2, h / 2);
+                            Create(w / 2, h / 2);
+                            break;
+                    }
                 }
 
                 public IEnumerator<GMPoint> GetEnumerator()
@@ -360,8 +402,13 @@ namespace YoYoProject.Controllers
             }
         }
 
-        public sealed class PropertyManager
+        public sealed class PropertyManager : IReadOnlyList<GMObjectProperty>
         {
+            public int Count => properties.Count;
+
+            public GMObjectProperty this[int index] => properties[index];
+
+            private readonly List<GMObjectProperty> properties;
             private readonly GMObject gmObject;
 
             public PropertyManager(GMObject gmObject)
@@ -369,20 +416,175 @@ namespace YoYoProject.Controllers
                 if (gmObject == null)
                     throw new ArgumentNullException(nameof(gmObject));
 
+                properties = new List<GMObjectProperty>();
+
                 this.gmObject = gmObject;
+            }
+
+            public GMObjectProperty Create(GMObjectPropertyType type, string name, string value)
+            {
+                if (name == null)
+                    throw new ArgumentNullException(nameof(name));
+
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+
+                var property = new GMObjectProperty
+                {
+                    Id = Guid.NewGuid(),
+                    Type = type,
+                    Name = name,
+                    Value = value
+                };
+
+                properties.Add(property);
+
+                return property;
+            }
+
+            public void Delete(GMObjectProperty property)
+            {
+                properties.Remove(property);
             }
 
             internal List<GMObjectPropertyModel> Serialize()
             {
-                // TODO Implement
-                return new List<GMObjectPropertyModel>();
+                var parent = gmObject.Parent;
+                if (parent == null)
+                    return properties.Select(x => (GMObjectPropertyModel)x.Serialize()).ToList();
+
+                var parentProperties = new HashSet<string>();
+                while (parent != null)
+                {
+                    foreach (var pProp in parent.Properties)
+                        parentProperties.Add(pProp.Name);
+
+                    parent = parent.Parent;
+                }
+
+                var childProperties = new List<GMObjectPropertyModel>(properties.Count);
+                foreach (var cProp in properties)
+                {
+                    if (parentProperties.Contains(cProp.Name))
+                        continue;
+
+                    childProperties.Add((GMObjectPropertyModel)cProp.Serialize());
+                }
+
+                return childProperties;
             }
 
             internal List<GMOverriddenPropertyModel> SerializeOverrides()
             {
-                // TODO Implement
-                return new List<GMOverriddenPropertyModel>();
+                var overrides = new List<GMOverriddenPropertyModel>();
+
+                var parent = gmObject.Parent;
+                while (parent != null)
+                {
+                    foreach (var pProp in parent.Properties)
+                    {
+                        var cProp = properties.FirstOrDefault(x => x.Name == pProp.Name);
+                        if (cProp == null)
+                            continue;
+
+                        overrides.Add(new GMOverriddenPropertyModel
+                        {
+                            id = Guid.NewGuid(), // TODO Don't regenerate these kinds of IDs
+                            objectId = parent.Id,
+                            propertyId = pProp.Id,
+                            value = cProp.Value
+                        });
+                    }
+
+                    parent = parent.Parent;
+                }
+
+                return overrides;
             }
+
+            public IEnumerator<GMObjectProperty> GetEnumerator()
+            {
+                return properties.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+    }
+
+    public sealed class GMObjectProperty : ControllerBase
+    {
+        private string name;
+        public string Name
+        {
+            get { return GetProperty(name); }
+            set { SetProperty(value, ref name); }
+        }
+        
+        private GMObjectPropertyType type;
+        public GMObjectPropertyType Type
+        {
+            get { return GetProperty(type); }
+            set { SetProperty(value, ref type); }
+        }
+        
+        private string value_;
+        public string Value
+        {
+            get { return GetProperty(value_); }
+            set { SetProperty(value, ref value_); }
+        }
+        
+        private Tuple<int, int> range;
+        public Tuple<int, int> Range
+        {
+            get { return GetProperty(range); }
+            set { SetProperty(value, ref range); }
+        }
+        
+        private List<string> listItems;
+        public List<string> ListItems
+        {
+            get { return GetProperty(listItems); }
+            set { SetProperty(value, ref listItems); }
+        }
+        
+        private bool multiSelect;
+        public bool MultiSelect
+        {
+            get { return GetProperty(multiSelect); }
+            set { SetProperty(value, ref multiSelect); }
+        }
+        
+        private GMResourceType resourceFilter;
+        public GMResourceType ResourceFilter
+        {
+            get { return GetProperty(resourceFilter); }
+            set { SetProperty(value, ref resourceFilter); }
+        }
+
+        internal GMObjectProperty()
+        {
+            ResourceFilter = GMResourceType.AllResources;
+        }
+
+        protected internal override ModelBase Serialize()
+        {
+            return new GMObjectPropertyModel
+            {
+                id = Id,
+                varName = Name,
+                varType = Type,
+                value = Value,
+                rangeEnabled = Range != null,
+                rangeMax = Range?.Item1 ?? 0,
+                rangeMin = Range?.Item2 ?? 0,
+                listItems = ListItems,
+                multiselect = MultiSelect,
+                resourceFilter = ResourceFilter
+            };
         }
     }
 }
