@@ -16,34 +16,44 @@ namespace Playground
             var project = GMProject.New(rootDirectory);
 
             /*** Objects ***/
-            {
-                var sprite = project.Resources.Create<GMSprite>();
-                var frame = sprite.Frames.Create();
-                frame.Layers[0].SetImage(@"C:\Temp\GMProjects\_Resources\01.png");
+            //{
+            //    var sprite = project.Resources.Create<GMSprite>();
+            //    var frame = sprite.Frames.Create();
+            //    frame.Layers[0].SetImage(@"C:\Temp\GMProjects\_Resources\01.png");
 
-                var oParent = project.Resources.Create<GMObject>();
-                oParent.Name = "oParent";
-                oParent.Sprite = sprite;
+            //    var oParent = project.Resources.Create<GMObject>();
+            //    oParent.Name = "oParent";
+            //    oParent.Sprite = sprite;
 
-                var createEvent = oParent.Events.Create(GMEventType.Create);
-                createEvent.Contents = "/// Create Event";
+            //    var createEvent = oParent.Events.Create(GMEventType.Create);
+            //    createEvent.Contents = "/// Create Event";
 
-                var stepEndEvent = oParent.Events.Create(GMEventType.Step, GMEventNumber.StepEnd);
-                stepEndEvent.Contents = "/// Step End Event";
+            //    var stepEndEvent = oParent.Events.Create(GMEventType.Step, GMEventNumber.StepEnd);
+            //    stepEndEvent.Contents = "/// Step End Event";
 
-                oParent.Properties.Create(GMObjectPropertyType.Real, "a", "1234");
-                oParent.Properties.Create(GMObjectPropertyType.String, "b", "\"Hello\"");
+            //    oParent.Properties.Create(GMObjectPropertyType.Real, "a", "1234");
+            //    oParent.Properties.Create(GMObjectPropertyType.String, "b", "\"Hello\"");
 
-                var oChild = project.Resources.Create<GMObject>();
-                oChild.Name = "oChild";
-                oChild.Parent = oParent;
+            //    var oChild = project.Resources.Create<GMObject>();
+            //    oChild.Name = "oChild";
+            //    oChild.Parent = oParent;
 
-                var collisionEvent = oChild.Events.Create(GMEventType.Collision, oParent);
-                collisionEvent.Contents = "/// oParent collision";
+            //    var collisionEvent = oChild.Events.Create(GMEventType.Collision, oParent);
+            //    collisionEvent.Contents = "/// oParent collision";
 
-                oChild.Properties.Create(GMObjectPropertyType.Real, "a", "4321");
-                oChild.Properties.Create(GMObjectPropertyType.String, "c", "\"World\"");
-            }
+            //    oChild.Properties.Create(GMObjectPropertyType.Real, "a", "4321");
+            //    oChild.Properties.Create(GMObjectPropertyType.String, "c", "\"World\"");
+            //}
+
+            /*** Timelines ***/
+            //{
+            //    var timeline = project.Resources.Create<GMTimeline>();
+            //    var moment0 = timeline.Moments.Create(0);
+            //    moment0.Contents = "/// Moment 0";
+
+            //    var moment1234 = timeline.Moments.Create(1234);
+            //    moment1234.Contents = "/// Moment 1234";
+            //}
 
             /*** Fonts ***/
             //{

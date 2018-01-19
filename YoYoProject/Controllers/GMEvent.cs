@@ -64,13 +64,15 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                string filename;
-                if (EventType == GMEventType.Collision)
-                    filename = $"Collision_{Id}";
+                string path;
+                if (parent is GMTimeline)
+                    path = $@"timelines\{parent.Name}\moment_{(int)EventNumber}.gml";
+                else if (EventType == GMEventType.Collision)
+                    path = $@"objects\{parent.Name}\Collision_{Id}.gml";
                 else
-                    filename = Enum.GetName(typeof(GMEventType), EventType) + '_' + (int)EventNumber;
+                    path = $@"objects\{parent.Name}\{EventType}_{(int)EventNumber}.gml";
 
-                return Path.Combine(Project.RootDirectory, $@"objects\{parent.Name}\{filename}.gml");
+                return Path.Combine(Project.RootDirectory, path);
             }
         }
 

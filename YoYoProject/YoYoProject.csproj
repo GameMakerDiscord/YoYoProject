@@ -56,6 +56,7 @@
     <Compile Include="Controllers\GMSound.cs" />
     <Compile Include="Controllers\GMSprite.cs" />
     <Compile Include="Controllers\GMTileSet.cs" />
+    <Compile Include="Controllers\GMTimeLine.cs" />
     <Compile Include="Models\GMAudioGroupModel.cs" />
     <Compile Include="Models\GMAudioOptionsModel.cs" />
     <Compile Include="Models\GMBaseGroupModel.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Models\GMSpriteModel.cs" />
     <Compile Include="Models\GMTextureGroupModel.cs" />
     <Compile Include="Models\GMTileSetModel.cs" />
+    <Compile Include="Models\GMTimelineModel.cs" />
     <Compile Include="Models\GMWindowsOptionsModel.cs" />
     <Compile Include="Common\TargetPlatforms.cs" />
     <Compile Include="Utility\FileSystem.cs" />
