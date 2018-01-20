@@ -89,7 +89,7 @@ namespace YoYoProject.Models
         public float playbackSpeed { get; set; }
 
         [DataMember]
-        public GMSpritePlaybackSpeedType playbackSpeedType { get; set; }
+        public GMAnimationSpeedType playbackSpeedType { get; set; }
 
         public GMSpriteModel()
             : base("GMSprite", "1.12")
@@ -198,7 +198,7 @@ namespace YoYoProject.Models
         Custom
     }
 
-    public enum GMSpritePlaybackSpeedType
+    public enum GMAnimationSpeedType
     {
         FramesPerSecond,
         FramesPerGameFrame

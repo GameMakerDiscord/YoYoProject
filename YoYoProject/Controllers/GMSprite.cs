@@ -186,8 +186,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref playbackSpeed); }
         }
 
-        private GMSpritePlaybackSpeedType playbackSpeedType;
-        public GMSpritePlaybackSpeedType PlaybackSpeedType
+        private GMAnimationSpeedType playbackSpeedType;
+        public GMAnimationSpeedType PlaybackSpeedType
         {
             get { return GetProperty(playbackSpeedType); }
             set { SetProperty(value, ref playbackSpeedType); }
@@ -229,7 +229,7 @@ namespace YoYoProject.Controllers
             GridX = 0;
             GridY = 0;
             PlaybackSpeed = 15;
-            PlaybackSpeedType = GMSpritePlaybackSpeedType.FramesPerSecond;
+            PlaybackSpeedType = GMAnimationSpeedType.FramesPerSecond;
             SwatchColors = new List<Color>();
 
             Layers.Create();

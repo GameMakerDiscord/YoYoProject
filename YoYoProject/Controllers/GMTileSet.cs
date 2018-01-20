@@ -333,6 +333,7 @@ namespace YoYoProject.Controllers
 
         // TODO Implement me
         // TODO Not a Manager lol
+        // TODO Expose for GMRoom?
         public sealed class BrushManager
         {
             private uint[,] tiles;
@@ -348,7 +349,7 @@ namespace YoYoProject.Controllers
                 this.tileSet = tileSet;
             }
 
-            internal GMMacroPageTilesModel Serialize()
+            internal GMTileMapModel Serialize()
             {
                 int width = tiles.GetLength(0);
                 int height = tiles.GetLength(1);
@@ -359,7 +360,7 @@ namespace YoYoProject.Controllers
                         tileData[y * width + x] = tiles[x, y];
                 }
 
-                return new GMMacroPageTilesModel
+                return new GMTileMapModel
                 {
                     SerialiseWidth = width,
                     SerialiseHeight = height,

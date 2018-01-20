@@ -59,7 +59,7 @@ namespace YoYoProject.Models
         public GMTileAnimationModel tile_animation { get; set; }
 
         [DataMember]
-        public GMMacroPageTilesModel macroPageTiles { get; set; }
+        public GMTileMapModel macroPageTiles { get; set; }
         
         public GMTileSetModel()
             : base("GMTileSet", "1.11")
@@ -118,7 +118,7 @@ namespace YoYoProject.Models
     }
 
     [DataContract]
-    public sealed class GMMacroPageTilesModel : ModelBase
+    public sealed class GMTileMapModel : ModelBase
     {
         [DataMember]
         public int SerialiseWidth { get; set; }
