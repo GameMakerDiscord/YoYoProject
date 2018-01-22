@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Media;
 using YoYoProject;
 using YoYoProject.Controllers;
 using YoYoProject.Models;
@@ -14,6 +15,23 @@ namespace Playground
             var projectName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
+
+            /*** Rooms ***/
+            {
+                var sPlayer = project.Resources.Create<GMSprite>();
+                var frame = sPlayer.Frames.Create();
+                frame.SetImage(@"C:\Temp\GMProjects\_Resources\01.png");
+
+                var oPlayer = project.Resources.Create<GMObject>();
+                oPlayer.Sprite = sPlayer;
+
+                var room = project.Resources.Create<GMRoom>();
+                room.CreationCode = "// Room Creation Code";
+
+                var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
+                var instPlayer = instLayer.Instances.Create(oPlayer);
+                instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
+            }
 
             /*** Objects ***/
             //{

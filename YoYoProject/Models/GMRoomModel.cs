@@ -5,30 +5,43 @@ using YoYoProject.Common;
 
 namespace YoYoProject.Models
 {
+    [DataContract]
     internal sealed class GMRoomModel : GMResourceModel
     {
+        [DataMember]
         public bool IsDnD { get; set; }
 
+        [DataMember]
         public Guid parentId { get; set; }
 
+        [DataMember]
         public List<GMRViewModel> views { get; set; }
 
+        [DataMember]
         public List<GMRLayerModel> layers { get; set; }
 
+        [DataMember]
         public bool inheritLayers { get; set; }
 
+        [DataMember]
         public string creationCodeFile { get; set; }
 
+        [DataMember]
         public List<Guid> instanceCreationOrderIDs { get; set; }
 
+        [DataMember]
         public bool inheritCode { get; set; }
 
+        [DataMember]
         public bool inheritCreationOrder { get; set; }
 
+        [DataMember]
         public GMRoomSettingsModel roomSettings { get; set; }
 
+        [DataMember]
         public GMRoomViewSettingsModel viewSettings { get; set; }
 
+        [DataMember]
         public GMRoomPhysicsSettingsModel physicsSettings { get; set; }
         
         public GMRoomModel()
@@ -93,14 +106,19 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRoomSettingsModel : ModelBase
     {
+        [DataMember]
         public bool inheritRoomSettings { get; set; }
 
+        [DataMember]
         public int Width { get; set; }
 
+        [DataMember]
         public int Height { get; set; }
 
+        [DataMember]
         public bool persistent { get; set; }
 
         public GMRoomSettingsModel()
@@ -110,14 +128,19 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRoomViewSettingsModel : ModelBase
     {
+        [DataMember]
         public bool inheritViewSettings { get; set; }
 
+        [DataMember]
         public bool enableViews { get; set; }
 
+        [DataMember]
         public bool clearViewBackground { get; set; }
 
+        [DataMember]
         public bool clearDisplayBuffer { get; set; }
 
         public GMRoomViewSettingsModel()
@@ -127,16 +150,22 @@ namespace YoYoProject.Models
         }
     }
 
-    public sealed class GMRoomPhysicsSettingsModel : ModelBase
+    [DataContract]
+    internal sealed class GMRoomPhysicsSettingsModel : ModelBase
     {
+        [DataMember]
         public bool inheritPhysicsSettings { get; set; }
 
+        [DataMember]
         public bool PhysicsWorld { get; set; }
 
+        [DataMember]
         public float PhysicsWorldGravityX { get; set; }
 
+        [DataMember]
         public float PhysicsWorldGravityY { get; set; }
 
+        [DataMember]
         public float PhysicsWorldPixToMeters { get; set; }
         
         public GMRoomPhysicsSettingsModel()
@@ -145,29 +174,41 @@ namespace YoYoProject.Models
             
         }
     }
-    
+
+    [DataContract]
     internal sealed class GMRBackgroundLayerModel : GMRLayerModel
     {
+        [DataMember]
         public Guid spriteId { get; set; }
 
+        [DataMember]
         public Color colour { get; set; }
 
+        [DataMember]
         public int x { get; set; }
 
+        [DataMember]
         public int y { get; set; }
 
+        [DataMember]
         public bool htiled { get; set; }
 
+        [DataMember]
         public bool vtiled { get; set; }
 
+        [DataMember]
         public float hspeed { get; set; }
 
+        [DataMember]
         public float vspeed { get; set; }
 
+        [DataMember]
         public bool stretch { get; set; }
 
+        [DataMember]
         public float animationFPS { get; set; }
 
+        [DataMember]
         public GMAnimationSpeedType animationSpeedType { get; set; }
 
         public bool userdefined_animFPS { get; set; }
@@ -179,8 +220,10 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRInstanceLayerModel : GMRLayerModel
     {
+        [DataMember]
         public List<GMRInstanceModel> instances { get; set; }
 
         public GMRInstanceLayerModel()
@@ -190,28 +233,40 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRInstanceModel : GMRLayerItemModelBase
     {
+        [DataMember]
         public string name_with_no_file_rename { get; set; }
 
+        [DataMember]
         public List<GMOverriddenPropertyModel> properties { get; set; }
 
+        [DataMember]
         public bool IsDnD { get; set; }
 
+        [DataMember]
         public bool inheritCode { get; set; }
 
+        [DataMember]
         public Guid objId { get; set; }
 
+        [DataMember]
         public string creationCodeFile { get; set; }
 
+        [DataMember]
         public string creationCodeType { get; set; }
 
+        [DataMember]
         public Color colour { get; set; }
 
+        [DataMember]
         public float rotation { get; set; }
 
+        [DataMember]
         public float scaleX { get; set; }
 
+        [DataMember]
         public float scaleY { get; set; }
 
         public GMRInstanceModel()
@@ -221,18 +276,25 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRTileLayerModel : GMRLayerModel
     {
+        [DataMember]
         public Guid tilesetId { get; set; }
 
+        [DataMember]
         public int x { get; set; }
 
+        [DataMember]
         public int y { get; set; }
 
+        [DataMember]
         public GMTileMapModel tiles { get; set; }
 
+        [DataMember]
         public int prev_tilewidth { get; set; }
 
+        [DataMember]
         public int prev_tileheight { get; set; }
         
         public GMRTileLayerModel()
@@ -242,10 +304,13 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRPathLayerModel : GMRLayerModel
     {
+        [DataMember]
         public Guid pathId { get; set; }
 
+        [DataMember]
         public Color colour { get; set; }
         
         public GMRPathLayerModel()
@@ -255,8 +320,10 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal sealed class GMRAssetLayerModel : GMRLayerModel
     {
+        [DataMember]
         public List<GMRLayerItemModelBase> assets { get; set; }
 
         public GMRAssetLayerModel()
@@ -266,32 +333,46 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal class GMRLayerModel : ModelBase
     {
+        [DataMember]
         public bool hierarchyFrozen { get; set; }
 
+        [DataMember]
         public bool visible { get; set; }
 
+        [DataMember]
         public bool inheritVisibility { get; set; }
 
+        [DataMember]
         public bool hierarchyVisible { get; set; }
 
+        [DataMember]
         public int depth { get; set; }
 
+        [DataMember]
         public int userdefined_depth { get; set; }
 
+        [DataMember]
         public bool inheritLayerDepth { get; set; }
 
+        [DataMember]
         public bool inheritLayerSettings { get; set; }
 
+        [DataMember]
         public int grid_x { get; set; }
 
+        [DataMember]
         public int grid_y { get; set; }
 
+        [DataMember]
         public string name { get; set; }
 
+        [DataMember]
         public List<GMRLayerModel> layers { get; set; }
 
+        [DataMember]
         public bool inheritSubLayers { get; set; }
 
         protected GMRLayerModel(string modelName, string mvc)
@@ -307,20 +388,28 @@ namespace YoYoProject.Models
         }
     }
 
+    [DataContract]
     internal abstract class GMRLayerItemModelBase : ModelBase
     {
+        [DataMember]
         public Guid m_originalParentID { get; set; }
 
+        [DataMember]
         public bool m_serialiseFrozen { get; set; }
 
+        [DataMember]
         public bool ignore { get; set; }
 
+        [DataMember]
         public string name { get; set; }
 
+        [DataMember]
         public bool inheritItemSettings { get; set; }
 
+        [DataMember]
         public float x { get; set; }
 
+        [DataMember]
         public float y { get; set; }
 
         protected GMRLayerItemModelBase(string modelName, string mvc)
