@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Media;
 using YoYoProject;
 using YoYoProject.Controllers;
-using YoYoProject.Models;
 
 namespace Playground
 {
@@ -20,7 +17,7 @@ namespace Playground
             {
                 var sPlayer = project.Resources.Create<GMSprite>();
                 var frame = sPlayer.Frames.Create();
-                frame.SetImage(@"C:\Temp\GMProjects\_Resources\01.png");
+                frame.SetImage(@"C:\Temp\GMProjects\_Resources\00.png");
 
                 var oPlayer = project.Resources.Create<GMObject>();
                 oPlayer.Sprite = sPlayer;
@@ -28,9 +25,14 @@ namespace Playground
                 var room = project.Resources.Create<GMRoom>();
                 room.CreationCode = "// Room Creation Code";
 
-                var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
-                var instPlayer = instLayer.Instances.Create(oPlayer);
-                instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
+                var bgLayer = room.Layers.Create<GMBackgroundLayer>("Background");
+                bgLayer.Sprite = sPlayer;
+                bgLayer.HTiled = true;
+                bgLayer.VTiled = true;
+
+                //var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
+                //var instPlayer = instLayer.Instances.Create(oPlayer);
+                //instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
             }
 
             /*** Objects ***/

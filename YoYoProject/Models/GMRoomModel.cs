@@ -176,6 +176,7 @@ namespace YoYoProject.Models
     }
 
     [DataContract]
+    [KnownType(typeof(GMRBackgroundLayerModel))]
     internal sealed class GMRBackgroundLayerModel : GMRLayerModel
     {
         [DataMember]
@@ -211,10 +212,11 @@ namespace YoYoProject.Models
         [DataMember]
         public GMAnimationSpeedType animationSpeedType { get; set; }
 
+        [DataMember]
         public bool userdefined_animFPS { get; set; }
 
         public GMRBackgroundLayerModel()
-            : base("GMRBackgroundLayer", "1.0")
+            : base("GMRBackgroundLayer", "1.0", "GMRBackgroundLayer_Model:#YoYoStudio.MVCFormat")
         {
             
         }
@@ -227,7 +229,7 @@ namespace YoYoProject.Models
         public List<GMRInstanceModel> instances { get; set; }
 
         public GMRInstanceLayerModel()
-            : base("GMRInstanceLayer", "1.0")
+            : base("GMRInstanceLayer", "1.0", "GMRInstanceLayer_Model:#YoYoStudio.MVCFormat")
         {
             
         }
@@ -298,7 +300,7 @@ namespace YoYoProject.Models
         public int prev_tileheight { get; set; }
         
         public GMRTileLayerModel()
-            : base("GMRTileLayer", "1.0")
+            : base("GMRTileLayer", "1.0", "GMRTileLayer_Model:#YoYoStudio.MVCFormat")
         {
 
         }
@@ -314,7 +316,7 @@ namespace YoYoProject.Models
         public Color colour { get; set; }
         
         public GMRPathLayerModel()
-            : base("GMRPathLayer", "1.0")
+            : base("GMRPathLayer", "1.0", "GMRPathLayer_Model:#YoYoStudio.MVCFormat")
         {
 
         }
@@ -327,7 +329,7 @@ namespace YoYoProject.Models
         public List<GMRLayerItemModelBase> assets { get; set; }
 
         public GMRAssetLayerModel()
-            : base("GMRAssetLayer", "1.0")
+            : base("GMRAssetLayer", "1.0", "GMRAssetLayer_Model:#YoYoStudio.MVCFormat")
         {
 
         }
@@ -336,6 +338,15 @@ namespace YoYoProject.Models
     [DataContract]
     internal class GMRLayerModel : ModelBase
     {
+        [DataMember]
+        private string __type { get; set; }
+
+        [DataMember]
+        public bool m_serialiseFrozen { get; set; }
+
+        [DataMember]
+        public Guid m_parentID { get; set; }
+
         [DataMember]
         public bool hierarchyFrozen { get; set; }
 
@@ -375,16 +386,16 @@ namespace YoYoProject.Models
         [DataMember]
         public bool inheritSubLayers { get; set; }
 
-        protected GMRLayerModel(string modelName, string mvc)
+        protected GMRLayerModel(string modelName, string mvc, string mvcType)
             : base(modelName, mvc)
         {
-
+            __type = mvcType;
         }
 
         public GMRLayerModel()
             : base("GMRLayer", "1.0")
         {
-            
+            __type = null;
         }
     }
 

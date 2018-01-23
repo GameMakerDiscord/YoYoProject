@@ -191,7 +191,7 @@ namespace YoYoProject.Controllers
             {
                 return new GMRoomPhysicsSettingsModel
                 {
-                    id = Id,
+                    id = Guid.NewGuid(), // TODO Don't regenerate an ID each time
                     inheritPhysicsSettings = false, // TODO Implement
                     PhysicsWorld = Enabled,
                     PhysicsWorldGravityX = WorldGravityX,
@@ -244,7 +244,7 @@ namespace YoYoProject.Controllers
             {
                 return new GMRoomViewSettingsModel
                 {
-                    id = Id,
+                    id = Guid.NewGuid(), // TODO Don't regenerate every time
                     inheritViewSettings = false, // TODO Implement
                     enableViews = Enabled,
                     clearViewBackground = ClearViewBackground,
@@ -418,10 +418,13 @@ namespace YoYoProject.Controllers
             var layer = new TLayer
             {
                 Project = gmRoom.Project,
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Name = name,
+                Room = gmRoom,
+                Layers = new GMRLayerManager(gmRoom)
             };
 
-            layer.Create(name, gmRoom);
+            layer.Create();
 
             layers.Add(layer);
 
@@ -493,22 +496,36 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref name); }
         }
         
-        public GMRLayerManager Layers { get; private set; }
+        public GMRLayerManager Layers { get; internal set; }
 
-        internal GMRoom Room { get; private set; }
+        internal GMRoom Room { get; set; }
 
-        internal void Create(string name, GMRoom gmRoom)
+        internal abstract void Create();
+
+        protected internal sealed override ModelBase Serialize()
         {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
+            var model = SerializeLayerModel();
+            model.id = Id;
+            model.m_serialiseFrozen = false; // TODO Implement
+            model.m_parentID = Guid.Empty; // TODO Implement
+            model.hierarchyFrozen = HierarchyFrozen;
+            model.visible = Visible;
+            model.inheritVisibility = false; // TODO Implement
+            model.hierarchyVisible = false; // TODO Implement
+            model.depth = Depth;
+            model.userdefined_depth = 0; // TODO Implement
+            model.inheritLayerDepth = false; // TODO Implement
+            model.inheritLayerSettings = false; // TODO Implement
+            model.grid_x = GridX;
+            model.grid_y = GridY;
+            model.name = Name;
+            model.layers = Layers.Serialize();
+            model.inheritSubLayers = false; // TODO Implement
 
-            if (gmRoom == null)
-                throw new ArgumentNullException(nameof(gmRoom));
-
-            Name = name;
-            Layers = new GMRLayerManager(gmRoom);
-            Room = gmRoom;
+            return model;
         }
+
+        internal abstract GMRLayerModel SerializeLayerModel();
     }
 
     public sealed class GMRInstanceLayer : GMRLayer
@@ -520,25 +537,15 @@ namespace YoYoProject.Controllers
             Instances = new InstanceManager(this);
         }
 
-        protected internal override ModelBase Serialize()
+        internal override void Create()
+        {
+            // NOTE Nothing to do
+        }
+
+        internal override GMRLayerModel SerializeLayerModel()
         {
             return new GMRInstanceLayerModel
             {
-                id = Id,
-                hierarchyFrozen = HierarchyFrozen,
-                visible = Visible,
-                inheritVisibility = false, // TODO Implement
-                hierarchyVisible = false, // TODO Implement
-                depth = Depth,
-                userdefined_depth = 0, // TODO Implement
-                inheritLayerDepth = false, // TODO Implement
-                inheritLayerSettings = false, // TODO Implement
-                grid_x = GridX,
-                grid_y = GridY,
-                name = Name,
-                layers = Layers.Serialize(),
-                inheritSubLayers = false, // TODO Implement
-
                 instances = Instances.Select(x => (GMRInstanceModel)x.Serialize()).ToList()
             };
         }
@@ -753,6 +760,120 @@ namespace YoYoProject.Controllers
                 throw new ArgumentNullException(nameof(room));
 
             Room = room;
+        }
+    }
+
+    public sealed class GMBackgroundLayer : GMRLayer
+    {
+        private GMSprite sprite;
+        public GMSprite Sprite
+        {
+            get { return GetProperty(sprite); }
+            set { SetProperty(value, ref sprite); }
+        }
+        
+        private Color color;
+        public Color Color
+        {
+            get { return GetProperty(color); }
+            set { SetProperty(value, ref color); }
+        }
+        
+        private int x;
+        public int X
+        {
+            get { return GetProperty(x); }
+            set { SetProperty(value, ref x); }
+        }
+        
+        private int y;
+        public int Y
+        {
+            get { return GetProperty(y); }
+            set { SetProperty(value, ref y); }
+        }
+        
+        private bool hTiled;
+        public bool HTiled
+        {
+            get { return GetProperty(hTiled); }
+            set { SetProperty(value, ref hTiled); }
+        }
+        
+        private bool vTiled;
+        public bool VTiled
+        {
+            get { return GetProperty(vTiled); }
+            set { SetProperty(value, ref vTiled); }
+        }
+        
+        private float hSpeed;
+        public float HSpeed
+        {
+            get { return GetProperty(hSpeed); }
+            set { SetProperty(value, ref hSpeed); }
+        }
+        
+        private float vSpeed;
+        public float VSpeed
+        {
+            get { return GetProperty(vSpeed); }
+            set { SetProperty(value, ref vSpeed); }
+        }
+        
+        private bool stretch;
+        public bool Stretch
+        {
+            get { return GetProperty(stretch); }
+            set { SetProperty(value, ref stretch); }
+        }
+        
+        private float animationSpeed;
+        public float AnimationSpeed
+        {
+            get { return GetProperty(animationSpeed); }
+            set { SetProperty(value, ref animationSpeed); }
+        }
+        
+        private GMAnimationSpeedType animationSpeedType;
+        public GMAnimationSpeedType AnimationSpeedType
+        {
+            get { return GetProperty(animationSpeedType); }
+            set { SetProperty(value, ref animationSpeedType); }
+        }
+
+        internal override void Create()
+        {
+            Sprite = null;
+            Color = Color.White;
+            X = 0;
+            Y = 0;
+            HTiled = false;
+            VTiled = false;
+            HSpeed = 0;
+            VSpeed = 0;
+            Stretch = false;
+            AnimationSpeed = 15;
+            AnimationSpeedType = GMAnimationSpeedType.FramesPerSecond;
+        }
+
+        internal override GMRLayerModel SerializeLayerModel()
+        {
+            return new GMRBackgroundLayerModel
+            {
+                spriteId = Sprite?.Id ?? Guid.Empty,
+                colour = Color,
+                x = X,
+                y = Y,
+                htiled = HTiled,
+                vtiled = VTiled,
+                hspeed = HSpeed,
+                vspeed = VSpeed,
+                stretch = Stretch,
+                animationFPS = AnimationSpeed,
+                animationSpeedType = AnimationSpeedType,
+                userdefined_animFPS = false // TODO Implement
+            };
         }
     }
 }
