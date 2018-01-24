@@ -106,7 +106,7 @@ namespace YoYoProject.Controllers
             LastChanged = DateTime.Now;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMMainOptionsModel
             {

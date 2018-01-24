@@ -81,7 +81,7 @@ namespace YoYoProject.Controllers
             VertexContents = "";
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Unload OnSaveComplete
             if (fragmentContents != null)

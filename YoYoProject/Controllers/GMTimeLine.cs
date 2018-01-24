@@ -22,7 +22,7 @@ namespace YoYoProject.Controllers
             Name = Project.Resources.GenerateValidName("timeline");
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMTimelineModel
             {

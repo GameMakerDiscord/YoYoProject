@@ -6,7 +6,7 @@ namespace YoYoProject.Controllers
 {
     public sealed class GMProjectParent : ControllerBase
     {
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMProjectParentModel
             {

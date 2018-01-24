@@ -86,7 +86,7 @@ namespace YoYoProject.Controllers
             Physics.Shape.Type = GMObjectPhysicsShapeType.Box;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMObjectModel
             {
@@ -190,7 +190,7 @@ namespace YoYoProject.Controllers
                 Shape = new ShapeManager(gmObject);
             }
 
-            protected internal override ModelBase Serialize()
+            internal override ModelBase Serialize()
             {
                 throw new InvalidOperationException();
             }
@@ -245,7 +245,7 @@ namespace YoYoProject.Controllers
                     points.Remove(point);
                 }
 
-                protected internal override ModelBase Serialize()
+                internal override ModelBase Serialize()
                 {
                     throw new InvalidOperationException();
                 }
@@ -570,7 +570,7 @@ namespace YoYoProject.Controllers
             ResourceFilter = GMResourceType.AllResources;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMObjectPropertyModel
             {

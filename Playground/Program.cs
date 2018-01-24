@@ -25,14 +25,14 @@ namespace Playground
                 var room = project.Resources.Create<GMRoom>();
                 room.CreationCode = "// Room Creation Code";
 
+                var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
+                //var instPlayer = instLayer.Instances.Create(oPlayer);
+                //instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
+
                 var bgLayer = room.Layers.Create<GMBackgroundLayer>("Background");
                 bgLayer.Sprite = sPlayer;
                 bgLayer.HTiled = true;
                 bgLayer.VTiled = true;
-
-                //var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
-                //var instPlayer = instLayer.Instances.Create(oPlayer);
-                //instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
             }
 
             /*** Objects ***/

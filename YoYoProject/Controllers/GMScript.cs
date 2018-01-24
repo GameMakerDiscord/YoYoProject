@@ -57,7 +57,7 @@ namespace YoYoProject.Controllers
             Contents = "";
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Unload OnSaveComplete
             if (contents != null)

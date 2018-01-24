@@ -259,7 +259,7 @@ namespace YoYoProject.Controllers
                 frame.Resize(w, h);
         }
         
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMSpriteModel
             {
@@ -458,7 +458,7 @@ namespace YoYoProject.Controllers
                 image.Resize(width, height);
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Only do this if dirty
             CompositeImage.SetImage(GenerateCompositeImage());
@@ -551,7 +551,7 @@ namespace YoYoProject.Controllers
             Opacity = 100f;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMSpriteImageLayerModel
             {
@@ -649,7 +649,7 @@ namespace YoYoProject.Controllers
             image = destImage;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             string imageDirectory = Path.GetDirectoryName(ImagePath);
             FileSystem.EnsureDirectory(imageDirectory);

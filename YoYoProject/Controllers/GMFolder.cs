@@ -49,7 +49,7 @@ namespace YoYoProject.Controllers
             // NOTE Nothing to do
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMFolderModel
             {

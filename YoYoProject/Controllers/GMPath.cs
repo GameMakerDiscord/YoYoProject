@@ -62,7 +62,7 @@ namespace YoYoProject.Controllers
             SnapVertical = 0;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMPathModel
             {
@@ -161,7 +161,7 @@ namespace YoYoProject.Controllers
             // NOTE Empty internal ctor to enforce manager pattern
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMPathPointModel
             {

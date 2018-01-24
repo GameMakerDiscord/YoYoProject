@@ -60,7 +60,7 @@ namespace YoYoProject
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMProjectModel
             {

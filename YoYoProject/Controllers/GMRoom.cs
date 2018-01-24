@@ -117,7 +117,7 @@ namespace YoYoProject.Controllers
             }
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Unload OnSaveComplete
             bool creationCodeExists;
@@ -187,7 +187,7 @@ namespace YoYoProject.Controllers
                 set { SetProperty(value, ref worldPixelsToMeters); }
             }
 
-            protected internal override ModelBase Serialize()
+            internal override ModelBase Serialize()
             {
                 return new GMRoomPhysicsSettingsModel
                 {
@@ -240,7 +240,7 @@ namespace YoYoProject.Controllers
                     views.Add(new GMRoomView());
             }
 
-            protected internal override ModelBase Serialize()
+            internal override ModelBase Serialize()
             {
                 return new GMRoomViewSettingsModel
                 {
@@ -368,7 +368,7 @@ namespace YoYoProject.Controllers
                 set { SetProperty(value, ref @object); }
             }
 
-            protected internal override ModelBase Serialize()
+            internal override ModelBase Serialize()
             {
                 return new GMRViewModel
                 {
@@ -421,7 +421,8 @@ namespace YoYoProject.Controllers
                 Id = Guid.NewGuid(),
                 Name = name,
                 Room = gmRoom,
-                Layers = new GMRLayerManager(gmRoom)
+                Layers = new GMRLayerManager(gmRoom),
+                Visible = true
             };
 
             layer.Create();
@@ -438,7 +439,13 @@ namespace YoYoProject.Controllers
 
         internal List<GMRLayerModel> Serialize()
         {
-            return layers.Select(x => (GMRLayerModel)x.Serialize()).ToList();
+            return layers.Select((x, i) =>
+            {
+                var model = (GMRLayerModel)x.Serialize();
+                model.depth = i * 100; // TODO Not entirely right
+
+                return model;
+            }).ToList();
         }
 
         public IEnumerator<GMRLayer> GetEnumerator()
@@ -502,7 +509,7 @@ namespace YoYoProject.Controllers
 
         internal abstract void Create();
 
-        protected internal sealed override ModelBase Serialize()
+        internal sealed override ModelBase Serialize()
         {
             var model = SerializeLayerModel();
             model.id = Id;
@@ -511,9 +518,9 @@ namespace YoYoProject.Controllers
             model.hierarchyFrozen = HierarchyFrozen;
             model.visible = Visible;
             model.inheritVisibility = false; // TODO Implement
-            model.hierarchyVisible = false; // TODO Implement
+            model.hierarchyVisible = true; // TODO Implement
             model.depth = Depth;
-            model.userdefined_depth = 0; // TODO Implement
+            model.userdefined_depth = false; // TODO Implement
             model.inheritLayerDepth = false; // TODO Implement
             model.inheritLayerSettings = false; // TODO Implement
             model.grid_x = GridX;
@@ -685,7 +692,7 @@ namespace YoYoProject.Controllers
             $@"rooms\{Room.Name}\{CreationCodeFile}"
         );
         
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Unload OnSaveComplete
             bool creationCodeExists;
@@ -871,7 +878,7 @@ namespace YoYoProject.Controllers
                 vspeed = VSpeed,
                 stretch = Stretch,
                 animationFPS = AnimationSpeed,
-                animationSpeedType = AnimationSpeedType,
+                animationSpeedType = ((int)AnimationSpeedType).ToString("G"),
                 userdefined_animFPS = false // TODO Implement
             };
         }

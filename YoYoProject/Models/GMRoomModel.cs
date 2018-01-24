@@ -210,7 +210,7 @@ namespace YoYoProject.Models
         public float animationFPS { get; set; }
 
         [DataMember]
-        public GMAnimationSpeedType animationSpeedType { get; set; }
+        public string animationSpeedType { get; set; }
 
         [DataMember]
         public bool userdefined_animFPS { get; set; }
@@ -339,9 +339,6 @@ namespace YoYoProject.Models
     internal class GMRLayerModel : ModelBase
     {
         [DataMember]
-        private string __type { get; set; }
-
-        [DataMember]
         public bool m_serialiseFrozen { get; set; }
 
         [DataMember]
@@ -363,7 +360,7 @@ namespace YoYoProject.Models
         public int depth { get; set; }
 
         [DataMember]
-        public int userdefined_depth { get; set; }
+        public bool userdefined_depth { get; set; }
 
         [DataMember]
         public bool inheritLayerDepth { get; set; }
@@ -386,16 +383,16 @@ namespace YoYoProject.Models
         [DataMember]
         public bool inheritSubLayers { get; set; }
 
-        protected GMRLayerModel(string modelName, string mvc, string mvcType)
-            : base(modelName, mvc)
-        {
-            __type = mvcType;
-        }
-
         public GMRLayerModel()
             : base("GMRLayer", "1.0")
         {
-            __type = null;
+            
+        }
+
+        protected GMRLayerModel(string modelName, string mvc, string mvcType)
+            : base(modelName, mvc, mvcType)
+        {
+            
         }
     }
 

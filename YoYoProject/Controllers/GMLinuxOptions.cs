@@ -155,7 +155,7 @@ namespace YoYoProject.Controllers
             EnableSteam = false;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMLinuxOptionsModel
             {

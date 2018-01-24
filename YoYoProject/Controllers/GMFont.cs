@@ -77,7 +77,7 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
             Ranges.Add(GMFontRange.Normal);
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Generate font texture
             // TODO Generate glyphs

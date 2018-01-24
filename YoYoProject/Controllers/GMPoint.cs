@@ -24,7 +24,7 @@ namespace YoYoProject.Controllers
             Y = y;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMPointModel
             {

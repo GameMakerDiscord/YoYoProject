@@ -103,7 +103,7 @@ namespace YoYoProject.Controllers
             return File.Exists(soundPath) ? File.OpenRead(soundPath) : null;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             if (pendingSoundPath != null)
             {

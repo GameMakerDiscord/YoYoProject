@@ -86,7 +86,7 @@ namespace YoYoProject.Controllers
             this.parent = parent;
         }
         
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             // TODO Unload OnSaveComplete
             if (contents != null)

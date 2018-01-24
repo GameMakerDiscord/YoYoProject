@@ -88,7 +88,7 @@ namespace YoYoProject.Models
     }
 
     [DataContract]
-    public sealed class GMTileAnimationFrameModel : ModelBase
+    internal sealed class GMTileAnimationFrameModel : ModelBase
     {
         [DataMember]
         public string name { get; set; }
@@ -105,7 +105,7 @@ namespace YoYoProject.Models
     }
 
     [DataContract]
-    public sealed class GMTileAnimationModel : ModelBase
+    internal sealed class GMTileAnimationModel : ModelBase
     {
         [DataMember]
         public List<List<uint>> AnimationCreationOrder { get; set; }
@@ -118,7 +118,7 @@ namespace YoYoProject.Models
     }
 
     [DataContract]
-    public sealed class GMTileMapModel : ModelBase
+    internal sealed class GMTileMapModel : ModelBase
     {
         [DataMember]
         public int SerialiseWidth { get; set; }

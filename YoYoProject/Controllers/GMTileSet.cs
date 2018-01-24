@@ -143,7 +143,7 @@ namespace YoYoProject.Controllers
             return (uint)(y * stride + x);
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             int outColumns = 1;
             int tileCount = 0;
@@ -276,7 +276,7 @@ namespace YoYoProject.Controllers
                 animations.Remove(animation);
             }
 
-            protected internal override ModelBase Serialize()
+            internal override ModelBase Serialize()
             {
                 int frameCount = 0;
                 foreach (var animation in animations)
@@ -315,7 +315,7 @@ namespace YoYoProject.Controllers
                 };
             }
 
-            public List<GMTileAnimationFrameModel> SerializeFrames()
+            internal List<GMTileAnimationFrameModel> SerializeFrames()
             {
                 return animations.Select(x => (GMTileAnimationFrameModel)x.Serialize()).ToList();
             }
@@ -407,7 +407,7 @@ namespace YoYoProject.Controllers
             this.tileSet = tileSet;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMAutoTileSetModel
             {
@@ -451,7 +451,7 @@ namespace YoYoProject.Controllers
             this.tileSet = tileSet;
         }
 
-        protected internal override ModelBase Serialize()
+        internal override ModelBase Serialize()
         {
             return new GMTileAnimationFrameModel
             {
