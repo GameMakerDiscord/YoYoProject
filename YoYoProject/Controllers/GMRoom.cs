@@ -459,7 +459,7 @@ namespace YoYoProject.Controllers
         }
     }
 
-    public abstract class GMRLayer : ControllerBase
+    public class GMRLayer : ControllerBase
     {
         private bool hierarchyFrozen;
         public bool HierarchyFrozen
@@ -507,7 +507,10 @@ namespace YoYoProject.Controllers
 
         internal GMRoom Room { get; set; }
 
-        internal abstract void Create();
+        internal virtual void Create()
+        {
+            
+        }
 
         internal sealed override ModelBase Serialize()
         {
@@ -532,7 +535,10 @@ namespace YoYoProject.Controllers
             return model;
         }
 
-        internal abstract GMRLayerModel SerializeLayerModel();
+        internal virtual GMRLayerModel SerializeLayerModel()
+        {
+            return new GMRLayerModel();
+        }
     }
 
     public sealed class GMRInstanceLayer : GMRLayer
@@ -542,11 +548,6 @@ namespace YoYoProject.Controllers
         public GMRInstanceLayer()
         {
             Instances = new InstanceManager(this);
-        }
-
-        internal override void Create()
-        {
-            // NOTE Nothing to do
         }
 
         internal override GMRLayerModel SerializeLayerModel()
@@ -880,6 +881,108 @@ namespace YoYoProject.Controllers
                 animationFPS = AnimationSpeed,
                 animationSpeedType = ((int)AnimationSpeedType).ToString("G"),
                 userdefined_animFPS = false // TODO Implement
+            };
+        }
+    }
+
+    public sealed class GMTileLayer : GMRLayer
+    {
+        private GMTileSet tileset;
+        public GMTileSet Tileset
+        {
+            get { return GetProperty(tileset); }
+            set { SetProperty(value, ref tileset); }
+        }
+        
+        private int x;
+        public int X
+        {
+            get { return GetProperty(x); }
+            set { SetProperty(value, ref x); }
+        }
+        
+        private int y;
+        public int Y
+        {
+            get { return GetProperty(y); }
+            set { SetProperty(value, ref y); }
+        }
+        
+        public TileMap Tiles { get; }
+
+        internal GMTileLayer()
+        {
+            Tiles = new TileMap();
+        }
+
+        internal override void Create()
+        {
+            Tileset = null;
+            X = 0;
+            Y = 0;
+        }
+
+        internal override GMRLayerModel SerializeLayerModel()
+        {
+            return new GMRTileLayerModel
+            {
+                tilesetId = Tileset?.Id ?? Guid.Empty,
+                x = X,
+                y = Y,
+                tiles = Tiles.Serialize(),
+                prev_tilewidth = Tileset?.TileWidth ?? 0,
+                prev_tileheight = Tileset?.TileHeight ?? 0
+            };
+        }
+    }
+
+    public sealed class GMPathLayer : GMRLayer
+    {
+        private GMPath path;
+        public GMPath Path
+        {
+            get { return GetProperty(path); }
+            set { SetProperty(value, ref path); }
+        }
+        
+        private Color color;
+        public Color Color
+        {
+            get { return GetProperty(color); }
+            set { SetProperty(value, ref color); }
+        }
+
+        internal override void Create()
+        {
+            Path = null;
+            Color = null;
+        }
+
+        internal override GMRLayerModel SerializeLayerModel()
+        {
+            return new GMRPathLayerModel
+            {
+                pathId = Path?.Id ?? Guid.Empty,
+                colour = Color
+            };
+        }
+    }
+
+    public sealed class GMAssetLayer : GMRLayer
+    {
+        // TODO Implement manager
+        public List<GMRLayerItemBase> Assets { get; }
+
+        public GMAssetLayer()
+        {
+            Assets = new List<GMRLayerItemBase>();
+        }
+
+        internal override GMRLayerModel SerializeLayerModel()
+        {
+            return new GMRAssetLayerModel
+            {
+                assets = Assets.Select(x => (GMRLayerItemModelBase)x.Serialize()).ToList()
             };
         }
     }

@@ -90,7 +90,7 @@ namespace YoYoProject.Controllers
 
         public AnimationsManager Animations { get; }
 
-        public BrushManager Brushes { get; }
+        public TileMap Brushes { get; }
 
         public int TileCount
         {
@@ -109,7 +109,7 @@ namespace YoYoProject.Controllers
         {
             AutoTileSets = new AutoTileSetManager(this);
             Animations = new AnimationsManager(this);
-            Brushes = new BrushManager(this);
+            Brushes = new TileMap();
         }
 
         protected internal override void Create()
@@ -328,44 +328,6 @@ namespace YoYoProject.Controllers
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
-            }
-        }
-
-        // TODO Implement me
-        // TODO Not a Manager lol
-        // TODO Expose for GMRoom?
-        public sealed class BrushManager
-        {
-            private uint[,] tiles;
-
-            private readonly GMTileSet tileSet;
-
-            internal BrushManager(GMTileSet tileSet)
-            {
-                if (tileSet == null)
-                    throw new ArgumentNullException(nameof(tileSet));
-
-                tiles = new uint[0, 0];
-                this.tileSet = tileSet;
-            }
-
-            internal GMTileMapModel Serialize()
-            {
-                int width = tiles.GetLength(0);
-                int height = tiles.GetLength(1);
-                uint[] tileData = new uint[width * height];
-                for (int y = 0; y < height; ++y)
-                {
-                    for (int x = 0; x < width; ++x)
-                        tileData[y * width + x] = tiles[x, y];
-                }
-
-                return new GMTileMapModel
-                {
-                    SerialiseWidth = width,
-                    SerialiseHeight = height,
-                    TileSerialiseData = tileData
-                };
             }
         }
     }
