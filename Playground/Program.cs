@@ -13,30 +13,36 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Rooms ***/
+            /*** Notes ***/
             {
-                var sPlayer = project.Resources.Create<GMSprite>();
-                var frame = sPlayer.Frames.Create();
-                frame.SetImage(@"C:\Temp\GMProjects\_Resources\00.png");
-
-                var oPlayer = project.Resources.Create<GMObject>();
-                oPlayer.Sprite = sPlayer;
-
-                var room = project.Resources.Create<GMRoom>();
-                room.CreationCode = "// Room Creation Code";
-
-                var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
-                var instPlayer = instLayer.Instances.Create(oPlayer);
-                instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
-
-                var bgLayer = room.Layers.Create<GMBackgroundLayer>("Background");
-                bgLayer.Sprite = sPlayer;
-                bgLayer.HTiled = true;
-                bgLayer.VTiled = true;
-
-                var aLayer = room.Layers.Create<GMRLayer>("foo");
-                var bLayer = aLayer.Layers.Create<GMRInstanceLayer>("bar instances");
+                var note = project.Resources.Create<GMNotes>();
+                note.Contents = "Hello, World!";
             }
+
+            /*** Rooms ***/
+            //{
+            //    var sPlayer = project.Resources.Create<GMSprite>();
+            //    var frame = sPlayer.Frames.Create();
+            //    frame.SetImage(@"C:\Temp\GMProjects\_Resources\00.png");
+
+            //    var oPlayer = project.Resources.Create<GMObject>();
+            //    oPlayer.Sprite = sPlayer;
+
+            //    var room = project.Resources.Create<GMRoom>();
+            //    room.CreationCode = "// Room Creation Code";
+
+            //    var instLayer = room.Layers.Create<GMRInstanceLayer>("Instances");
+            //    var instPlayer = instLayer.Instances.Create(oPlayer);
+            //    instPlayer.CreationCode = $"// Instance Creation Code - {instPlayer.Name}";
+
+            //    var bgLayer = room.Layers.Create<GMBackgroundLayer>("Background");
+            //    bgLayer.Sprite = sPlayer;
+            //    bgLayer.HTiled = true;
+            //    bgLayer.VTiled = true;
+
+            //    var aLayer = room.Layers.Create<GMRLayer>("foo");
+            //    var bLayer = aLayer.Layers.Create<GMRInstanceLayer>("bar instances");
+            //}
 
             /*** Objects ***/
             //{
