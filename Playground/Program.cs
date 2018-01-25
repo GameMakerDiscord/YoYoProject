@@ -13,11 +13,21 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Notes ***/
+            /*** Include Files ***/
             {
-                var note = project.Resources.Create<GMNotes>();
-                note.Contents = "Hello, World!";
+                var includeFile = project.Resources.Create<GMIncludedFile>();
+                includeFile.SetFile(@"C:\Temp\GMProjects\_Resources\foobar.txt");
+
+                using (var stream = includeFile.GetFileStream())
+                using (var reader = new StreamReader(stream))
+                    Console.WriteLine(reader.ReadToEnd());
             }
+
+            /*** Notes ***/
+            //{
+            //    var note = project.Resources.Create<GMNotes>();
+            //    note.Contents = "Hello, World!";
+            //}
 
             /*** Rooms ***/
             //{

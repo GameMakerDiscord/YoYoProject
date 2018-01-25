@@ -44,6 +44,7 @@
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\GMEvent.cs" />
     <Compile Include="Controllers\GMFont.cs" />
+    <Compile Include="Controllers\GMIncludedFile.cs" />
     <Compile Include="Controllers\GMLinuxOptions.cs" />
     <Compile Include="Controllers\GMMainOptions.cs" />
     <Compile Include="Common\Color.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Models\GMFolderModel.cs" />
     <Compile Include="Models\GMFontModel.cs" />
     <Compile Include="Models\GMGraphicsOptionsModel.cs" />
+    <Compile Include="Models\GMIncludedFileModel.cs" />
     <Compile Include="Models\GMLinuxOptionsModel.cs" />
     <Compile Include="Models\GMMacOptionsModel.cs" />
     <Compile Include="Models\GMMainOptionsModel.cs" />
