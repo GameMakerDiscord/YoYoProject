@@ -299,7 +299,7 @@ namespace YoYoProject.Controllers
             private readonly List<GMEvent> events;
             private readonly GMObject gmObject;
 
-            public EventManager(GMObject gmObject)
+            internal EventManager(GMObject gmObject)
             {
                 if (gmObject == null)
                     throw new ArgumentNullException(nameof(gmObject));
