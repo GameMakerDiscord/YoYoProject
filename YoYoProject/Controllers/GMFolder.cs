@@ -37,16 +37,16 @@ namespace YoYoProject.Controllers
 
         public List<GMResource> Children { get; set; } 
 
-        protected internal override string ResourcePath => $@"views\{Id}.yy";
+        internal override string ResourcePath => $@"views\{Id}.yy";
 
         public GMFolder()
         {
             Children = new List<GMResource>();
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            // NOTE Nothing to do
+            FolderName = name ?? Project.Resources.GenerateValidName("folder");
         }
 
         internal override ModelBase Serialize()
@@ -55,7 +55,7 @@ namespace YoYoProject.Controllers
             {
                 id = Id,
                 name = Id.ToString(),
-                folderName = folderName,
+                folderName = FolderName,
                 children = Children.Select(x => x.Id).ToList(),
                 filterType = filterType,
                 isDefaultView = isDefaultView,

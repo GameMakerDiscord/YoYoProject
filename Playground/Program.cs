@@ -17,7 +17,10 @@ namespace Playground
 
             /*** Extensions ***/
             {
-                var extension = project.Resources.Create<GMExtension>();
+                project.Resources.Create<GMSprite>();
+                project.Resources.Create<GMSprite>();
+
+                var extension = project.Resources.Create<GMExtension>("wow");
                 var extFile = extension.Files.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\test.gml");
                 extFile.Constants.Create("WOW", "\"It's made!\"");
                 extFile.InitFunction = extFile.Functions.Create("init");

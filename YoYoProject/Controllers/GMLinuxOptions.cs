@@ -131,9 +131,9 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref enableSteam); }
         }
         
-        protected internal override string ResourcePath => @"options\linux\options_linux.yy";
-        
-        protected internal override void Create()
+        internal override string ResourcePath => @"options\linux\options_linux.yy";
+
+        internal override void Create(string name)
         {
             DisplayName = "Made in GameMaker Studio 2";
             Version = new BuildVersion(1, 0, 0, 0);

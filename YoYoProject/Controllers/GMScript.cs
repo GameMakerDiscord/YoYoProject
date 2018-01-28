@@ -45,13 +45,13 @@ namespace YoYoProject.Controllers
             }
         }
 
-        protected internal override string ResourcePath => $@"scripts\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"scripts\{Name}\{Name}.yy";
 
         private string ScriptFullPath => Path.Combine(Project.RootDirectory, $@"scripts\{Name}\{Name}.gml");
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("script");
+            Name = Project.Resources.GenerateValidName(name ?? "script");
             IsCompatibility = false;
             IsDnD = Project.DragAndDrop;
             Contents = "";

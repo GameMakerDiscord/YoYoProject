@@ -85,7 +85,7 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref audio); }
         }
         
-        protected internal override string ResourcePath => @"options\main\options_main.yy";
+        internal override string ResourcePath => @"options\main\options_main.yy";
 
         public GMMainOptions()
         {
@@ -93,7 +93,7 @@ namespace YoYoProject.Controllers
             Audio = new GMAudioOptions();
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
             GameGuid = Guid.NewGuid();
             GameSpeed = 60;

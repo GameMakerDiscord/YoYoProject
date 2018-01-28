@@ -57,16 +57,16 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
         
         public RangeManager Ranges { get; }
 
-        protected internal override string ResourcePath => $@"fonts\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"fonts\{Name}\{Name}.yy";
 
         public GMFont()
         {
             Ranges = new RangeManager(this);
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("font");
+            Name = Project.Resources.GenerateValidName(name ?? "font");
             FontName = "Arial";
             StyleName = "Regular";
             Size = 12;

@@ -33,11 +33,11 @@ namespace YoYoProject.Controllers
 
         private string ContentsFullPath => Path.Combine(Project.RootDirectory, $@"notes\{Name}.txt");
 
-        protected internal override string ResourcePath => $@"notes\{Name}.yy";
+        internal override string ResourcePath => $@"notes\{Name}.yy";
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("note");
+            Name = Project.Resources.GenerateValidName(name ?? "note");
         }
 
         internal override ModelBase Serialize()

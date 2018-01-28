@@ -31,7 +31,7 @@ namespace YoYoProject
             this.project = project;
         }
 
-        public TResource Create<TResource>()
+        public TResource Create<TResource>(string name = null)
             where TResource : GMResource, new()
         {
             var resource = new TResource
@@ -41,7 +41,7 @@ namespace YoYoProject
                 Id = Guid.NewGuid()
             };
 
-            resource.Create();
+            resource.Create(name);
             resources.Add(resource.Id, resource);
 
             return resource;
@@ -122,7 +122,7 @@ namespace YoYoProject
             if (prefix == null)
                 prefix = "resource";
 
-            string name = prefix + '0';
+            string name = prefix;
             for (int i = 1; Get(name) != null; ++i)
                 name = prefix + i.ToString("G");
             

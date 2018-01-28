@@ -200,11 +200,11 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref swatchColors); }
         }
 
-        protected internal override string ResourcePath => $@"sprites\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"sprites\{Name}\{Name}.yy";
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("sprite");
+            Name = Project.Resources.GenerateValidName(name ?? "sprite");
             BboxMode = GMSpriteBboxMode.Automatic;
             CollisionKind = GMSpriteColKind.Rectangle;
             SeparateMasks = false;

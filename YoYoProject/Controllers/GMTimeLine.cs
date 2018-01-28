@@ -10,16 +10,16 @@ namespace YoYoProject.Controllers
     {
         public MomentManager Moments { get; }
 
-        protected internal override string ResourcePath => $@"timelines\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"timelines\{Name}\{Name}.yy";
 
         public GMTimeline()
         {
             Moments = new MomentManager(this);
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("timeline");
+            Name = Project.Resources.GenerateValidName(name ?? "timeline");
         }
 
         internal override ModelBase Serialize()

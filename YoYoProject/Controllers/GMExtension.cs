@@ -30,7 +30,7 @@ namespace YoYoProject.Controllers
 
         public FileManager Files { get; }
         
-        protected internal override string ResourcePath => $@"extensions\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"extensions\{Name}\{Name}.yy";
 
         public GMExtension()
         {
@@ -39,9 +39,9 @@ namespace YoYoProject.Controllers
             Files = new FileManager(this);
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("extension");
+            Name = Project.Resources.GenerateValidName(name ?? "extension");
             Version = new BuildVersion(1, 0, 0);
             TargetPlatforms = TargetPlatforms.AllPlatforms;
         }

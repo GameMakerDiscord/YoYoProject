@@ -70,15 +70,15 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref audioGroup); }
         }
 
-        protected internal override string ResourcePath => $@"sounds\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"sounds\{Name}\{Name}.yy";
 
         private string FullSoundPath => Path.Combine(Project.RootDirectory, $@"sounds\{Name}\{Name}");
 
         private string pendingSoundPath;
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("sound");
+            Name = Project.Resources.GenerateValidName(name ?? "sound");
             CompressionKind = GMSoundCompression.Uncompressed;
             Volume = 1.0f;
             PreLoad = false;

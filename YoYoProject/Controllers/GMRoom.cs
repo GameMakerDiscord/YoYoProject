@@ -70,7 +70,7 @@ namespace YoYoProject.Controllers
 
         public GMRoomPhysics Physics { get; }
 
-        protected internal override string ResourcePath => $@"rooms\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"rooms\{Name}\{Name}.yy";
 
         private string CreationCodeFile => "RoomCreationCode.gml";
 
@@ -86,9 +86,9 @@ namespace YoYoProject.Controllers
             Physics = new GMRoomPhysics();
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("room");
+            Name = Project.Resources.GenerateValidName(name ?? "room");
             Width = 1024;
             Height = 768;
             Persistent = false;

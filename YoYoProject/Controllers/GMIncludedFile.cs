@@ -31,11 +31,11 @@ namespace YoYoProject.Controllers
 
         private string pendingFilePath;
 
-        protected internal override string ResourcePath => $@"datafiles_yy\{Name}.yy";
+        internal override string ResourcePath => $@"datafiles_yy\{Name}.yy";
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("includefile");
+            Name = Project.Resources.GenerateValidName(name ?? "includefile");
             Platforms = TargetPlatforms.AllPlatforms;
             FilePath = "datafiles";
             FileName = null;

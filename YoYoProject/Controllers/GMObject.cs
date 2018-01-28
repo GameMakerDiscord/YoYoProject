@@ -58,7 +58,7 @@ namespace YoYoProject.Controllers
         
         public PropertyManager Properties { get; }
 
-        protected internal override string ResourcePath => $@"objects\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"objects\{Name}\{Name}.yy";
 
         public GMObject()
         {
@@ -67,9 +67,9 @@ namespace YoYoProject.Controllers
             Properties = new PropertyManager(this);
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("object");
+            Name = Project.Resources.GenerateValidName(name ?? "object");
             Sprite = null;
             Mask = null;
             Parent = null;

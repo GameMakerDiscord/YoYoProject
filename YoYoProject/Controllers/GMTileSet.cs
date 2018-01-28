@@ -103,7 +103,7 @@ namespace YoYoProject.Controllers
             }
         }
         
-        protected internal override string ResourcePath => $@"tilesets\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"tilesets\{Name}\{Name}.yy";
 
         public GMTileSet()
         {
@@ -112,9 +112,9 @@ namespace YoYoProject.Controllers
             Brushes = new TileMap();
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("tileset");
+            Name = Project.Resources.GenerateValidName(name ?? "tileset");
             Sprite = null;
             TileWidth = 16;
             TileHeight = 16;

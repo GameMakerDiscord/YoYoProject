@@ -167,9 +167,9 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref enableSteam); }
         }
         
-        protected internal override string ResourcePath => @"options\mac\options_mac.yy";
+        internal override string ResourcePath => @"options\mac\options_mac.yy";
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
             DisplayName = "Made in GameMaker Studio 2";
             AppId = "com.company.game";

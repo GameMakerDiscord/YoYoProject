@@ -45,16 +45,16 @@ namespace YoYoProject.Controllers
 
         public PointManager Points { get; }
 
-        protected internal override string ResourcePath => $@"paths\{Name}\{Name}.yy";
+        internal override string ResourcePath => $@"paths\{Name}\{Name}.yy";
 
         public GMPath()
         {
             Points = new PointManager(this);
         }
 
-        protected internal override void Create()
+        internal override void Create(string name)
         {
-            Name = Project.Resources.GenerateValidName("path");
+            Name = Project.Resources.GenerateValidName(name ?? "path");
             Kind = GMPathKind.StraightLines;
             Closed = false;
             Precision = 4;
