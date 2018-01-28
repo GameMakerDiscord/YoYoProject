@@ -51,11 +51,26 @@ namespace YoYoProject.Utility
             }
         }
 
+        public static object Deserialize(Type type, string path)
+        {
+            using (var stream = File.OpenRead(path))
+                return Deserialize(type, stream);
+        }
+
         public static T Deserialize<T>(string path)
             where T : new()
         {
             using (var stream = File.OpenRead(path))
                 return Deserialize<T>(stream);
+        }
+
+        public static object Deserialize(Type type, Stream stream)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            var json = CreateSerialize(type);
+            return json.ReadObject(stream);
         }
 
         public static T Deserialize<T>(Stream stream)

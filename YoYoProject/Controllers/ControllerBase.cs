@@ -22,6 +22,12 @@ namespace YoYoProject.Controllers
         //      would look like at that config without any side-effects
         internal abstract ModelBase Serialize();
 
+        internal virtual void Deserialize(ModelBase model)
+        {
+            // TODO Eventually become abstract
+            throw new NotImplementedException();
+        }
+
         // ReSharper disable AssignNullToNotNullAttribute
         protected T GetProperty<T>(T value, [CallerMemberName] string propertyName = null)
         {

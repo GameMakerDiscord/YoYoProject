@@ -296,6 +296,43 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            var sprite = (GMSpriteModel)model;
+
+            Name = sprite.name;
+            BboxMode = sprite.bboxmode;
+            CollisionKind = sprite.colkind;
+            SeparateMasks = sprite.sepmasks;
+            Type = sprite.type;
+            PremultiplyAlpha = sprite.premultiplyAlpha;
+            EdgeFiltering = sprite.edgeFiltering;
+            OriginX = sprite.xorig;
+            OriginY = sprite.yorig;
+            CollisonTolerance = sprite.coltolerance;
+            SwfPrecision = sprite.swfPrecision;
+            BboxLeft = sprite.bbox_left;
+            BboxRight = sprite.bbox_right;
+            BboxTop = sprite.bbox_top;
+            BboxBottom = sprite.bbox_bottom;
+            HorizontalTile = sprite.HTile;
+            VerticalTile = sprite.VTile;
+            For3D = sprite.For3D;
+            OriginLocked = sprite.originLocked;
+            // TODO Implement
+            //TextureGroup = Project.Resources.Get<GMMainOptions>()
+            //                      .Graphics.GetTextureGroup(sprite.textureGroupId);
+            Width = sprite.width;
+            Height = sprite.height;
+            GridX = sprite.gridX;
+            GridY = sprite.gridY;
+            Layers.Deserialize(sprite.layers);
+            Frames.Deserialize(sprite.frames);
+            PlaybackSpeed = sprite.playbackSpeed;
+            PlaybackSpeedType = sprite.playbackSpeedType;
+            SwatchColors = sprite.swatchColours?.Select(x => new Color(x)).ToList();
+        }
+
         public sealed class FrameManager : IReadOnlyList<GMSpriteFrame>
         {
             public int Count => frames.Count;
@@ -326,6 +363,11 @@ namespace YoYoProject.Controllers
                 return frame;
             }
 
+            public GMSpriteFrame Get(Guid id)
+            {
+                return frames.FirstOrDefault(x => x.Id == id);
+            }
+
             public void Delete(GMSpriteFrame frame)
             {
                 frames.Remove(frame);
@@ -335,6 +377,20 @@ namespace YoYoProject.Controllers
             public void Clear()
             {
                 frames.Clear();
+            }
+
+            internal void Deserialize(List<GMSpriteFrameModel> model)
+            {
+                foreach (var modelFrame in model)
+                {
+                    var frame = new GMSpriteFrame(sprite)
+                    {
+                        Id = modelFrame.id
+                    };
+
+                    frame.Deserialize(modelFrame);
+                    frames.Add(frame);
+                }
             }
 
             public IEnumerator<GMSpriteFrame> GetEnumerator()
@@ -382,6 +438,11 @@ namespace YoYoProject.Controllers
                 return layer;
             }
 
+            public GMSpriteImageLayer Get(Guid id)
+            {
+                return layers.FirstOrDefault(x => x.Id == id);
+            }
+
             public void Delete(GMSpriteImageLayer layer)
             {
                 if (layer == null)
@@ -400,6 +461,17 @@ namespace YoYoProject.Controllers
                 return layers.IndexOf(layer);
             }
 
+            internal void Deserialize(List<GMSpriteImageLayerModel> modelLayers)
+            {
+                foreach (var modelLayer in modelLayers)
+                {
+                    var layer = new GMSpriteImageLayer(sprite);
+                    layer.Deserialize(modelLayer);
+
+                    layers.Add(layer);
+                }
+            }
+
             public IEnumerator<GMSpriteImageLayer> GetEnumerator()
             {
                 return layers.GetEnumerator();
@@ -416,7 +488,7 @@ namespace YoYoProject.Controllers
     {
         public GMSprite Sprite { get; }
 
-        public GMSpriteImage CompositeImage { get; }
+        public GMSpriteImage CompositeImage { get; private set; }
 
         // NOTE It's important that the order of this list be maintained by the LayerManager
         public IReadOnlyList<GMSpriteImage> Layers => layers;
@@ -471,6 +543,29 @@ namespace YoYoProject.Controllers
                 images = layers.Select(x => (GMSpriteImageModel)x.Serialize())
                                .ToList()
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var frame = (GMSpriteFrameModel)model;
+
+            Id = frame.id;
+            CompositeImage = GMSpriteImage.FromExisting(
+                frame.compositeImage.id,
+                this,
+                Sprite.Layers.Get(frame.compositeImage.LayerId)
+            );
+
+            foreach (var imageModel in frame.images)
+            {
+                var image = GMSpriteImage.FromExisting(
+                    imageModel.id,
+                    this,
+                    Sprite.Layers.Get(imageModel.LayerId)
+                );
+
+                layers.Add(image);
+            }
         }
 
         private Image GenerateCompositeImage()
@@ -563,6 +658,18 @@ namespace YoYoProject.Controllers
                 blendMode = BlendMode,
                 opacity = Opacity
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var layer = (GMSpriteImageLayerModel)model;
+
+            Id = layer.id;
+            Name = layer.name;
+            Visible = layer.visible;
+            IsLocked = layer.isLocked;
+            BlendMode = layer.blendMode;
+            Opacity = layer.opacity;
         }
     }
 
@@ -684,6 +791,14 @@ namespace YoYoProject.Controllers
             {
                 Id = Guid.NewGuid(),
                 image = new Bitmap(frame.Sprite.Width, frame.Sprite.Height)
+            };
+        }
+
+        internal static GMSpriteImage FromExisting(Guid id, GMSpriteFrame frame, GMSpriteImageLayer layer)
+        {
+            return new GMSpriteImage(frame, layer)
+            {
+                Id = id
             };
         }
     }

@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using YoYoProject.Controllers;
+using YoYoProject.Models;
+using YoYoProject.Utility;
 
 namespace YoYoProject
 {
@@ -149,7 +152,35 @@ namespace YoYoProject
 
             return resourceInfos;
         }
-        
+
+        internal void Deserialize(SortedDictionary<Guid, GMResourceInfoModel> projectResources)
+        {
+            if (projectResources == null)
+                throw new ArgumentNullException(nameof(projectResources));
+
+            foreach (var kvp in projectResources)
+            {
+                var id = kvp.Key;
+                var info = kvp.Value;
+
+                Tuple<Type, Type> modelType;
+                if (!ModelTypes.TryGetValue(info.resourceType, out modelType)) // TODO Throw exception
+                    continue;
+
+                // TODO Optimize
+                var resource = (GMResource)Activator.CreateInstance(modelType.Item1);
+                resource.Project = project;
+                resource.ResourceInfoId = info.id;
+                resource.Id = id;
+
+                var fullPath = Path.Combine(project.RootDirectory, info.resourcePath);
+                var model = (ModelBase)Json.Deserialize(modelType.Item2, fullPath);
+                resource.Deserialize(model);
+
+                resources.Add(resource.Id, resource);
+            }
+        }
+
         public IEnumerator<GMResource> GetEnumerator()
         {
             return resources.Values.GetEnumerator();
@@ -166,5 +197,10 @@ namespace YoYoProject
         {
             return resources.GetEnumerator();
         }
+
+        private readonly static Dictionary<string, Tuple<Type, Type>> ModelTypes = new Dictionary<string, Tuple<Type, Type>>
+        {
+            ["GMSprite"] = Tuple.Create(typeof(GMSprite), typeof(GMSpriteModel))
+        };
     }
 }

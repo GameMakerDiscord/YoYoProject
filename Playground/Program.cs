@@ -11,26 +11,46 @@ namespace Playground
     {
         public static void Main(string[] args)
         {
+            LoadProject();
+            Console.ReadKey();
+        }
+
+        private static void LoadProject()
+        {
+            var rootDirectory = @"C:\Temp\GMProjects\Empty";
+            var project = GMProject.Load(rootDirectory);
+
+            /*** Sprites ***/
+            {
+                foreach(var sprite in project.Resources.GetAllOfType<GMSprite>())
+                    Console.WriteLine("SPR {0} - {1}x{2}", sprite.Name, sprite.Width, sprite.Height);
+            }
+
+            Console.WriteLine("Done");
+        }
+
+        private static void NewProject()
+        {
             var projectName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
             /*** Extensions ***/
-            {
-                project.Resources.Create<GMSprite>();
-                project.Resources.Create<GMSprite>();
+            //{
+            //    project.Resources.Create<GMSprite>();
+            //    project.Resources.Create<GMSprite>();
 
-                var extension = project.Resources.Create<GMExtension>("wow");
-                var extFile = extension.Files.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\test.gml");
-                extFile.Constants.Create("WOW", "\"It's made!\"");
-                extFile.InitFunction = extFile.Functions.Create("init");
-                extFile.FinalFunction = extFile.Functions.Create("final");
+            //    var extension = project.Resources.Create<GMExtension>("wow");
+            //    var extFile = extension.Files.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\test.gml");
+            //    extFile.Constants.Create("WOW", "\"It's made!\"");
+            //    extFile.InitFunction = extFile.Functions.Create("init");
+            //    extFile.FinalFunction = extFile.Functions.Create("final");
 
-                var wowFunc = extFile.Functions.Create("wow");
-                wowFunc.Arguments.Add(VariableType.String);
+            //    var wowFunc = extFile.Functions.Create("wow");
+            //    wowFunc.Arguments.Add(VariableType.String);
 
-                extFile.ProxyFiles.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\proxy.dll", TargetPlatforms.Windows);
-            }
+            //    extFile.ProxyFiles.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\proxy.dll", TargetPlatforms.Windows);
+            //}
 
             /*** Include Files ***/
             //{
@@ -198,7 +218,6 @@ namespace Playground
             project.Save();
 
             Console.WriteLine(projectName);
-            Console.ReadKey();
         }
     }
 }

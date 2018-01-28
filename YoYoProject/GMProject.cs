@@ -70,9 +70,42 @@ namespace YoYoProject
                 resources = Resources.Serialize(),
                 IsDnDProject = DragAndDrop,
                 option_ecma = JavaScript,
-                script_order = new List<Guid>(), // TODO Order script resources appear in Scripts GMFolder
+                script_order = Resources.GetAllOfType<GMScript>().Select(x => x.Id).ToList(),
                 tutorial = ""
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var project = (GMProjectModel)model;
+
+            Resources.Deserialize(project.resources);
+            DragAndDrop = project.IsDnDProject;
+            JavaScript = project.option_ecma;
+        }
+
+        public static GMProject Load(string rootDirectory)
+        {
+            if (rootDirectory == null)
+                throw new ArgumentNullException(nameof(rootDirectory));
+
+            var project = new GMProject
+            {
+                RootDirectory = rootDirectory,
+                ParentProject = new GMProjectParent(),
+                Resources = null,
+                Configs = new ConfigTree(),
+            };
+
+            project.Resources = new GMResourceManager(project); // TODO Ewww
+
+            var projectName = rootDirectory.GetTerminalDirectoryName();
+            var path = Path.Combine(rootDirectory, projectName + ".yyp");
+            var model = Json.Deserialize<GMProjectModel>(path);
+
+            project.Deserialize(model);
+
+            return project;
         }
 
         public static GMProject New(string rootDirectory)

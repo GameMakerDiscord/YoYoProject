@@ -167,6 +167,11 @@ namespace YoYoProject.Controllers
             return textureGroup;
         }
 
+        public GMTextureGroup GetTextureGroup(Guid groupId)
+        {
+            return TextureGroups.FirstOrDefault(x => x.Id == groupId);
+        }
+
         internal GMGraphicsOptionsModel Serialize()
         {
             return new GMGraphicsOptionsModel
