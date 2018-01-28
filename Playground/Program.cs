@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using YoYoProject;
+using YoYoProject.Common;
 using YoYoProject.Controllers;
+using YoYoProject.Models;
 
 namespace Playground
 {
@@ -13,15 +15,29 @@ namespace Playground
             var rootDirectory = Path.Combine(@"C:\Temp\GMProjects", projectName);
             var project = GMProject.New(rootDirectory);
 
-            /*** Include Files ***/
+            /*** Extensions ***/
             {
-                var includeFile = project.Resources.Create<GMIncludedFile>();
-                includeFile.SetFile(@"C:\Temp\GMProjects\_Resources\foobar.txt");
+                var extension = project.Resources.Create<GMExtension>();
+                var extFile = extension.Files.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\test.gml");
+                extFile.Constants.Create("WOW", "\"It's made!\"");
+                extFile.InitFunction = extFile.Functions.Create("init");
+                extFile.FinalFunction = extFile.Functions.Create("final");
 
-                using (var stream = includeFile.GetFileStream())
-                using (var reader = new StreamReader(stream))
-                    Console.WriteLine(reader.ReadToEnd());
+                var wowFunc = extFile.Functions.Create("wow");
+                wowFunc.Arguments.Add(VariableType.String);
+
+                extFile.ProxyFiles.CreateFromDisk(@"C:\Temp\GMProjects\_Resources\proxy.dll", TargetPlatforms.Windows);
             }
+
+            /*** Include Files ***/
+            //{
+            //    var includeFile = project.Resources.Create<GMIncludedFile>();
+            //    includeFile.SetFile(@"C:\Temp\GMProjects\_Resources\foobar.txt");
+
+            //    using (var stream = includeFile.GetFileStream())
+            //    using (var reader = new StreamReader(stream))
+            //        Console.WriteLine(reader.ReadToEnd());
+            //}
 
             /*** Notes ***/
             //{

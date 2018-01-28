@@ -72,7 +72,7 @@ namespace YoYoProject.Controllers
 
         protected internal override string ResourcePath => $@"sounds\{Name}\{Name}.yy";
 
-        private string SoundPath => Path.Combine(Project.RootDirectory, $@"sounds\{Name}\{Name}");
+        private string FullSoundPath => Path.Combine(Project.RootDirectory, $@"sounds\{Name}\{Name}");
 
         private string pendingSoundPath;
 
@@ -97,9 +97,9 @@ namespace YoYoProject.Controllers
             pendingSoundPath = path;
         }
 
-        public Stream GetAudioFileStream()
+        public FileStream GetAudioFileStream()
         {
-            string soundPath = pendingSoundPath ?? SoundPath;
+            string soundPath = pendingSoundPath ?? FullSoundPath;
             return File.Exists(soundPath) ? File.OpenRead(soundPath) : null;
         }
 
@@ -107,7 +107,7 @@ namespace YoYoProject.Controllers
         {
             if (pendingSoundPath != null)
             {
-                File.Copy(pendingSoundPath, SoundPath, true);
+                File.Copy(pendingSoundPath, FullSoundPath, true);
                 pendingSoundPath = null;
             }
 

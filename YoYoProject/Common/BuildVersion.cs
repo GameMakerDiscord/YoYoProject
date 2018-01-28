@@ -31,5 +31,16 @@ namespace YoYoProject.Common
             this.build = build;
             this.revision = revision;
         }
+
+        public BuildVersion(int major, int minor, int build)
+            : this(major, minor, build, 0)
+        {
+            
+        }
+
+        public override string ToString()
+        {
+            return $"{major}.{minor}.{revision}";
+        }
     }
 }

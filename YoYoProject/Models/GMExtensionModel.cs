@@ -6,7 +6,7 @@ using YoYoProject.Common;
 namespace YoYoProject.Models
 {
     [DataContract]
-    internal sealed class GMExtensionModel : ModelBase
+    internal sealed class GMExtensionModel : GMResourceModel
     {
         // NOTE Deprecated
         [DataMember]
@@ -252,7 +252,7 @@ namespace YoYoProject.Models
 
     public enum VariableType
     {
-        Double = 1,
-        String = 2
+        String = 0,
+        Double = 1
     }
 }
