@@ -202,6 +202,13 @@ namespace YoYoProject.Controllers
 
         internal override string ResourcePath => $@"sprites\{Name}\{Name}.yy";
 
+        public GMSprite()
+        {
+            Frames = new FrameManager(this);
+            Layers = new LayerManager(this);
+            SwatchColors = new List<Color>();
+        }
+
         internal override void Create(string name)
         {
             Name = Project.Resources.GenerateValidName(name ?? "sprite");
@@ -234,13 +241,7 @@ namespace YoYoProject.Controllers
 
             Layers.Create();
         }
-
-        public GMSprite()
-        {
-            Frames = new FrameManager(this);
-            Layers = new LayerManager(this);
-        }
-
+        
         public void Resize(int w, int h)
         {
             if (w < 0)
@@ -330,7 +331,7 @@ namespace YoYoProject.Controllers
             Frames.Deserialize(sprite.frames);
             PlaybackSpeed = sprite.playbackSpeed;
             PlaybackSpeedType = sprite.playbackSpeedType;
-            SwatchColors = sprite.swatchColours?.Select(x => new Color(x)).ToList();
+            SwatchColors = sprite.swatchColours?.Select(x => new Color(x)).ToList() ?? new List<Color>();
         }
 
         public sealed class FrameManager : IReadOnlyList<GMSpriteFrame>

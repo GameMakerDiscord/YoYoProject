@@ -35,6 +35,9 @@ namespace YoYoProject
 
             foreach (var resource in Resources)
             {
+                if (!resource.Dirty)
+                    continue;
+
                 // Base Resource
                 var fullPath = Path.Combine(RootDirectory, resource.ResourcePath);
                 var resourceDirectory = Path.GetDirectoryName(fullPath);
@@ -65,6 +68,7 @@ namespace YoYoProject
             return new GMProjectModel
             {
                 // TODO Would be nice if I knew the type here explicitly
+                id = Id,
                 parentProject = (GMProjectParentModel)ParentProject.Serialize(),
                 configs = Configs.Serialize(),
                 resources = Resources.Serialize(),
@@ -79,6 +83,7 @@ namespace YoYoProject
         {
             var project = (GMProjectModel)model;
 
+            Id = project.id;
             Resources.Deserialize(project.resources);
             DragAndDrop = project.IsDnDProject;
             JavaScript = project.option_ecma;
@@ -115,6 +120,7 @@ namespace YoYoProject
 
             var project = new GMProject
             {
+                Id = Guid.NewGuid(),
                 RootDirectory = rootDirectory,
                 ParentProject = new GMProjectParent(),
                 Resources = null,

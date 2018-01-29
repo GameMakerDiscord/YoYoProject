@@ -11,8 +11,27 @@ namespace Playground
     {
         public static void Main(string[] args)
         {
-            LoadProject();
+            LoadSaveProject();
             Console.ReadKey();
+        }
+
+        private static void LoadSaveProject()
+        {
+            var rootDirectory = @"C:\Temp\GMProjects\SaveLoad";
+            var project = GMProject.Load(rootDirectory);
+
+            var script0 = project.Resources.Get<GMScript>("script0");
+            script0.Contents += "\r\n// Modified by YYP";
+
+            var object0 = project.Resources.Get<GMObject>("object0");
+            foreach (var @event in object0.Events)
+            {
+                @event.Contents += "\r\n// Modified by YYP";
+            }
+
+            project.Save();
+
+            Console.WriteLine("Done!");
         }
 
         private static void LoadProject()
@@ -21,17 +40,17 @@ namespace Playground
             var project = GMProject.Load(rootDirectory);
 
             /*** Objects ***/
-            {
-                foreach (var @object in project.Resources.GetAllOfType<GMObject>())
-                {
-                    Console.WriteLine("OBJ {0}", @object.Name);
-                    foreach (var @event in @object.Events)
-                    {
-                        Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
-                        Console.WriteLine(@event.Contents);
-                    }
-                }
-            }
+            //{
+            //    foreach (var @object in project.Resources.GetAllOfType<GMObject>())
+            //    {
+            //        Console.WriteLine("OBJ {0}", @object.Name);
+            //        foreach (var @event in @object.Events)
+            //        {
+            //            Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
+            //            Console.WriteLine(@event.Contents);
+            //        }
+            //    }
+            //}
 
             /*** Scripts ***/
             //{

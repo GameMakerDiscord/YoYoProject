@@ -56,6 +56,7 @@ namespace YoYoProject.Controllers
                     return;
 
                 contents = value ?? "";
+                parent.Dirty = true;
                 Dirty = true;
             }
         }
