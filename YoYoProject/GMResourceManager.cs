@@ -200,7 +200,8 @@ namespace YoYoProject
 
         private readonly static Dictionary<string, Tuple<Type, Type>> ModelTypes = new Dictionary<string, Tuple<Type, Type>>
         {
-            ["GMSprite"] = Tuple.Create(typeof(GMSprite), typeof(GMSpriteModel))
+            ["GMSprite"] = Tuple.Create(typeof(GMSprite), typeof(GMSpriteModel)),
+            ["GMScript"] = Tuple.Create(typeof(GMScript), typeof(GMScriptModel))
         };
     }
 }

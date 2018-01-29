@@ -20,11 +20,20 @@ namespace Playground
             var rootDirectory = @"C:\Temp\GMProjects\Empty";
             var project = GMProject.Load(rootDirectory);
 
-            /*** Sprites ***/
+            /*** Scripts ***/
             {
-                foreach(var sprite in project.Resources.GetAllOfType<GMSprite>())
-                    Console.WriteLine("SPR {0} - {1}x{2}", sprite.Name, sprite.Width, sprite.Height);
+                foreach (var script in project.Resources.GetAllOfType<GMScript>())
+                {
+                    Console.WriteLine("SCR {0}", script.Name);
+                    Console.WriteLine(script.Contents);
+                }
             }
+
+            /*** Sprites ***/
+            //{
+            //    foreach(var sprite in project.Resources.GetAllOfType<GMSprite>())
+            //        Console.WriteLine("SPR {0} - {1}x{2}", sprite.Name, sprite.Width, sprite.Height);
+            //}
 
             Console.WriteLine("Done");
         }

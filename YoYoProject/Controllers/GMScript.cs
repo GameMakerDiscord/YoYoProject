@@ -24,7 +24,7 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                if (contents != null)
+                if (contents == null)
                 {
                     if (File.Exists(ScriptFullPath))
                         contents = File.ReadAllText(ScriptFullPath);
@@ -70,6 +70,16 @@ namespace YoYoProject.Controllers
                 IsCompatibility = IsCompatibility,
                 IsDnD = IsDnD
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var scriptModel = (GMScriptModel)model;
+
+            Id = scriptModel.id;
+            Name = scriptModel.name;
+            IsCompatibility = scriptModel.IsCompatibility;
+            IsDnD = scriptModel.IsDnD;
         }
     }
 }
