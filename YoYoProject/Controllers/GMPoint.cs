@@ -18,7 +18,7 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref y); }
         }
 
-        internal GMPoint(int x, int y)
+        internal GMPoint(float x, float y)
         {
             X = x;
             Y = y;

@@ -115,6 +115,39 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            var objectModel = (GMObjectModel)model;
+
+            Id = objectModel.id;
+            Name = objectModel.name;
+            Sprite = objectModel.spriteId == Guid.Empty
+                   ? null : Project.Resources.Get<GMSprite>(objectModel.spriteId);
+            Mask = objectModel.maskSpriteId == Guid.Empty
+                 ? null : Project.Resources.Get<GMSprite>(objectModel.maskSpriteId);
+            // TODO Implement
+            //Parent = objectModel.parentObjectId == Guid.Empty
+            //       ? null : Project.Resources.Get<GMObject>(objectModel.parentObjectId);
+            Solid = objectModel.solid;
+            Visible = objectModel.visible;
+            Persistent = objectModel.persistent;
+            Physics.Enabled = objectModel.physicsObject;
+            Physics.Sensor = objectModel.physicsSensor;
+            Physics.Shape.Type = objectModel.physicsShape;
+            Physics.Density = objectModel.physicsDensity;
+            Physics.Restitution = objectModel.physicsRestitution;
+            Physics.LinearDamping = objectModel.physicsLinearDamping;
+            Physics.AngularDamping = objectModel.physicsAngularDamping;
+            Physics.Friction = objectModel.physicsFriction;
+            Physics.StartAwake = objectModel.physicsStartAwake;
+            Physics.Kinematic = objectModel.physicsKinematic;
+            if (objectModel.physicsShapePoints != null)
+                Physics.Shape.DeserializePoints(objectModel.physicsShapePoints);
+            Events.Deserialize(objectModel.eventList);
+            if (objectModel.properties != null)
+                Properties.Deserialize(objectModel.properties);
+        }
+
         public sealed class GMObjectPhysics : ControllerBase
         {
             private bool enabled;
@@ -228,7 +261,7 @@ namespace YoYoProject.Controllers
                     this.gmObject = gmObject;
                 }
 
-                public GMPoint Create(int x, int y)
+                public GMPoint Create(float x, float y)
                 {
                     var point = new GMPoint(x, y)
                     {
@@ -250,10 +283,29 @@ namespace YoYoProject.Controllers
                     throw new InvalidOperationException();
                 }
 
+                internal override void Deserialize(ModelBase model)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 // HACK List<> does not inherit from ModelBase
                 internal List<GMPointModel> SerializePoints()
                 {
                     return points.Select(x => (GMPointModel)x.Serialize()).ToList();
+                }
+
+                // HACK List<> does not inherit from ModelBase
+                internal void DeserializePoints(List<GMPointModel> pointsModel)
+                {
+                    foreach (var pointModel in pointsModel)
+                    {
+                        var point = new GMPoint(pointModel.x, pointModel.y)
+                        {
+                            Id = pointModel.id
+                        };
+
+                        points.Add(point);
+                    }
                 }
 
                 private void UpdatePointsForShapeType(GMObjectPhysicsShapeType shapeType)
@@ -391,6 +443,21 @@ namespace YoYoProject.Controllers
                 return events.Select(x => (GMEventModel)x.Serialize()).ToList();
             }
 
+            internal void Deserialize(List<GMEventModel> eventListModel)
+            {
+                foreach (var eventModel in eventListModel)
+                {
+                    var @event = new GMEvent(gmObject)
+                    {
+                        Project = gmObject.Project,
+                        Id = eventModel.id
+                    };
+
+                    @event.Deserialize(eventModel);
+                    events.Add(@event);
+                }
+            }
+
             public IEnumerator<GMEvent> GetEnumerator()
             {
                 return events.GetEnumerator();
@@ -502,6 +569,20 @@ namespace YoYoProject.Controllers
                 return overrides;
             }
 
+            internal void Deserialize(List<GMObjectPropertyModel> objectPropertiesModel)
+            {
+                foreach (var objectPropertyModel in objectPropertiesModel)
+                {
+                    var property = new GMObjectProperty
+                    {
+                        Id = objectPropertyModel.id
+                    };
+
+                    property.Deserialize(objectPropertyModel);
+                    properties.Add(property);
+                }
+            }
+
             public IEnumerator<GMObjectProperty> GetEnumerator()
             {
                 return properties.GetEnumerator();
@@ -537,8 +618,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref value_); }
         }
         
-        private Tuple<int, int> range;
-        public Tuple<int, int> Range
+        private Tuple<float, float> range;
+        public Tuple<float, float> Range
         {
             get { return GetProperty(range); }
             set { SetProperty(value, ref range); }
@@ -585,6 +666,21 @@ namespace YoYoProject.Controllers
                 multiselect = MultiSelect,
                 resourceFilter = ResourceFilter
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var propertyModel = (GMObjectPropertyModel)model;
+
+            Id = propertyModel.id;
+            Name = propertyModel.varName;
+            Type = propertyModel.varType;
+            Value = propertyModel.value;
+            Range = propertyModel.rangeEnabled
+                  ? Tuple.Create(propertyModel.rangeMin, propertyModel.rangeMax)
+                  : null;
+            ListItems = propertyModel.listItems;
+            ResourceFilter = propertyModel.resourceFilter;
         }
     }
 }

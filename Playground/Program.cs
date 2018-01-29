@@ -20,14 +20,27 @@ namespace Playground
             var rootDirectory = @"C:\Temp\GMProjects\Empty";
             var project = GMProject.Load(rootDirectory);
 
-            /*** Scripts ***/
+            /*** Objects ***/
             {
-                foreach (var script in project.Resources.GetAllOfType<GMScript>())
+                foreach (var @object in project.Resources.GetAllOfType<GMObject>())
                 {
-                    Console.WriteLine("SCR {0}", script.Name);
-                    Console.WriteLine(script.Contents);
+                    Console.WriteLine("OBJ {0}", @object.Name);
+                    foreach (var @event in @object.Events)
+                    {
+                        Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
+                        Console.WriteLine(@event.Contents);
+                    }
                 }
             }
+
+            /*** Scripts ***/
+            //{
+            //    foreach (var script in project.Resources.GetAllOfType<GMScript>())
+            //    {
+            //        Console.WriteLine("SCR {0}", script.Name);
+            //        Console.WriteLine(script.Contents);
+            //    }
+            //}
 
             /*** Sprites ***/
             //{

@@ -39,7 +39,7 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                if (contents != null)
+                if (contents == null)
                 {
                     if (File.Exists(ScriptFullPath))
                         contents = File.ReadAllText(ScriptFullPath);
@@ -101,6 +101,19 @@ namespace YoYoProject.Controllers
                 collisionObjectId = Collision?.Id ?? Guid.Empty,
                 IsDnD = IsDnD
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var eventModel = (GMEventModel)model;
+
+            Id = eventModel.id;
+            EventType = (GMEventType)eventModel.eventtype;
+            EventNumber = (GMEventNumber)eventModel.enumb;
+            // TODO Implement
+            //Collision = eventModel.collisionObjectId == Guid.Empty
+            //    ? null : parent.Project.Resources.Get<GMObject>(eventModel.collisionObjectId);
+            IsDnD = eventModel.IsDnD;
         }
     }
 
