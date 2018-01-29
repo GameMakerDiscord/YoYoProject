@@ -125,5 +125,14 @@ namespace YoYoProject.Controllers
                 audioGroundGuid = AudioGroup?.Id ?? Guid.Empty
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var soundModel = (GMSoundModel)model;
+
+            Id = soundModel.id;
+            Name = soundModel.name;
+        }
     }
 }

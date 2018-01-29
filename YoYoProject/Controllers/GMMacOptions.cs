@@ -227,5 +227,14 @@ namespace YoYoProject.Controllers
                 option_mac_enable_steam = EnableSteam
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var macOptionsModel = (GMMacOptionsModel)model;
+
+            Id = macOptionsModel.id;
+            Name = macOptionsModel.name;
+        }
     }
 }

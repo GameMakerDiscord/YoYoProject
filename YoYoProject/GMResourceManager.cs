@@ -164,8 +164,8 @@ namespace YoYoProject
                 var info = kvp.Value;
 
                 Tuple<Type, Type> modelType;
-                if (!ModelTypes.TryGetValue(info.resourceType, out modelType)) // TODO Throw exception
-                    continue;
+                if (!ModelTypes.TryGetValue(info.resourceType, out modelType))
+                    throw new InvalidOperationException($"Cannot deserialize unknown resource model '{info.resourceType}'");
 
                 // TODO Optimize
                 var resource = (GMResource)Activator.CreateInstance(modelType.Item1);
@@ -200,9 +200,24 @@ namespace YoYoProject
 
         private readonly static Dictionary<string, Tuple<Type, Type>> ModelTypes = new Dictionary<string, Tuple<Type, Type>>
         {
+            ["GMFolder"] = Tuple.Create(typeof(GMFolder), typeof(GMFolderModel)),
             ["GMSprite"] = Tuple.Create(typeof(GMSprite), typeof(GMSpriteModel)),
+            ["GMTileSet"] = Tuple.Create(typeof(GMTileSet), typeof(GMTileSetModel)),
+            ["GMSound"] = Tuple.Create(typeof(GMSound), typeof(GMSoundModel)),
+            ["GMPath"] = Tuple.Create(typeof(GMPath), typeof(GMPathModel)),
             ["GMScript"] = Tuple.Create(typeof(GMScript), typeof(GMScriptModel)),
-            ["GMObject"] = Tuple.Create(typeof(GMObject), typeof(GMObjectModel))
+            ["GMShader"] = Tuple.Create(typeof(GMShader), typeof(GMShaderModel)),
+            ["GMFont"] = Tuple.Create(typeof(GMFont), typeof(GMFontModel)),
+            ["GMTimeline"] = Tuple.Create(typeof(GMTimeline), typeof(GMTimelineModel)),
+            ["GMObject"] = Tuple.Create(typeof(GMObject), typeof(GMObjectModel)),
+            ["GMRoom"] = Tuple.Create(typeof(GMRoom), typeof(GMRoomModel)),
+            ["GMNotes"] = Tuple.Create(typeof(GMNotes), typeof(GMNotesModel)),
+            ["GMIncludedFile"] = Tuple.Create(typeof(GMIncludedFile), typeof(GMIncludedFileModel)),
+            ["GMExtension"] = Tuple.Create(typeof(GMExtension), typeof(GMExtensionModel)),
+            ["GMMainOptions"] = Tuple.Create(typeof(GMMainOptions), typeof(GMMainOptionsModel)),
+            ["GMWindowsOptions"] = Tuple.Create(typeof(GMWindowsOptions), typeof(GMWindowsOptionsModel)),
+            ["GMMacOptions"] = Tuple.Create(typeof(GMMacOptions), typeof(GMMacOptionsModel)),
+            ["GMLinuxOptions"] = Tuple.Create(typeof(GMLinuxOptions), typeof(GMLinuxOptionsModel))
         };
     }
 }

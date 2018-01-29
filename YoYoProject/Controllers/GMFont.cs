@@ -103,6 +103,15 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var fontModel = (GMFontModel)model;
+
+            Id = fontModel.id;
+            Name = fontModel.name;
+        }
+
         public sealed class RangeManager : IReadOnlyList<GMFontRange>
         {
             public int Count => ranges.Count;

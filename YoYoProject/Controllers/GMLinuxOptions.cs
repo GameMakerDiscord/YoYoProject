@@ -181,5 +181,14 @@ namespace YoYoProject.Controllers
                 option_linux_enable_steam = EnableSteam
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var linuxOptionsModel = (GMLinuxOptionsModel)model;
+
+            Id = linuxOptionsModel.id;
+            Name = linuxOptionsModel.name;
+        }
     }
 }

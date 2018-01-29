@@ -179,6 +179,15 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var tileSetModel = (GMTileSetModel)model;
+
+            Id = tileSetModel.id;
+            Name = tileSetModel.name;
+        }
+
         public sealed class AutoTileSetManager : IReadOnlyList<GMAutoTileSet>
         {
             public int Count => autoTileSets.Count;

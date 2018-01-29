@@ -125,6 +125,15 @@ namespace YoYoProject.Controllers
                 audio_options = Audio?.Serialize()
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var mainOptionsModel = (GMMainOptionsModel)model;
+
+            Id = mainOptionsModel.id;
+            Name = mainOptionsModel.name;
+        }
     }
 
     // TODO Refactor texture group management behind a manager

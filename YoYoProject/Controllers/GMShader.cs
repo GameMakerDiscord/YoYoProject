@@ -17,7 +17,7 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                if (fragmentContents != null)
+                if (fragmentContents == null)
                 {
                     if (File.Exists(FragementShaderFullPath))
                         fragmentContents = File.ReadAllText(FragementShaderFullPath);
@@ -43,7 +43,7 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                if (vertexContents != null)
+                if (vertexContents == null)
                 {
                     if (File.Exists(VertexShaderFullPath))
                         vertexContents = File.ReadAllText(VertexShaderFullPath);
@@ -97,6 +97,15 @@ namespace YoYoProject.Controllers
                 name = Name,
                 type = Type
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var shaderModel = (GMShaderModel)model;
+
+            Id = shaderModel.id;
+            Name = shaderModel.name;
         }
     }
 }

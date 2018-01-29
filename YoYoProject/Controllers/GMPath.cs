@@ -77,6 +77,15 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var pathModel = (GMPathModel)model;
+
+            Id = pathModel.id;
+            Name = pathModel.name;
+        }
+
         public sealed class PointManager : IReadOnlyList<GMPathPoint>
         {
             public int Count => points.Count;

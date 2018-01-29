@@ -58,9 +58,24 @@ namespace YoYoProject.Controllers
                 folderName = FolderName,
                 children = Children.Select(x => x.Id).ToList(),
                 filterType = filterType,
-                isDefaultView = isDefaultView,
-                localisedFolderName = localizedName
+                isDefaultView = IsDefaultView,
+                localisedFolderName = LocalizedName
             };
+        }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var folderModel = (GMFolderModel)model;
+
+            Id = folderModel.id;
+            Name = folderModel.id.ToString();
+            FolderName = folderModel.folderName;
+            // TODO Implement
+            //Children = folderModel.children.Select(x => Project.Resources.Get(x)).ToList();
+            FilterType = folderModel.filterType;
+            IsDefaultView = folderModel.isDefaultView;
+            LocalizedName = folderModel.localisedFolderName;
         }
     }
 }

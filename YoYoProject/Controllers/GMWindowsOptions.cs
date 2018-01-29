@@ -254,5 +254,14 @@ namespace YoYoProject.Controllers
                 option_windows_enable_steam = EnableSteam
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var windowOptionsModel = (GMWindowsOptionsModel)model;
+
+            Id = windowOptionsModel.id;
+            Name = windowOptionsModel.name;
+        }
     }
 }

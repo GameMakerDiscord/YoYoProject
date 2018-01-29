@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using YoYoProject.Common;
 using YoYoProject.Models;
+using YoYoStudio.MVCFormat;
 
 namespace YoYoProject.Controllers
 {
@@ -43,7 +44,7 @@ namespace YoYoProject.Controllers
         {
             get
             {
-                if (creationCode != null)
+                if (creationCode == null)
                 {
                     if (File.Exists(CreationCodeFullPath))
                         creationCode = File.ReadAllText(CreationCodeFullPath);
@@ -156,7 +157,16 @@ namespace YoYoProject.Controllers
                 physicsSettings = (GMRoomPhysicsSettingsModel)Physics.Serialize()
             };
         }
-        
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var roomModel = (GMRoomModel)model;
+
+            Id = roomModel.id;
+            Name = roomModel.name;
+        }
+
         public sealed class GMRoomPhysics : ControllerBase
         {
             private bool enabled;
@@ -552,7 +562,7 @@ namespace YoYoProject.Controllers
 
         internal override GMRLayerModel SerializeLayerModel()
         {
-            return new GMRInstanceLayerModel
+            return new GMRInstanceLayer_Model
             {
                 instances = Instances.Select(x => (GMRInstanceModel)x.Serialize()).ToList()
             };
@@ -867,7 +877,7 @@ namespace YoYoProject.Controllers
 
         internal override GMRLayerModel SerializeLayerModel()
         {
-            return new GMRBackgroundLayerModel
+            return new GMRBackgroundLayer_Model
             {
                 spriteId = Sprite?.Id ?? Guid.Empty,
                 colour = Color,
@@ -924,7 +934,7 @@ namespace YoYoProject.Controllers
 
         internal override GMRLayerModel SerializeLayerModel()
         {
-            return new GMRTileLayerModel
+            return new GMRTileLayer_Model
             {
                 tilesetId = Tileset?.Id ?? Guid.Empty,
                 x = X,
@@ -960,7 +970,7 @@ namespace YoYoProject.Controllers
 
         internal override GMRLayerModel SerializeLayerModel()
         {
-            return new GMRPathLayerModel
+            return new GMRPathLayer_Model
             {
                 pathId = Path?.Id ?? Guid.Empty,
                 colour = Color
@@ -980,7 +990,7 @@ namespace YoYoProject.Controllers
 
         internal override GMRLayerModel SerializeLayerModel()
         {
-            return new GMRAssetLayerModel
+            return new GMRAssetLayer_Model
             {
                 assets = Assets.Select(x => (GMRLayerItemModelBase)x.Serialize()).ToList()
             };

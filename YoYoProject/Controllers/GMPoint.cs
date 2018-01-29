@@ -33,5 +33,14 @@ namespace YoYoProject.Controllers
                 y = Y
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            var pointModel = (GMPointModel)model;
+
+            Id = pointModel.id;
+            X = pointModel.x;
+            Y = pointModel.y;
+        }
     }
 }

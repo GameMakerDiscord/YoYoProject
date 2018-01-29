@@ -82,6 +82,15 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var extensionModel = (GMExtensionModel)model;
+
+            Id = extensionModel.id;
+            Name = extensionModel.name;
+        }
+
         public sealed class GMExtensionIos : ControllerBase
         {
             private bool enabled;

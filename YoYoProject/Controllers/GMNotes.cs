@@ -52,5 +52,14 @@ namespace YoYoProject.Controllers
                 name = Name
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var notesModel = (GMNotesModel)model;
+
+            Id = notesModel.id;
+            Name = notesModel.name;
+        }
     }
 }

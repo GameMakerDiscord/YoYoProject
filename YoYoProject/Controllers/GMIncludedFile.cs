@@ -96,5 +96,14 @@ namespace YoYoProject.Controllers
                 filePath = FilePath
             };
         }
+
+        internal override void Deserialize(ModelBase model)
+        {
+            // TODO Implement
+            var includeFileModel = (GMIncludedFileModel)model;
+
+            Id = includeFileModel.id;
+            Name = includeFileModel.name;
+        }
     }
 }

@@ -32,6 +32,15 @@ namespace YoYoProject.Controllers
             };
         }
 
+        internal override void Deserialize(ModelBase model)
+        {
+            var timelineModel = (GMTimelineModel)model;
+
+            Id = timelineModel.id;
+            Name = timelineModel.name;
+            Moments.Deserialize(timelineModel.momentList);
+        }
+
         public sealed class MomentManager : IEnumerable<KeyValuePair<int, GMEvent>>
         {
             public int Count => moments.Count;
@@ -104,7 +113,22 @@ namespace YoYoProject.Controllers
                     evnt = (GMEventModel)x.Value.Serialize()
                 }).ToList();
             }
-            
+
+            internal void Deserialize(List<GMTimelineMomentModel> momentListModel)
+            {
+                foreach (var momentModel in momentListModel)
+                {
+                    var @event = new GMEvent(gmTimeline)
+                    {
+                        Project = gmTimeline.Project,
+                        Id = momentModel.evnt.id
+                    };
+                    @event.Deserialize(momentModel);
+
+                    moments.Add(momentModel.moment, @event);
+                }
+            }
+
             public IEnumerator<KeyValuePair<int, GMEvent>> GetEnumerator()
             {
                 return moments.GetEnumerator();
