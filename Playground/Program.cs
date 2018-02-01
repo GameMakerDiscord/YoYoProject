@@ -11,7 +11,8 @@ namespace Playground
     {
         public static void Main(string[] args)
         {
-            LoadSaveProject();
+            //LoadSaveProject();
+            LoadProject();
             Console.ReadKey();
         }
 
@@ -36,6 +37,7 @@ namespace Playground
 
         private static void LoadProject()
         {
+            //var rootDirectory = @"${base_project}";
             var rootDirectory = @"C:\Temp\GMProjects\Empty";
             var project = GMProject.Load(rootDirectory);
 
@@ -66,6 +68,27 @@ namespace Playground
             //    foreach(var sprite in project.Resources.GetAllOfType<GMSprite>())
             //        Console.WriteLine("SPR {0} - {1}x{2}", sprite.Name, sprite.Width, sprite.Height);
             //}
+
+            /*** Main Options ***/
+            //{
+            //    var mainOptions = project.Resources.Get<GMMainOptions>();
+            //    Console.WriteLine("GameGuid  = {0}", mainOptions.GameGuid);
+            //    Console.WriteLine("GameSpeed = {0}", mainOptions.GameSpeed);
+
+            //    Console.WriteLine("Texture Groups");
+            //    foreach (var group in mainOptions.Graphics.TextureGroups)
+            //        Console.WriteLine("{0}; Targets = {1}; Parent = {2}", group.Name, group.Targets, group.Parent?.Name ?? "<none>");
+
+            //    Console.WriteLine("Audio Group");
+            //    foreach (var group in mainOptions.Audio.AudioGroups)
+            //        Console.WriteLine("{0}; Targets = {1}", group.Name, group.Targets);
+            //}
+
+            /*** Windows Options ***/
+            {
+                var windowsOptions = project.Resources.Get<GMWindowsOptions>();
+                Console.WriteLine("Windows.DisplayName = {0}", windowsOptions.DisplayName);
+            }
 
             Console.WriteLine("Done");
         }

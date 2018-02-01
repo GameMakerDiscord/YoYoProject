@@ -102,6 +102,7 @@
     <Compile Include="Utility\Json.cs" />
     <Compile Include="Models\GMProjectModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Utility\Macros.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

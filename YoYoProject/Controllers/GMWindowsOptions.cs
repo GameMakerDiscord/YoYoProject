@@ -154,7 +154,7 @@ namespace YoYoProject.Controllers
         }
         
         private string installerFinisher;
-        public string InstallerFinisher
+        public string InstallerFinished
         {
             get { return GetProperty(installerFinisher); }
             set { SetProperty(value, ref installerFinisher); }
@@ -213,7 +213,7 @@ namespace YoYoProject.Controllers
             Scale = 0; // TODO ???
             SleepMargin = 10;
             TexturePage = "2048x2048"; // TODO Reference object?
-            InstallerFinisher = @"${base_options_dir}\windows\installer\finished.bmp"; // TODO Copy in default
+            InstallerFinished = @"${base_options_dir}\windows\installer\finished.bmp"; // TODO Copy in default
             InstallerHeader = @"${base_options_dir}\windows\installer\header.bmp"; // TODO Copy in default
             License = @"${base_options_dir}\windows\installer\license.txt"; // TODO Copy in default
             NsisFile = @"${base_options_dir}\windows\installer\nsis_script.nsi"; // TODO Copy in default
@@ -247,7 +247,7 @@ namespace YoYoProject.Controllers
                 option_windows_scale = Scale,
                 option_windows_sleep_margin = SleepMargin,
                 option_windows_texture_page = TexturePage,
-                option_windows_installer_finished = InstallerFinisher,
+                option_windows_installer_finished = InstallerFinished,
                 option_windows_installer_header = InstallerHeader,
                 option_windows_license = License,
                 option_windows_nsis_file = NsisFile,
@@ -257,11 +257,36 @@ namespace YoYoProject.Controllers
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var windowOptionsModel = (GMWindowsOptionsModel)model;
 
             Id = windowOptionsModel.id;
             Name = windowOptionsModel.name;
+            DisplayName = windowOptionsModel.option_windows_display_name;
+            ExecutableName = windowOptionsModel.option_windows_executable_name;
+            Version = windowOptionsModel.option_windows_version;
+            CompanyInfo = windowOptionsModel.option_windows_company_info;
+            ProductInfo = windowOptionsModel.option_windows_product_info;
+            CopyrightInfo = windowOptionsModel.option_windows_copyright_info;
+            DescriptionInfo = windowOptionsModel.option_windows_description_info;
+            DisplayCursor = windowOptionsModel.option_windows_display_cursor;
+            Icon = windowOptionsModel.option_windows_icon;
+            SaveLocation = windowOptionsModel.option_windows_save_location;
+            SplashScreen = windowOptionsModel.option_windows_splash_screen;
+            UseSplash = windowOptionsModel.option_windows_use_splash;
+            StartFullscreen = windowOptionsModel.option_windows_start_fullscreen;
+            AllowFullscreenSwitching = windowOptionsModel.option_windows_allow_fullscreen_switching;
+            InterpolatePixels = windowOptionsModel.option_windows_interpolate_pixels;
+            Vsync = windowOptionsModel.option_windows_vsync;
+            ResizeWindow = windowOptionsModel.option_windows_resize_window;
+            Borderless = windowOptionsModel.option_windows_borderless;
+            Scale = windowOptionsModel.option_windows_scale;
+            SleepMargin = windowOptionsModel.option_windows_sleep_margin;
+            TexturePage = windowOptionsModel.option_windows_texture_page;
+            InstallerFinished = windowOptionsModel.option_windows_installer_finished;
+            InstallerHeader = windowOptionsModel.option_windows_installer_header;
+            License = windowOptionsModel.option_windows_license;
+            NsisFile = windowOptionsModel.option_windows_nsis_file;
+            EnableSteam = windowOptionsModel.option_windows_enable_steam;
         }
     }
 }

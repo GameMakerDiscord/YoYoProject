@@ -123,7 +123,7 @@ namespace YoYoProject.Controllers
                         Project = gmTimeline.Project,
                         Id = momentModel.evnt.id
                     };
-                    @event.Deserialize(momentModel);
+                    @event.Deserialize(momentModel.evnt);
 
                     moments.Add(momentModel.moment, @event);
                 }

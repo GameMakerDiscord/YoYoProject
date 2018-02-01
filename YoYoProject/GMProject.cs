@@ -94,6 +94,7 @@ namespace YoYoProject
             if (rootDirectory == null)
                 throw new ArgumentNullException(nameof(rootDirectory));
 
+            rootDirectory = Macros.Expand(rootDirectory);
             var project = new GMProject
             {
                 RootDirectory = rootDirectory,

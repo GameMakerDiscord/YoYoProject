@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using YoYoProject.Common;
 using YoYoProject.Models;
@@ -121,8 +122,8 @@ namespace YoYoProject.Controllers
                 option_sci_usesci = UseSci,
                 option_author = Author,
                 option_lastchanged = LastChanged.ToString("dd MMMM YYYY HH:mm:ss"),
-                graphics_options = Graphics?.Serialize(),
-                audio_options = Audio?.Serialize()
+                graphics_options = Graphics.Serialize(),
+                audio_options = Audio.Serialize()
             };
         }
 
@@ -133,6 +134,19 @@ namespace YoYoProject.Controllers
 
             Id = mainOptionsModel.id;
             Name = mainOptionsModel.name;
+            GameGuid = string.IsNullOrEmpty(mainOptionsModel.option_gameguid)
+                     ? Guid.Empty : Guid.Parse(mainOptionsModel.option_gameguid);
+            UseMipsFor3DTextures = mainOptionsModel.option_mips_for_3d_textures;
+            DrawColor = mainOptionsModel.option_draw_colour;
+            SteamAppId = mainOptionsModel.option_steam_app_id;
+            AllowGameStatistics = mainOptionsModel.option_allow_game_statistics;
+            UseSci = mainOptionsModel.option_sci_usesci;
+            Author = mainOptionsModel.option_author;
+            LastChanged = string.IsNullOrEmpty(mainOptionsModel.option_lastchanged)
+                        ? DateTime.UtcNow
+                        : DateTime.ParseExact(mainOptionsModel.option_lastchanged, "dd MMMM YYYY HH:mm:ss", CultureInfo.InvariantCulture);
+            Graphics.Deserialize(mainOptionsModel.graphics_options);
+            Audio.Deserialize(mainOptionsModel.audio_options);
         }
     }
 
@@ -189,6 +203,18 @@ namespace YoYoProject.Controllers
                 textureGroups = TextureGroups.Select(x => (GMTextureGroupModel)x.Serialize()).ToList()
             };
         }
+
+        internal void Deserialize(GMGraphicsOptionsModel graphicsOptions)
+        {
+            Id = graphicsOptions.id;
+
+            foreach (var modelTextureGroup in graphicsOptions.textureGroups)
+            {
+                var textureGroup = new GMTextureGroup();
+                textureGroup.Deserialize(modelTextureGroup);
+                TextureGroups.Add(textureGroup);
+            }
+        }
     }
 
     // TODO Refactor audio group management behind a manager
@@ -239,6 +265,18 @@ namespace YoYoProject.Controllers
                 audioGroups = AudioGroups.Select(x => (GMAudioGroupModel)x.Serialize()).ToList()
             };
         }
+
+        internal void Deserialize(GMAudioOptionsModel audioOptionsModel)
+        {
+            Id = audioOptionsModel.id;
+
+            foreach (var modelAudioGroup in audioOptionsModel.audioGroups)
+            {
+                var audioGroup = new GMAudioGroup();
+                audioGroup.Deserialize(modelAudioGroup);
+                AudioGroups.Add(audioGroup);
+            }
+        }
     }
 
     public sealed class GMAudioGroup : GMBaseGroup
@@ -251,6 +289,15 @@ namespace YoYoProject.Controllers
                 groupName = Name,
                 targets = Targets
             };
+        }
+
+        internal override void Deserialize(GMBaseGroupModel model)
+        {
+            var modelAudioGroup = (GMAudioGroupModel)model;
+
+            Id = modelAudioGroup.id;
+            Name = modelAudioGroup.groupName;
+            Targets = modelAudioGroup.targets;
         }
     }
 
@@ -288,6 +335,21 @@ namespace YoYoProject.Controllers
                 mipsToGenerate = MipsToGenerate
             };
         }
+
+        internal override void Deserialize(GMBaseGroupModel model)
+        {
+            var modelTextureGroup = (GMTextureGroupModel)model;
+
+            Id = modelTextureGroup.id;
+            Name = modelTextureGroup.groupName;
+            Targets = modelTextureGroup.targets;
+            // TODO Implement
+            //Parent = modelTextureGroup.groupParent;
+            Scaled = modelTextureGroup.scaled;
+            AutoCrop = modelTextureGroup.autocrop;
+            Border = modelTextureGroup.border;
+            MipsToGenerate = modelTextureGroup.mipsToGenerate;
+        }
     }
 
     public abstract class GMBaseGroup
@@ -299,5 +361,7 @@ namespace YoYoProject.Controllers
         public TargetPlatforms Targets { get; set; }
 
         internal abstract GMBaseGroupModel Serialize();
+
+        internal abstract void Deserialize(GMBaseGroupModel model);
     }
 }
