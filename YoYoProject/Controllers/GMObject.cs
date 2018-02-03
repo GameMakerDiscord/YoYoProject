@@ -121,13 +121,9 @@ namespace YoYoProject.Controllers
 
             Id = objectModel.id;
             Name = objectModel.name;
-            Sprite = objectModel.spriteId == Guid.Empty
-                   ? null : Project.Resources.Get<GMSprite>(objectModel.spriteId);
-            Mask = objectModel.maskSpriteId == Guid.Empty
-                 ? null : Project.Resources.Get<GMSprite>(objectModel.maskSpriteId);
-            // TODO Implement
-            //Parent = objectModel.parentObjectId == Guid.Empty
-            //       ? null : Project.Resources.Get<GMObject>(objectModel.parentObjectId);
+            Sprite = null;
+            Mask = null;
+            Parent = null;
             Solid = objectModel.solid;
             Visible = objectModel.visible;
             Persistent = objectModel.persistent;
@@ -146,6 +142,18 @@ namespace YoYoProject.Controllers
             Events.Deserialize(objectModel.eventList);
             if (objectModel.properties != null)
                 Properties.Deserialize(objectModel.properties);
+        }
+
+        internal override void FinalizeDeserialization(ModelBase model)
+        {
+            var objectModel = (GMObjectModel)model;
+
+            Sprite = objectModel.spriteId == Guid.Empty
+                ? null : Project.Resources.Get<GMSprite>(objectModel.spriteId);
+            Mask = objectModel.maskSpriteId == Guid.Empty
+                ? null : Project.Resources.Get<GMSprite>(objectModel.maskSpriteId);
+            Parent = objectModel.parentObjectId == Guid.Empty
+                ? null : Project.Resources.Get<GMObject>(objectModel.parentObjectId);
         }
 
         public sealed class GMObjectPhysics : ControllerBase

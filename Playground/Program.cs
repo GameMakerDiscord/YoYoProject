@@ -42,17 +42,17 @@ namespace Playground
             var project = GMProject.Load(rootDirectory);
 
             /*** Objects ***/
-            //{
-            //    foreach (var @object in project.Resources.GetAllOfType<GMObject>())
-            //    {
-            //        Console.WriteLine("OBJ {0}", @object.Name);
-            //        foreach (var @event in @object.Events)
-            //        {
-            //            Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
-            //            Console.WriteLine(@event.Contents);
-            //        }
-            //    }
-            //}
+            {
+                foreach (var @object in project.Resources.GetAllOfType<GMObject>())
+                {
+                    Console.WriteLine("OBJ {0}; Sprite = {1}", @object.Name, @object.Sprite?.Name ?? "<None>");
+                    foreach (var @event in @object.Events)
+                    {
+                        Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
+                        Console.WriteLine(@event.Contents);
+                    }
+                }
+            }
 
             /*** Scripts ***/
             //{

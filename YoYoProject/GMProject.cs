@@ -84,9 +84,10 @@ namespace YoYoProject
             var project = (GMProjectModel)model;
 
             Id = project.id;
-            Resources.Deserialize(project.resources);
             DragAndDrop = project.IsDnDProject;
             JavaScript = project.option_ecma;
+
+            Resources.Deserialize(project.resources);
         }
 
         public static GMProject Load(string rootDirectory)

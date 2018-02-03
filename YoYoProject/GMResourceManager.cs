@@ -158,6 +158,9 @@ namespace YoYoProject
             if (projectResources == null)
                 throw new ArgumentNullException(nameof(projectResources));
 
+            // TODO Please find a more memory effecient way to do this
+            var models = new List<ModelBase>(projectResources.Count);
+
             foreach (var kvp in projectResources)
             {
                 var id = kvp.Key;
@@ -178,7 +181,11 @@ namespace YoYoProject
                 resource.Deserialize(model);
 
                 resources.Add(resource.Id, resource);
+                models.Add(model);
             }
+
+            foreach (var model in models)
+                resources[model.id].FinalizeDeserialization(model);
         }
 
         public IEnumerator<GMResource> GetEnumerator()

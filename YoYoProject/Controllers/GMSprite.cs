@@ -320,9 +320,7 @@ namespace YoYoProject.Controllers
             VerticalTile = sprite.VTile;
             For3D = sprite.For3D;
             OriginLocked = sprite.originLocked;
-            // TODO Implement
-            //TextureGroup = Project.Resources.Get<GMMainOptions>()
-            //                      .Graphics.GetTextureGroup(sprite.textureGroupId);
+            TextureGroup = null;
             Width = sprite.width;
             Height = sprite.height;
             GridX = sprite.gridX;
@@ -332,6 +330,13 @@ namespace YoYoProject.Controllers
             PlaybackSpeed = sprite.playbackSpeed;
             PlaybackSpeedType = sprite.playbackSpeedType;
             SwatchColors = sprite.swatchColours?.Select(x => new Color(x)).ToList() ?? new List<Color>();
+        }
+
+        internal override void FinalizeDeserialization(ModelBase model)
+        {
+            // TODO Implement
+            //TextureGroup = Project.Resources.Get<GMMainOptions>()
+            //                      .Graphics.GetTextureGroup(sprite.textureGroupId);
         }
 
         public sealed class FrameManager : IReadOnlyList<GMSpriteFrame>

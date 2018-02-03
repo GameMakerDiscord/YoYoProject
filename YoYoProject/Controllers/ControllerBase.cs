@@ -28,6 +28,11 @@ namespace YoYoProject.Controllers
             throw new NotImplementedException();
         }
 
+        internal virtual void FinalizeDeserialization(ModelBase model)
+        {
+            // NOTE Nothing to do normally
+        }
+
         // ReSharper disable AssignNullToNotNullAttribute
         protected T GetProperty<T>(T value, [CallerMemberName] string propertyName = null)
         {
