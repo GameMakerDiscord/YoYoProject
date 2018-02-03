@@ -15,7 +15,7 @@ namespace YoYoProject
         public List<Guid> hiddenResources { get; set; }
 
         [DataMember]
-        public Dictionary<Guid, GMResourceInfoModel> alteredResources { get; set; }
+        public SortedDictionary<Guid, GMResourceInfoModel> alteredResources { get; set; }
 
         public GMProjectParentModel()
             : base("GMProjectParent", "1.0")

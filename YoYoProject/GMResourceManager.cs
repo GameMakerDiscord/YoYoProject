@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using YoYoProject.Controllers;
 using YoYoProject.Models;
-using YoYoProject.Utility;
 
 namespace YoYoProject
 {
@@ -60,14 +59,18 @@ namespace YoYoProject
         public TResource Get<TResource>()
             where TResource : GMResource, new()
         {
-            return (TResource)resources.Values.Single(x => x is TResource);
+            var result = (TResource)resources.Values.SingleOrDefault(x => x is TResource);
+            if (result != null)
+                return result;
+            
+            return project.Parent.Reference?.Resources.Get<TResource>();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IReadOnlyList<TResource> GetAllOfType<TResource>()
             where TResource : GMResource, new()
         {
-            return resources.Values.OfType<TResource>().ToList();
+            return (IReadOnlyList<TResource>)GetAllOfType(typeof(TResource));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -75,8 +78,12 @@ namespace YoYoProject
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
+            
+            var result = resources.Values.Where(x => x.GetType() == type).ToList();
+            if (project.Parent.Reference != null)
+                result.AddRange(project.Parent.Reference.Resources.GetAllOfType(type));
 
-            return resources.Values.Where(x => x.GetType() == type).ToList();
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,7 +96,11 @@ namespace YoYoProject
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GMResource Get(Guid id)
         {
-            return resources[id];
+            GMResource resource;
+            if (resources.TryGetValue(id, out resource))
+                return resource;
+
+            return project.Parent.Reference?.Resources.Get(id);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -105,7 +116,11 @@ namespace YoYoProject
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            return resources.Values.SingleOrDefault(x => x.Name == name);
+            GMResource result = resources.Values.SingleOrDefault(x => x.Name == name);
+            if (result != null)
+                return result;
+
+            return project.Parent.Reference?.Resources.Get(name);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -177,7 +192,7 @@ namespace YoYoProject
                 resource.Id = id;
 
                 var fullPath = Path.Combine(project.RootDirectory, info.resourcePath);
-                var model = (ModelBase)Json.Deserialize(modelType.Item2, fullPath);
+                var model = (ModelBase)Utility.Json.Deserialize(modelType.Item2, fullPath);
                 resource.Deserialize(model);
 
                 resources.Add(resource.Id, resource);

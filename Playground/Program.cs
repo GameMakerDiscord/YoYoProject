@@ -42,17 +42,17 @@ namespace Playground
             var project = GMProject.Load(rootDirectory);
 
             /*** Objects ***/
-            {
-                foreach (var @object in project.Resources.GetAllOfType<GMObject>())
-                {
-                    Console.WriteLine("OBJ {0}; Sprite = {1}", @object.Name, @object.Sprite?.Name ?? "<None>");
-                    foreach (var @event in @object.Events)
-                    {
-                        Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
-                        Console.WriteLine(@event.Contents);
-                    }
-                }
-            }
+            //{
+            //    foreach (var @object in project.Resources.GetAllOfType<GMObject>())
+            //    {
+            //        Console.WriteLine("OBJ {0}; Sprite = {1}", @object.Name, @object.Sprite?.Name ?? "<None>");
+            //        foreach (var @event in @object.Events)
+            //        {
+            //            Console.WriteLine("EVNT {0} {1}", @event.EventType, @event.EventNumber);
+            //            Console.WriteLine(@event.Contents);
+            //        }
+            //    }
+            //}
 
             /*** Scripts ***/
             //{
@@ -70,19 +70,20 @@ namespace Playground
             //}
 
             /*** Main Options ***/
-            //{
-            //    var mainOptions = project.Resources.Get<GMMainOptions>();
-            //    Console.WriteLine("GameGuid  = {0}", mainOptions.GameGuid);
-            //    Console.WriteLine("GameSpeed = {0}", mainOptions.GameSpeed);
+            {
+                var mainOptions = project.Resources.Get<GMMainOptions>();
+                Console.WriteLine(mainOptions.ToJson());
+                Console.WriteLine("GameGuid  = {0}", mainOptions.GameGuid);
+                Console.WriteLine("GameSpeed = {0}", mainOptions.GameSpeed);
 
-            //    Console.WriteLine("Texture Groups");
-            //    foreach (var group in mainOptions.Graphics.TextureGroups)
-            //        Console.WriteLine("{0}; Targets = {1}; Parent = {2}", group.Name, group.Targets, group.Parent?.Name ?? "<none>");
+                Console.WriteLine("Texture Groups");
+                foreach (var group in mainOptions.Graphics.TextureGroups)
+                    Console.WriteLine("{0}; Targets = {1}; Parent = {2}", group.Name, group.Targets, group.Parent?.Name ?? "<none>");
 
-            //    Console.WriteLine("Audio Group");
-            //    foreach (var group in mainOptions.Audio.AudioGroups)
-            //        Console.WriteLine("{0}; Targets = {1}", group.Name, group.Targets);
-            //}
+                Console.WriteLine("Audio Group");
+                foreach (var group in mainOptions.Audio.AudioGroups)
+                    Console.WriteLine("{0}; Targets = {1}", group.Name, group.Targets);
+            }
 
             /*** Windows Options ***/
             {

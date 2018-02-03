@@ -12,7 +12,7 @@ namespace YoYoProject
     {
         public string RootDirectory { get; private set; }
 
-        public GMProjectParent ParentProject { get; private set; }
+        public GMProjectParent Parent { get; private set; }
 
         public GMResourceManager Resources { get; private set; } 
 
@@ -69,7 +69,7 @@ namespace YoYoProject
             {
                 // TODO Would be nice if I knew the type here explicitly
                 id = Id,
-                parentProject = (GMProjectParentModel)ParentProject.Serialize(),
+                parentProject = (GMProjectParentModel)Parent.Serialize(),
                 configs = Configs.Serialize(),
                 resources = Resources.Serialize(),
                 IsDnDProject = DragAndDrop,
@@ -87,6 +87,7 @@ namespace YoYoProject
             DragAndDrop = project.IsDnDProject;
             JavaScript = project.option_ecma;
 
+            Parent.Deserialize(project.parentProject);
             Resources.Deserialize(project.resources);
         }
 
@@ -99,11 +100,12 @@ namespace YoYoProject
             var project = new GMProject
             {
                 RootDirectory = rootDirectory,
-                ParentProject = new GMProjectParent(),
+                Parent = null,
                 Resources = null,
                 Configs = new ConfigTree(),
             };
 
+            project.Parent = new GMProjectParent(project); // TODO Eww
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
             var projectName = rootDirectory.GetTerminalDirectoryName();
@@ -124,13 +126,14 @@ namespace YoYoProject
             {
                 Id = Guid.NewGuid(),
                 RootDirectory = rootDirectory,
-                ParentProject = new GMProjectParent(),
+                Parent = null,
                 Resources = null,
                 Configs = new ConfigTree(),
                 DragAndDrop = false,
                 JavaScript = false
             };
 
+            project.Parent = new GMProjectParent(project); // TODO Eww
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
             // TODO Inherit from BaseProject

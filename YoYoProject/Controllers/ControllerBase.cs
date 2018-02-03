@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using YoYoProject.Models;
+using YoYoProject.Utility;
 
 namespace YoYoProject.Controllers
 {
@@ -75,5 +76,10 @@ namespace YoYoProject.Controllers
             Dirty = true;
         }
         // ReSharper restore AssignNullToNotNullAttribute
+
+        public string ToJson()
+        {
+            return Json.Serialize(Serialize());
+        }
     }
 }
