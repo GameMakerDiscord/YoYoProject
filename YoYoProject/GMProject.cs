@@ -106,6 +106,8 @@ namespace YoYoProject
             };
 
             project.Parent = new GMProjectParent(project); // TODO Eww
+            if (rootDirectory != "${base_project}")
+                project.Parent.SetAsBaseProject();
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
             var projectName = rootDirectory.GetTerminalDirectoryName();

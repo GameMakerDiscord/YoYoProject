@@ -40,7 +40,8 @@ namespace YoYoProject
             {
                 Project = project,
                 ResourceInfoId = Guid.NewGuid(),
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Dirty = true
             };
 
             resource.Create(name);
@@ -70,7 +71,11 @@ namespace YoYoProject
         public IReadOnlyList<TResource> GetAllOfType<TResource>()
             where TResource : GMResource, new()
         {
-            return (IReadOnlyList<TResource>)GetAllOfType(typeof(TResource));
+            var result = resources.Values.OfType<TResource>().ToList();
+            if (project.Parent.Reference != null)
+                result.AddRange(project.Parent.Reference.Resources.GetAllOfType<TResource>());
+
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

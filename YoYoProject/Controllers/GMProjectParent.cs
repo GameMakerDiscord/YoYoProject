@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using YoYoProject.Models;
+using YoYoProject.Utility;
 
 namespace YoYoProject.Controllers
 {
@@ -24,11 +25,18 @@ namespace YoYoProject.Controllers
 
         internal override ModelBase Serialize()
         {
+            // HACK Definitely a nasty hack, would be better to store the unexpanded macro in RootDirectory
+            //      and expand it upon demand instead...
+            var projectPath = Reference?.RootDirectory;
+            if (projectPath == Macros.Expand("${base_project}"))
+                projectPath = "${base_project}";
+
             return new GMProjectParentModel
             {
                 hiddenResources = HiddenResources,
                 //alteredResources = AlteredResources.Serialize(),
-                projectPath = Reference?.RootDirectory
+                alteredResources = new SortedDictionary<Guid, GMResourceInfoModel>(),
+                projectPath = projectPath
             };
         }
 
@@ -41,6 +49,11 @@ namespace YoYoProject.Controllers
 
             if (!string.IsNullOrEmpty(parentProjectModel.projectPath))
                 Reference = GMProject.Load(parentProjectModel.projectPath);
+        }
+
+        public void SetAsBaseProject()
+        {
+            Reference = GMProject.Load("${base_project}");
         }
     }
 }
