@@ -56,18 +56,18 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref edgeFiltering); }
         }
 
-        private int xOrigin;
+        private int originX;
         public int OriginX
         {
-            get { return GetProperty(xOrigin); }
-            set { SetProperty(value, ref xOrigin); }
+            get { return GetProperty(originX); }
+            set { SetProperty(value, ref originX); }
         }
 
-        private int yOrigin;
+        private int originY;
         public int OriginY
         {
-            get { return GetProperty(yOrigin); }
-            set { SetProperty(value, ref yOrigin); }
+            get { return GetProperty(originY); }
+            set { SetProperty(value, ref originY); }
         }
 
         private uint collisonTolerance;
@@ -526,6 +526,17 @@ namespace YoYoProject.Controllers
                 layers[0].SetImage(file);
 
             Sprite.Resize(file.Width, file.Height);
+        }
+
+        public void SetImage(Image image)
+        {
+            if (image == null)
+                throw new ArgumentNullException(nameof(image));
+
+            if (layers.Count > 0)
+                layers[0].SetImage(image);
+
+            Sprite.Resize(image.Width, image.Height);
         }
 
         internal void Resize(int width, int height)
