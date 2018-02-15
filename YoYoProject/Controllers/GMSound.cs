@@ -97,6 +97,15 @@ namespace YoYoProject.Controllers
             pendingSoundPath = path;
         }
 
+        public void SetAudioFile(byte[] buffer)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException(nameof(buffer));
+
+            pendingSoundPath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+            File.WriteAllBytes(pendingSoundPath, buffer);
+        }
+
         public FileStream GetAudioFileStream()
         {
             string soundPath = pendingSoundPath ?? FullSoundPath;
