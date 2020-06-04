@@ -143,6 +143,7 @@ namespace YoYoProject
             project.Resources.Create<GMWindowsOptions>();
             project.Resources.Create<GMMacOptions>();
             project.Resources.Create<GMLinuxOptions>();
+            project.Resources.Create<GMHtml5Options>();
             
             var root = project.Resources.Create<GMFolder>();
             root.IsDefaultView = true;
