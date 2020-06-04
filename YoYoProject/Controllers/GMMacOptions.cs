@@ -125,8 +125,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref scale); }
         }
         
-        private string texturePage;
-        public string TexturePage
+        private TexturePageSize texturePage;
+        public TexturePageSize TexturePage
         {
             get { return GetProperty(texturePage); }
             set { SetProperty(value, ref texturePage); }
@@ -166,6 +166,13 @@ namespace YoYoProject.Controllers
             get { return GetProperty(enableSteam); }
             set { SetProperty(value, ref enableSteam); }
         }
+
+        private bool disableSandbox;
+        public bool DisableSandbox
+        {
+            get { return GetProperty(disableSandbox); }
+            set { SetProperty(value, ref disableSandbox); }
+        }
         
         internal override string ResourcePath => @"options\mac\options_mac.yy";
 
@@ -188,12 +195,13 @@ namespace YoYoProject.Controllers
             Vsync = false;
             ResizeWindow = false;
             Scale = 0;
-            TexturePage = "2048x2048"; // TODO Reference object?
+            TexturePage = new TexturePageSize(2048, 2048); // TODO Reference object?
             AppStore = false;
             AllowIncomingNetwork = false;
             AllowOutgoingNetwork = false;
             AppCategory = "";
             EnableSteam = false;
+            DisableSandbox = false;
         }
         
         internal override ModelBase Serialize()
@@ -219,12 +227,13 @@ namespace YoYoProject.Controllers
                 option_mac_vsync = Vsync,
                 option_mac_resize_window = ResizeWindow,
                 option_mac_scale = Scale,
-                option_mac_texture_page = TexturePage,
+                option_mac_texture_page = TexturePage.ToString(),
                 option_mac_build_app_store = AppStore,
                 option_mac_allow_incoming_network = AllowIncomingNetwork,
                 option_mac_allow_outgoing_network = AllowOutgoingNetwork,
                 option_mac_app_category = AppCategory,
-                option_mac_enable_steam = EnableSteam
+                option_mac_enable_steam = EnableSteam,
+                option_mac_disable_sandbox = DisableSandbox
             };
         }
 

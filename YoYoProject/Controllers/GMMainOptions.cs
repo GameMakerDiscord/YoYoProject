@@ -85,7 +85,14 @@ namespace YoYoProject.Controllers
             get { return GetProperty(audio); }
             set { SetProperty(value, ref audio); }
         }
-        
+
+        private bool acceptedSpineLicence;
+        public bool AcceptedSpineLicence
+        {
+            get { return GetProperty(acceptedSpineLicence); }
+            set { SetProperty(value, ref acceptedSpineLicence); }
+        }
+
         internal override string ResourcePath => @"options\main\options_main.yy";
 
         public GMMainOptions()
@@ -105,6 +112,7 @@ namespace YoYoProject.Controllers
             UseSci = false;
             Author = "";
             LastChanged = DateTime.Now;
+            AcceptedSpineLicence = false;
         }
 
         internal override ModelBase Serialize()
@@ -123,7 +131,8 @@ namespace YoYoProject.Controllers
                 option_author = Author,
                 option_lastchanged = LastChanged.ToString("dd MMMM YYYY HH:mm:ss"),
                 graphics_options = Graphics.Serialize(),
-                audio_options = Audio.Serialize()
+                audio_options = Audio.Serialize(),
+                option_spine_licence = AcceptedSpineLicence
             };
         }
 
@@ -147,6 +156,7 @@ namespace YoYoProject.Controllers
                         : DateTime.ParseExact(mainOptionsModel.option_lastchanged, "dd MMMM YYYY HH:mm:ss", CultureInfo.InvariantCulture);
             Graphics.Deserialize(mainOptionsModel.graphics_options);
             Audio.Deserialize(mainOptionsModel.audio_options);
+            AcceptedSpineLicence = mainOptionsModel.option_spine_licence;
         }
     }
 
@@ -169,10 +179,10 @@ namespace YoYoProject.Controllers
             Id = Guid.NewGuid();
             TextureGroups = new List<GMTextureGroup>();
 
-            CreateTextureGroup(DefaultName, null);
+            CreateTextureGroup(DefaultName);
         }
 
-        public GMTextureGroup CreateTextureGroup(string name, GMTextureGroup parent)
+        public GMTextureGroup CreateTextureGroup(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -236,10 +246,10 @@ namespace YoYoProject.Controllers
             Id = Guid.NewGuid();
             AudioGroups = new List<GMAudioGroup>();
 
-            CreateAudioGroup(DefaultName, null);
+            CreateAudioGroup(DefaultName);
         }
 
-        public GMAudioGroup CreateAudioGroup(string name, GMTextureGroup parent)
+        public GMAudioGroup CreateAudioGroup(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));

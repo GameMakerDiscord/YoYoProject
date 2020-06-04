@@ -75,6 +75,9 @@ namespace YoYoProject
         [DataMember]
         public bool option_mac_enable_steam { get; set; }
 
+        [DataMember]
+        public bool option_mac_disable_sandbox { get; set; }
+
         public GMMacOptionsModel()
             : base("GMMacOptions", "1.0")
         {

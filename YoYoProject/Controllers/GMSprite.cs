@@ -240,6 +240,8 @@ namespace YoYoProject.Controllers
             SwatchColors = new List<Color>();
 
             Layers.Create();
+
+            AddResourceToFolder("GMSprite");
         }
         
         public void Resize(int w, int h)

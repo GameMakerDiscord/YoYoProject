@@ -187,6 +187,13 @@ namespace YoYoProject.Controllers
             get { return GetProperty(enableSteam); }
             set { SetProperty(value, ref enableSteam); }
         }
+
+        private bool disableSandbox;
+        public bool DisableSandbox
+        {
+            get { return GetProperty(disableSandbox); }
+            set { SetProperty(value, ref disableSandbox); }
+        }
         
         internal override string ResourcePath => @"options\windows\options_windows.yy";
 
@@ -251,7 +258,8 @@ namespace YoYoProject.Controllers
                 option_windows_installer_header = InstallerHeader,
                 option_windows_license = License,
                 option_windows_nsis_file = NsisFile,
-                option_windows_enable_steam = EnableSteam
+                option_windows_enable_steam = EnableSteam,
+                option_windows_disable_sandbox = DisableSandbox
             };
         }
 
@@ -287,6 +295,7 @@ namespace YoYoProject.Controllers
             License = windowOptionsModel.option_windows_license;
             NsisFile = windowOptionsModel.option_windows_nsis_file;
             EnableSteam = windowOptionsModel.option_windows_enable_steam;
+            DisableSandbox = windowOptionsModel.option_windows_disable_sandbox;
         }
     }
 }

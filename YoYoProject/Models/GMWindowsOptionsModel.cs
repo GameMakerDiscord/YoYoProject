@@ -84,6 +84,9 @@ namespace YoYoProject
         [DataMember]
         public bool option_windows_enable_steam { get; set; }
 
+        [DataMember]
+        public bool option_windows_disable_sandbox { get; set; }
+
         public GMWindowsOptionsModel()
             : base("GMWindowsOptions", "1.0")
         {

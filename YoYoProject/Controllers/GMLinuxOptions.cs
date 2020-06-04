@@ -117,8 +117,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref scale); }
         }
         
-        private string texturePage;
-        public string TexturePage
+        private TexturePageSize texturePage;
+        public TexturePageSize TexturePage
         {
             get { return GetProperty(texturePage); }
             set { SetProperty(value, ref texturePage); }
@@ -129,6 +129,13 @@ namespace YoYoProject.Controllers
         {
             get { return GetProperty(enableSteam); }
             set { SetProperty(value, ref enableSteam); }
+        }
+
+        private bool disableSandbox;
+        public bool DisableSandbox
+        {
+            get { return GetProperty(disableSandbox); }
+            set { SetProperty(value, ref disableSandbox); }
         }
         
         internal override string ResourcePath => @"options\linux\options_linux.yy";
@@ -151,8 +158,9 @@ namespace YoYoProject.Controllers
             Vsync = false;
             ResizeWindow = false;
             Scale = 0; // TODO ???
-            TexturePage = "2048x2048"; // TODO Reference object?
+            TexturePage = new TexturePageSize(2048, 2048);
             EnableSteam = false;
+            DisableSandbox = false;
         }
 
         internal override ModelBase Serialize()
@@ -177,8 +185,9 @@ namespace YoYoProject.Controllers
                 option_linux_sync = Vsync,
                 option_linux_resize_window = ResizeWindow,
                 option_linux_scale = Scale,
-                option_linux_texture_page = TexturePage,
-                option_linux_enable_steam = EnableSteam
+                option_linux_texture_page = TexturePage.ToString(),
+                option_linux_enable_steam = EnableSteam,
+                option_linux_disable_sandbox = DisableSandbox
             };
         }
 
@@ -189,6 +198,25 @@ namespace YoYoProject.Controllers
 
             Id = linuxOptionsModel.id;
             Name = linuxOptionsModel.name;
+            DisplayName = linuxOptionsModel.option_linux_display_name;
+            Version = linuxOptionsModel.option_linux_version;
+            MaintainerEmail = linuxOptionsModel.option_linux_maintainer_email;
+            Homepage = linuxOptionsModel.option_linux_homepage;
+            ShortDescription = linuxOptionsModel.option_linux_short_desc;
+            LongDescription = linuxOptionsModel.option_linux_long_desc;
+            SplashScreen = linuxOptionsModel.option_linux_splash_screen;
+            DisplaySplash = linuxOptionsModel.option_linux_display_splash;
+            Icon = linuxOptionsModel.option_linux_icon;
+            StartFullscreen = linuxOptionsModel.option_linux_start_fullscreen;
+            AllowFullscreen = linuxOptionsModel.option_linux_allow_fullscreen;
+            InterpolatePixels = linuxOptionsModel.option_linux_interpolate_pixels;
+            DisplayCursor = linuxOptionsModel.option_linux_display_cursor;
+            Vsync = linuxOptionsModel.option_linux_sync;
+            ResizeWindow = linuxOptionsModel.option_linux_resize_window;
+            Scale = linuxOptionsModel.option_linux_scale;
+            TexturePage = new TexturePageSize(linuxOptionsModel.option_linux_texture_page);
+            EnableSteam = linuxOptionsModel.option_linux_enable_steam;
+            DisableSandbox = linuxOptionsModel.option_linux_disable_sandbox;
         }
     }
 }

@@ -60,6 +60,9 @@ namespace YoYoProject
         [DataMember]
         public bool option_linux_enable_steam { get; set; }
 
+        [DataMember]
+        public bool option_linux_disable_sandbox { get; set; }
+
         public GMLinuxOptionsModel()
             : base("GMLinuxOptionsModel", "1.0")
         {

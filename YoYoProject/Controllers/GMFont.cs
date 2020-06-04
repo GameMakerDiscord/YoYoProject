@@ -75,6 +75,8 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
             TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.DefaultTextureGroup;
 
             Ranges.Add(GMFontRange.Normal);
+
+            AddResourceToFolder("GMFont");
         }
 
         internal override ModelBase Serialize()

@@ -44,6 +44,8 @@ namespace YoYoProject.Controllers
             Name = Project.Resources.GenerateValidName(name ?? "extension");
             Version = new BuildVersion(1, 0, 0);
             TargetPlatforms = TargetPlatforms.AllPlatforms;
+
+            AddResourceToFolder("GMExtension");
         }
 
         internal override ModelBase Serialize()

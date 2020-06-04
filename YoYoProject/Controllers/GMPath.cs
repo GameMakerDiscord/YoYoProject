@@ -60,6 +60,7 @@ namespace YoYoProject.Controllers
             Precision = 4;
             SnapHorizontal = 0;
             SnapVertical = 0;
+            AddResourceToFolder("GMPath");
         }
 
         internal override ModelBase Serialize()

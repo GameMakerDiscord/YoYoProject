@@ -55,6 +55,8 @@ namespace YoYoProject.Controllers
             IsCompatibility = false;
             IsDnD = Project.DragAndDrop;
             Contents = "";
+
+            AddResourceToFolder("GMScript");
         }
 
         internal override ModelBase Serialize()

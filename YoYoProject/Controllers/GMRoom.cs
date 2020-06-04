@@ -39,6 +39,13 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref persistent); }
         }
 
+        private List<GMRInstance> instCreationOrder;
+        public List<GMRInstance> InstCreationOrder
+        {
+            get { return GetProperty(instCreationOrder); }
+            set { SetProperty(value, ref instCreationOrder); }
+        }
+
         private string creationCode;
         public string CreationCode
         {
@@ -116,6 +123,8 @@ namespace YoYoProject.Controllers
                 view.VSpeed = -1;
                 view.Object = null;
             }
+
+            AddResourceToFolder("GMRoom");
         }
 
         internal override ModelBase Serialize()
@@ -142,7 +151,7 @@ namespace YoYoProject.Controllers
                 layers = Layers.Serialize(),
                 inheritLayers = false, // TODO Implement
                 creationCodeFile = creationCodeExists ? CreationCodeFile : "",
-                instanceCreationOrderIDs = new List<Guid>(), // TODO Implement
+                instanceCreationOrderIDs = InstCreationOrder.Select(x => x.Id).ToList(), // TODO Implement
                 inheritCode = false, // TODO Implement
                 inheritCreationOrder = false, // TODO Implement
                 roomSettings = new GMRoomSettingsModel
@@ -165,6 +174,8 @@ namespace YoYoProject.Controllers
 
             Id = roomModel.id;
             Name = roomModel.name;
+            Width = roomModel.roomSettings.Width;
+            Height = roomModel.roomSettings.Height;
         }
 
         public sealed class GMRoomPhysics : ControllerBase

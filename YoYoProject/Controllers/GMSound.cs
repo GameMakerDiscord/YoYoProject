@@ -87,6 +87,8 @@ namespace YoYoProject.Controllers
             Type = GMSoundType.Mono;
             BitDepth = GMSoundBitDepth.SixteenBit;
             AudioGroup = Project.Resources.Get<GMMainOptions>().Audio.DefaultAudioGroup;
+
+            AddResourceToFolder("GMSound");
         }
 
         public void SetAudioFile(string path)

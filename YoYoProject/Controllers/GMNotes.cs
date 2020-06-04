@@ -38,6 +38,7 @@ namespace YoYoProject.Controllers
         internal override void Create(string name)
         {
             Name = Project.Resources.GenerateValidName(name ?? "note");
+            AddResourceToFolder("GMNotes");
         }
 
         internal override ModelBase Serialize()
