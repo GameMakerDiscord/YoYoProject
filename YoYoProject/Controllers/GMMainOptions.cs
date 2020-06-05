@@ -139,6 +139,7 @@ namespace YoYoProject.Controllers
         internal override void Deserialize(ModelBase model)
         {
             // TODO Implement
+            // nkrapivin: I feel like it's already implemented...?
             var mainOptionsModel = (GMMainOptionsModel)model;
 
             Id = mainOptionsModel.id;
@@ -360,6 +361,20 @@ namespace YoYoProject.Controllers
             Border = modelTextureGroup.border;
             MipsToGenerate = modelTextureGroup.mipsToGenerate;
         }
+
+        /*
+        internal override void FinalizeDeserialization(ModelBase model)
+        {
+            var modelTextureGroup = (GMTextureGroupModel)model;
+            var parentGuid = modelTextureGroup.groupParent;
+            if (parentGuid == Guid.Empty)
+                Parent = null;
+            else
+            {
+                Parent = Project.Resources.Get<GMMainOptions>().// blabla find here the tgrp
+            }
+        }
+        */
     }
 
     public abstract class GMBaseGroup
@@ -373,5 +388,7 @@ namespace YoYoProject.Controllers
         internal abstract GMBaseGroupModel Serialize();
 
         internal abstract void Deserialize(GMBaseGroupModel model);
+
+        // TODO Implement FinalizeDeserialization...
     }
 }

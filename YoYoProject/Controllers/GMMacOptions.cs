@@ -239,11 +239,33 @@ namespace YoYoProject.Controllers
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var macOptionsModel = (GMMacOptionsModel)model;
 
             Id = macOptionsModel.id;
             Name = macOptionsModel.name;
+            DisplayName = macOptionsModel.option_mac_display_name;
+            AppId = macOptionsModel.option_mac_app_id;
+            Version = macOptionsModel.option_mac_version;
+            OutputDirectory = macOptionsModel.option_mac_output_dir;
+            TeamId = macOptionsModel.option_mac_team_id;
+            SigningIdentity = macOptionsModel.option_mac_signing_identity;
+            Copyright = macOptionsModel.option_mac_copyright;
+            SplashPng = macOptionsModel.option_mac_splash_png;
+            IconPng = macOptionsModel.option_mac_icon_png;
+            DisplayCursor = macOptionsModel.option_mac_display_cursor;
+            StartFullscreen = macOptionsModel.option_mac_start_fullscreen;
+            AllowFullscreenSwitching = macOptionsModel.option_mac_allow_fullscreen;
+            InterpolatePixels = macOptionsModel.option_mac_interpolate_pixels;
+            Vsync = macOptionsModel.option_mac_vsync;
+            ResizeWindow = macOptionsModel.option_mac_resize_window;
+            Scale = macOptionsModel.option_mac_scale;
+            TexturePage = new TexturePageSize(macOptionsModel.option_mac_texture_page);
+            AppStore = macOptionsModel.option_mac_build_app_store;
+            AllowIncomingNetwork = macOptionsModel.option_mac_allow_incoming_network;
+            AllowOutgoingNetwork = macOptionsModel.option_mac_allow_outgoing_network;
+            AppCategory = macOptionsModel.option_mac_app_category;
+            EnableSteam = macOptionsModel.option_mac_enable_steam;
+            DisableSandbox = macOptionsModel.option_mac_disable_sandbox;
         }
     }
 }

@@ -193,7 +193,6 @@ namespace YoYoProject.Controllers
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var linuxOptionsModel = (GMLinuxOptionsModel)model;
 
             Id = linuxOptionsModel.id;

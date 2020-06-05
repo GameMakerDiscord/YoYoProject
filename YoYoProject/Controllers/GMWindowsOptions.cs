@@ -146,8 +146,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref sleepMargin); }
         }
         
-        private string texturePage;
-        public string TexturePage
+        private TexturePageSize texturePage;
+        public TexturePageSize TexturePage
         {
             get { return GetProperty(texturePage); }
             set { SetProperty(value, ref texturePage); }
@@ -219,7 +219,7 @@ namespace YoYoProject.Controllers
             Borderless = false;
             Scale = 0; // TODO ???
             SleepMargin = 10;
-            TexturePage = "2048x2048"; // TODO Reference object?
+            TexturePage = new TexturePageSize(2048, 2048); // TODO Reference object?
             InstallerFinished = @"${base_options_dir}\windows\installer\finished.bmp"; // TODO Copy in default
             InstallerHeader = @"${base_options_dir}\windows\installer\header.bmp"; // TODO Copy in default
             License = @"${base_options_dir}\windows\installer\license.txt"; // TODO Copy in default
@@ -253,7 +253,7 @@ namespace YoYoProject.Controllers
                 option_windows_borderless = Borderless,
                 option_windows_scale = Scale,
                 option_windows_sleep_margin = SleepMargin,
-                option_windows_texture_page = TexturePage,
+                option_windows_texture_page = TexturePage.ToString(),
                 option_windows_installer_finished = InstallerFinished,
                 option_windows_installer_header = InstallerHeader,
                 option_windows_license = License,
@@ -289,7 +289,7 @@ namespace YoYoProject.Controllers
             Borderless = windowOptionsModel.option_windows_borderless;
             Scale = windowOptionsModel.option_windows_scale;
             SleepMargin = windowOptionsModel.option_windows_sleep_margin;
-            TexturePage = windowOptionsModel.option_windows_texture_page;
+            TexturePage = new TexturePageSize(windowOptionsModel.option_windows_texture_page);
             InstallerFinished = windowOptionsModel.option_windows_installer_finished;
             InstallerHeader = windowOptionsModel.option_windows_installer_header;
             License = windowOptionsModel.option_windows_license;
