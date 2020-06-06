@@ -103,11 +103,15 @@ namespace YoYoProject.Controllers
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var shaderModel = (GMShaderModel)model;
 
             Id = shaderModel.id;
             Name = shaderModel.name;
+            Type = shaderModel.type;
+
+            //FragmentContents = File.ReadAllText(FragementShaderFullPath);
+            //VertexContents = File.ReadAllText(VertexShaderFullPath);
+            // Not sure about these lines.
         }
     }
 }
