@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using YoYoProject.Controllers;
 using YoYoProject.Models;
 using YoYoProject.Utility;
@@ -88,7 +89,14 @@ namespace YoYoProject
             JavaScript = project.option_ecma;
 
             Parent.Deserialize(project.parentProject);
-            Resources.Deserialize(project.resources);
+            try
+            {
+                Resources.Deserialize(project.resources);
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("Exception occured: " + e.Message);
+            }
         }
 
         public static GMProject Load(string rootDirectory)

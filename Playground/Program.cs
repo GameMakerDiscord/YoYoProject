@@ -94,7 +94,10 @@ namespace Playground
             /*** Windows Options ***/
             {
                 var windowsOptions = project.Resources.Get<GMWindowsOptions>();
-                Console.WriteLine("Windows.DisplayName = {0}", windowsOptions.DisplayName);
+                if (windowsOptions != null)
+                    Console.WriteLine("Windows.DisplayName = {0}", windowsOptions.DisplayName);
+                else
+                    Console.WriteLine("Cannot find Windows options!");
             }
 
             Console.WriteLine("Done");
