@@ -138,8 +138,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref outputName); }
         }
 
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
@@ -224,7 +224,7 @@ namespace YoYoProject.Controllers
             LocalRunAlert = true;
             OutDebugToConsole = true;
             OutputName = "index.html";
-            Scale = 0;
+            Scale = Scale.KeepAspectRatio;
             SplashPng = @"${base_options_dir}/html5/splash.png";
             TexturePage = new TexturePageSize(2048, 2048);
             UseFacebook = false;

@@ -33,8 +33,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref interpolatePixels); }
         }
 
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
@@ -63,7 +63,7 @@ namespace YoYoProject.Controllers
             EnableFileAccessChecking = true;
             EnableNEXLibraries = false;
             InterpolatePixels = true;
-            Scale = 0;
+            Scale = Scale.KeepAspectRatio;
             TexturePage = new TexturePageSize(2048, 2048);
             ProjectNmeta = @"${options_dir}/switch/application.nmeta"; // I don't bundle the default nmeta as it's 100% under NDA.
         }

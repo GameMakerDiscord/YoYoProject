@@ -69,8 +69,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref icon); }
         }
         
-        private int saveLocation;
-        public int SaveLocation
+        private SaveLocation saveLocation;
+        public SaveLocation SaveLocation
         {
             get { return GetProperty(saveLocation); }
             set { SetProperty(value, ref saveLocation); }
@@ -132,8 +132,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref borderless); }
         }
         
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
@@ -208,7 +208,7 @@ namespace YoYoProject.Controllers
             DescriptionInfo = "A GameMaker Studio 2 Game";
             DisplayCursor = true;
             Icon = @"${base_options_dir}\windows\icons\icon.ico"; // TODO Copy in default
-            SaveLocation = 0; // TODO ???
+            SaveLocation = SaveLocation.LocalAppData;
             SplashScreen = @"${base_options_dir}\windows\splash\splash.png"; // TODO Copy in default
             UseSplash = false;
             StartFullscreen = false;
@@ -217,9 +217,9 @@ namespace YoYoProject.Controllers
             Vsync = false;
             ResizeWindow = false;
             Borderless = false;
-            Scale = 0; // TODO ???
+            Scale = Scale.KeepAspectRatio;
             SleepMargin = 10;
-            TexturePage = new TexturePageSize(2048, 2048); // TODO Reference object?
+            TexturePage = new TexturePageSize(2048, 2048);
             InstallerFinished = @"${base_options_dir}\windows\installer\finished.bmp"; // TODO Copy in default
             InstallerHeader = @"${base_options_dir}\windows\installer\header.bmp"; // TODO Copy in default
             License = @"${base_options_dir}\windows\installer\license.txt"; // TODO Copy in default

@@ -37,7 +37,7 @@ namespace YoYoProject
         public bool option_tvos_push_notifications { get; set; }
 
         [DataMember]
-        public int option_tvos_scale { get; set; }
+        public Scale option_tvos_scale { get; set; }
 
         [DataMember]
         public int option_tvos_splash_time { get; set; }

@@ -75,8 +75,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref pushNotifications); }
         }
 
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
@@ -166,7 +166,7 @@ namespace YoYoProject.Controllers
             InterpolatePixels = true;
             OutputDir = @"~/GameMakerStudio2/tvOS";
             PushNotifications = false;
-            Scale = 0;
+            Scale = Scale.KeepAspectRatio;
             SplashTime = 10;
             SplashScreen = @"${base_options_dir}\tvos\splash\splash.png";
             SplashScreen2x = @"${base_options_dir}\tvos\splash\splash_2x.png";

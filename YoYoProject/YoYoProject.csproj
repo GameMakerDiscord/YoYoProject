@@ -39,6 +39,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\GameScale.cs" />
+    <Compile Include="Common\SaveLocation.cs" />
     <Compile Include="Common\TexturePageSize.cs" />
     <Compile Include="ConfigDelta.cs" />
     <Compile Include="ConfigTree.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Controllers\GMTimeLine.cs" />
     <Compile Include="Controllers\GMtvOSOptions.cs" />
     <Compile Include="Controllers\TileMap.cs" />
+    <Compile Include="Models\GMAndroidOptionsModel.cs" />
     <Compile Include="Models\GMAudioGroupModel.cs" />
     <Compile Include="Models\GMAudioOptionsModel.cs" />
     <Compile Include="Models\GMBaseGroupModel.cs" />

@@ -73,7 +73,7 @@ namespace YoYoProject
         public string option_html5_outputname { get; set; }
 
         [DataMember]
-        public int option_html5_scale { get; set; }
+        public Scale option_html5_scale { get; set; }
 
         [DataMember]
         public string option_html5_splash_png { get; set; }

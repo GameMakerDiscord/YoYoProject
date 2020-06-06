@@ -118,8 +118,8 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref resizeWindow); }
         }
         
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
@@ -194,8 +194,8 @@ namespace YoYoProject.Controllers
             InterpolatePixels = false;
             Vsync = false;
             ResizeWindow = false;
-            Scale = 0;
-            TexturePage = new TexturePageSize(2048, 2048); // TODO Reference object?
+            Scale = Scale.KeepAspectRatio;
+            TexturePage = new TexturePageSize(2048, 2048);
             AppStore = false;
             AllowIncomingNetwork = false;
             AllowOutgoingNetwork = false;

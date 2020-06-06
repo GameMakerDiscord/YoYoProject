@@ -19,7 +19,7 @@ namespace YoYoProject
         public bool option_switch_interpolate_pixels { get; set; }
 
         [DataMember]
-        public int option_switch_scale { get; set; }
+        public Scale option_switch_scale { get; set; }
 
         [DataMember]
         public string option_switch_project_nmeta { get; set; }
