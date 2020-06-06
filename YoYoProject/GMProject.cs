@@ -105,9 +105,12 @@ namespace YoYoProject
                 Configs = new ConfigTree(),
             };
 
-            project.Parent = new GMProjectParent(project); // TODO Eww
-            if (rootDirectory != "${base_project}")
+            project.Parent = new GMProjectParent(project);
+            if (rootDirectory != Macros.Expand("${base_project}")) // fix StackOverflowException...
+            {
                 project.Parent.SetAsBaseProject();
+            }
+            
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
             var projectName = rootDirectory.GetTerminalDirectoryName();
