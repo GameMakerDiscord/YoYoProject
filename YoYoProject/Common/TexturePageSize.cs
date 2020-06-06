@@ -14,7 +14,7 @@ namespace YoYoProject.Common
 
         public TexturePageSize (uint w, uint h)
         {
-            if ((w % 2 != 0) || (h % 2 != 0))
+            if (((w & (w - 1)) != 0) || ((h & (h - 1)) != 0))
                 throw new ArgumentException("Width and Height must be a power of 2!");
 
             Width = w;
@@ -28,7 +28,7 @@ namespace YoYoProject.Common
                 throw new ArgumentException("Invalid size string!"); // "2048x" ?????
             if (!uint.TryParse(arr[0], out uint w) || !uint.TryParse(arr[1], out uint h))
                 throw new ArgumentException("Could not parse the size string!");
-            if ((w % 2 != 0) || (h % 2 != 0))
+            if (((w & (w - 1)) != 0) || ((h & (h - 1)) != 0))
                 throw new ArgumentException("Width and Height must be a power of 2!");
 
             Width = w;
