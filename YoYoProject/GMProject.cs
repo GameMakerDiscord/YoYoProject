@@ -89,14 +89,7 @@ namespace YoYoProject
             JavaScript = project.option_ecma;
 
             Parent.Deserialize(project.parentProject);
-            try
-            {
-                Resources.Deserialize(project.resources);
-            }
-            catch (InvalidOperationException e)
-            {
-                Console.WriteLine("Exception occured: " + e.Message);
-            }
+            Resources.Deserialize(project.resources);
         }
 
         public static GMProject Load(string rootDirectory)
