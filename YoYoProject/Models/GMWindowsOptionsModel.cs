@@ -34,7 +34,7 @@ namespace YoYoProject
         public string option_windows_icon { get; set; }
 
         [DataMember]
-        public int option_windows_save_location { get; set; }
+        public SaveLocation option_windows_save_location { get; set; }
 
         [DataMember]
         public string option_windows_splash_screen { get; set; }
@@ -61,7 +61,7 @@ namespace YoYoProject
         public bool option_windows_borderless { get; set; }
 
         [DataMember]
-        public int option_windows_scale { get; set; }
+        public Scale option_windows_scale { get; set; }
 
         [DataMember]
         public int option_windows_sleep_margin { get; set; }
@@ -83,6 +83,9 @@ namespace YoYoProject
 
         [DataMember]
         public bool option_windows_enable_steam { get; set; }
+
+        [DataMember]
+        public bool option_windows_disable_sandbox { get; set; }
 
         public GMWindowsOptionsModel()
             : base("GMWindowsOptions", "1.0")

@@ -39,6 +39,9 @@ namespace YoYoProject
         [DataMember]
         public GMAudioOptionsModel audio_options { get; set; }
 
+        [DataMember]
+        public bool option_spine_licence { get; set; }
+
         public GMMainOptionsModel()
             : base("GMMainOptions", "1.0")
         {

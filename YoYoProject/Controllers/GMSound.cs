@@ -87,6 +87,8 @@ namespace YoYoProject.Controllers
             Type = GMSoundType.Mono;
             BitDepth = GMSoundBitDepth.SixteenBit;
             AudioGroup = Project.Resources.Get<GMMainOptions>().Audio.DefaultAudioGroup;
+
+            AddResourceToFolder("GMSound");
         }
 
         public void SetAudioFile(string path)
@@ -137,11 +139,28 @@ namespace YoYoProject.Controllers
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var soundModel = (GMSoundModel)model;
 
             Id = soundModel.id;
             Name = soundModel.name;
+            CompressionKind = soundModel.kind;
+            Volume = soundModel.volume;
+            PreLoad = soundModel.preload;
+            BitRate = soundModel.bitRate;
+            SampleRate = soundModel.sampleRate;
+            Type = soundModel.type;
+            BitDepth = soundModel.bitDepth;
+
+        }
+
+        internal override void FinalizeDeserialization(ModelBase model)
+        {
+            var soundModel = (GMSoundModel)model;
+            var audiogrpGuid = soundModel.audioGroundGuid;
+            if (audiogrpGuid == Guid.Empty)
+                AudioGroup = null;
+            else
+                AudioGroup = Project.Resources.Get<GMMainOptions>().Audio.AudioGroups.Find(g => g.Id == audiogrpGuid);
         }
     }
 }

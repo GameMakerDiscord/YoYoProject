@@ -16,9 +16,15 @@ namespace Playground
             Console.ReadKey();
         }
 
+        private static string GetInput(string msg)
+        {
+            Console.Write(msg + ": ");
+            return Console.ReadLine();
+        }
+
         private static void LoadSaveProject()
         {
-            var rootDirectory = @"C:\Temp\GMProjects\SaveLoad";
+            var rootDirectory = GetInput("Drag your project folder here");
             var project = GMProject.Load(rootDirectory);
 
             var script0 = project.Resources.Get<GMScript>("script0");
@@ -38,7 +44,7 @@ namespace Playground
         private static void LoadProject()
         {
             //var rootDirectory = @"${base_project}";
-            var rootDirectory = @"C:\Temp\GMProjects\Empty";
+            var rootDirectory = GetInput("Drag your project folder here");
             var project = GMProject.Load(rootDirectory);
 
             /*** Objects ***/
@@ -88,7 +94,10 @@ namespace Playground
             /*** Windows Options ***/
             {
                 var windowsOptions = project.Resources.Get<GMWindowsOptions>();
-                Console.WriteLine("Windows.DisplayName = {0}", windowsOptions.DisplayName);
+                if (windowsOptions != null)
+                    Console.WriteLine("Windows.DisplayName = {0}", windowsOptions.DisplayName);
+                else
+                    Console.WriteLine("Cannot find Windows options!");
             }
 
             Console.WriteLine("Done");

@@ -118,15 +118,15 @@ namespace YoYoProject.Controllers
             set { SetProperty(value, ref resizeWindow); }
         }
         
-        private int scale;
-        public int Scale
+        private Scale scale;
+        public Scale Scale
         {
             get { return GetProperty(scale); }
             set { SetProperty(value, ref scale); }
         }
         
-        private string texturePage;
-        public string TexturePage
+        private TexturePageSize texturePage;
+        public TexturePageSize TexturePage
         {
             get { return GetProperty(texturePage); }
             set { SetProperty(value, ref texturePage); }
@@ -166,6 +166,13 @@ namespace YoYoProject.Controllers
             get { return GetProperty(enableSteam); }
             set { SetProperty(value, ref enableSteam); }
         }
+
+        private bool disableSandbox;
+        public bool DisableSandbox
+        {
+            get { return GetProperty(disableSandbox); }
+            set { SetProperty(value, ref disableSandbox); }
+        }
         
         internal override string ResourcePath => @"options\mac\options_mac.yy";
 
@@ -187,13 +194,14 @@ namespace YoYoProject.Controllers
             InterpolatePixels = false;
             Vsync = false;
             ResizeWindow = false;
-            Scale = 0;
-            TexturePage = "2048x2048"; // TODO Reference object?
+            Scale = Scale.KeepAspectRatio;
+            TexturePage = new TexturePageSize(2048, 2048);
             AppStore = false;
             AllowIncomingNetwork = false;
             AllowOutgoingNetwork = false;
             AppCategory = "";
             EnableSteam = false;
+            DisableSandbox = false;
         }
         
         internal override ModelBase Serialize()
@@ -219,22 +227,45 @@ namespace YoYoProject.Controllers
                 option_mac_vsync = Vsync,
                 option_mac_resize_window = ResizeWindow,
                 option_mac_scale = Scale,
-                option_mac_texture_page = TexturePage,
+                option_mac_texture_page = TexturePage.ToString(),
                 option_mac_build_app_store = AppStore,
                 option_mac_allow_incoming_network = AllowIncomingNetwork,
                 option_mac_allow_outgoing_network = AllowOutgoingNetwork,
                 option_mac_app_category = AppCategory,
-                option_mac_enable_steam = EnableSteam
+                option_mac_enable_steam = EnableSteam,
+                option_mac_disable_sandbox = DisableSandbox
             };
         }
 
         internal override void Deserialize(ModelBase model)
         {
-            // TODO Implement
             var macOptionsModel = (GMMacOptionsModel)model;
 
             Id = macOptionsModel.id;
             Name = macOptionsModel.name;
+            DisplayName = macOptionsModel.option_mac_display_name;
+            AppId = macOptionsModel.option_mac_app_id;
+            Version = macOptionsModel.option_mac_version;
+            OutputDirectory = macOptionsModel.option_mac_output_dir;
+            TeamId = macOptionsModel.option_mac_team_id;
+            SigningIdentity = macOptionsModel.option_mac_signing_identity;
+            Copyright = macOptionsModel.option_mac_copyright;
+            SplashPng = macOptionsModel.option_mac_splash_png;
+            IconPng = macOptionsModel.option_mac_icon_png;
+            DisplayCursor = macOptionsModel.option_mac_display_cursor;
+            StartFullscreen = macOptionsModel.option_mac_start_fullscreen;
+            AllowFullscreenSwitching = macOptionsModel.option_mac_allow_fullscreen;
+            InterpolatePixels = macOptionsModel.option_mac_interpolate_pixels;
+            Vsync = macOptionsModel.option_mac_vsync;
+            ResizeWindow = macOptionsModel.option_mac_resize_window;
+            Scale = macOptionsModel.option_mac_scale;
+            TexturePage = new TexturePageSize(macOptionsModel.option_mac_texture_page);
+            AppStore = macOptionsModel.option_mac_build_app_store;
+            AllowIncomingNetwork = macOptionsModel.option_mac_allow_incoming_network;
+            AllowOutgoingNetwork = macOptionsModel.option_mac_allow_outgoing_network;
+            AppCategory = macOptionsModel.option_mac_app_category;
+            EnableSteam = macOptionsModel.option_mac_enable_steam;
+            DisableSandbox = macOptionsModel.option_mac_disable_sandbox;
         }
     }
 }

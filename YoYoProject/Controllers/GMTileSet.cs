@@ -126,6 +126,8 @@ namespace YoYoProject.Controllers
             TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.DefaultTextureGroup;
             OutTileBorderHorizontal = 2;
             OutTileBorderVertical = 2;
+
+            AddResourceToFolder("GMTileSet");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

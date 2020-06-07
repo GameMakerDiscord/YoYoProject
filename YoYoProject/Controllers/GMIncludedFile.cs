@@ -39,6 +39,8 @@ namespace YoYoProject.Controllers
             Platforms = TargetPlatforms.AllPlatforms;
             FilePath = "datafiles";
             FileName = null;
+
+            AddResourceToFolder("GMIncludedFile");
         }
 
         public void SetFile(string path)

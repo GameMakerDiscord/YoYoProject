@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace YoYoProject.Controllers
 {
@@ -11,5 +12,11 @@ namespace YoYoProject.Controllers
         internal Guid ResourceInfoId { get; set; }
 
         internal abstract void Create(string name);
+
+        public void AddResourceToFolder(string filtername)
+        {
+            var fld = Project.Resources.GetAllOfType<GMFolder>().Where(n => n.FilterType == filtername);
+            fld.First().Children.Add(this);
+        }
     }
 }

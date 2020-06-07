@@ -52,13 +52,16 @@ namespace YoYoProject
         public bool option_linux_resize_window { get; set; }
 
         [DataMember]
-        public int option_linux_scale { get; set; }
+        public Scale option_linux_scale { get; set; }
 
         [DataMember]
         public string option_linux_texture_page { get; set; }
 
         [DataMember]
         public bool option_linux_enable_steam { get; set; }
+
+        [DataMember]
+        public bool option_linux_disable_sandbox { get; set; }
 
         public GMLinuxOptionsModel()
             : base("GMLinuxOptionsModel", "1.0")

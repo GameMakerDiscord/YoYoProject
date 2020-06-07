@@ -20,6 +20,8 @@ namespace YoYoProject.Controllers
         internal override void Create(string name)
         {
             Name = Project.Resources.GenerateValidName(name ?? "timeline");
+
+            AddResourceToFolder("GMTimeLine");
         }
 
         internal override ModelBase Serialize()

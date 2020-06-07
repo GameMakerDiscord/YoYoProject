@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using YoYoProject.Controllers;
 using YoYoProject.Models;
 using YoYoProject.Utility;
@@ -105,9 +106,12 @@ namespace YoYoProject
                 Configs = new ConfigTree(),
             };
 
-            project.Parent = new GMProjectParent(project); // TODO Eww
-            if (rootDirectory != "${base_project}")
+            project.Parent = new GMProjectParent(project);
+            if (rootDirectory != Macros.Expand("${base_project}")) // fix StackOverflowException...
+            {
                 project.Parent.SetAsBaseProject();
+            }
+            
             project.Resources = new GMResourceManager(project); // TODO Ewww
 
             var projectName = rootDirectory.GetTerminalDirectoryName();
@@ -143,6 +147,8 @@ namespace YoYoProject
             project.Resources.Create<GMWindowsOptions>();
             project.Resources.Create<GMMacOptions>();
             project.Resources.Create<GMLinuxOptions>();
+            project.Resources.Create<GMHtml5Options>();
+            project.Resources.Create<GMtvOSOptions>();
             
             var root = project.Resources.Create<GMFolder>();
             root.IsDefaultView = true;

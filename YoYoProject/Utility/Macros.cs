@@ -34,10 +34,15 @@ namespace YoYoProject.Utility
 
         public static string Expand(string value)
         {
-            if (value.IndexOf('$') < 0)
-                return value;
+            string ret = value;
 
-            return value.Replace("${base_project}", LatestBaseProjectDirectory);
+            if (ret.IndexOf('$') < 0)
+                return ret;
+
+            if (value.Contains("base_project"))
+                ret = ret.Replace("${base_project}", LatestBaseProjectDirectory);
+
+            return ret;
         }
     }
 }

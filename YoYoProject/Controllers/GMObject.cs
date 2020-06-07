@@ -84,6 +84,7 @@ namespace YoYoProject.Controllers
             Physics.StartAwake = true;
             Physics.Kinematic = false;
             Physics.Shape.Type = GMObjectPhysicsShapeType.Box;
+            AddResourceToFolder("GMObject");
         }
 
         internal override ModelBase Serialize()
