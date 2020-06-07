@@ -39,8 +39,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\GameScale.cs" />
-    <Compile Include="Common\SaveLocation.cs" />
     <Compile Include="Common\TexturePageSize.cs" />
     <Compile Include="ConfigDelta.cs" />
     <Compile Include="ConfigTree.cs" />

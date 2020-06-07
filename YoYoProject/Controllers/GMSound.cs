@@ -156,14 +156,11 @@ namespace YoYoProject.Controllers
         internal override void FinalizeDeserialization(ModelBase model)
         {
             var soundModel = (GMSoundModel)model;
-            Guid audiogrpGuid = soundModel.audioGroundGuid;
+            var audiogrpGuid = soundModel.audioGroundGuid;
             if (audiogrpGuid == Guid.Empty)
                 AudioGroup = null;
             else
-            {
                 AudioGroup = Project.Resources.Get<GMMainOptions>().Audio.AudioGroups.Find(g => g.Id == audiogrpGuid);
-            }
-            
         }
     }
 }

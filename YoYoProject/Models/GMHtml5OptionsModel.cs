@@ -3,15 +3,6 @@ using YoYoProject.Common;
 
 namespace YoYoProject
 {
-    namespace Common
-    {
-        public enum WebGLSetting
-        {
-            Disabled,
-            Required,
-            AutoDetect
-        }
-    }
     [DataContract]
     internal sealed class GMHtml5OptionsModel : GMOptionsBaseModel
     {

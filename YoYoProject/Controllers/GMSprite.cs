@@ -337,11 +337,11 @@ namespace YoYoProject.Controllers
         internal override void FinalizeDeserialization(ModelBase model)
         {
             var spriteModel = (GMSpriteModel)model;
-            var tgGuid = spriteModel.textureGroupId;
-            if (tgGuid == Guid.Empty)
+            var tgId = spriteModel.textureGroupId;
+            if (tgId == Guid.Empty)
                 TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.DefaultTextureGroup;
             else
-                TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.TextureGroups.Find(g => g.Id == tgGuid);
+                TextureGroup = Project.Resources.Get<GMMainOptions>().Graphics.TextureGroups.Find(g => g.Id == tgId);
         }
 
         public sealed class FrameManager : IReadOnlyList<GMSpriteFrame>
@@ -387,6 +387,7 @@ namespace YoYoProject.Controllers
                 {
                     File.Delete(framepath);
                 } catch { }
+
                 foreach (var lr in frame.Layers)
                 {
                     string layerpath = Path.Combine(frame.Project.RootDirectory, "sprites", frame.Sprite.Name, "layers", frame.Id.ToString(), lr.Layer.ToString(), ".png");

@@ -362,19 +362,7 @@ namespace YoYoProject.Controllers
             MipsToGenerate = modelTextureGroup.mipsToGenerate;
         }
 
-        /*
-        internal override void FinalizeDeserialization(ModelBase model)
-        {
-            var modelTextureGroup = (GMTextureGroupModel)model;
-            var parentGuid = modelTextureGroup.groupParent;
-            if (parentGuid == Guid.Empty)
-                Parent = null;
-            else
-            {
-                Parent = Project.Resources.Get<GMMainOptions>().// blabla find here the tgrp
-            }
-        }
-        */
+        // TODO Make a FinalizeDeserialization method that finds the parent texture group.
     }
 
     public abstract class GMBaseGroup

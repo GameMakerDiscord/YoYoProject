@@ -16,7 +16,7 @@ namespace YoYoProject.Controllers
         public void AddResourceToFolder(string filtername)
         {
             var fld = Project.Resources.GetAllOfType<GMFolder>().Where(n => n.FilterType == filtername);
-            fld.FirstOrDefault().Children.Add(this);
+            fld.First().Children.Add(this);
         }
     }
 }
